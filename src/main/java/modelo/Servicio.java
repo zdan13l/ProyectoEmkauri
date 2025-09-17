@@ -1,28 +1,26 @@
 package modelo;
 
 public class Servicio {
-    private Categoria categoria;
-
     private int idServicio;
+    private double precio;
     private String nombre;
     private String descripcion;
-    private double precio;
     private String estado;
+    private Categoria categoria;
+    private Emprendedor emprendedor;
 
-    public Servicio(int idServicio, String nombre, String estado, String descripcion, double precio) {
+    public Servicio(int idServicio, double precio, String nombre, String descripcion, String estado, Categoria categoria, Emprendedor emprendedor) {
         this.idServicio = idServicio;
-        this.nombre = nombre;
-        this.estado = estado;
-        this.descripcion = descripcion;
         this.precio = precio;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.categoria = categoria;
+        this.emprendedor = emprendedor;
     }
 
     public int getIdServicio() {
         return idServicio;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
     }
 
     public double getPrecio() {
@@ -33,8 +31,20 @@ public class Servicio {
         return nombre;
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     public String getEstado() {
         return estado;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public Emprendedor getEmprendedor() {
+        return emprendedor;
     }
 
     @Override

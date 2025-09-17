@@ -1,32 +1,46 @@
 package modelo;
 
+import java.util.Date;
+
 public class Calificacion {
     private int idCalificacion;
-    private int puntuacion;
+    private int nota;
     private String comentario;
-    private String fecha;
+    private Date fecha;
+    private Cliente cliente;
+    private Curso curso;
 
-    public Calificacion(int idCalificacion, String comentario, int puntuacion, String fecha) {
+    public Calificacion(int idCalificacion, String comentario, int nota, Date fecha, Cliente cliente, Curso curso) {
         this.idCalificacion = idCalificacion;
         this.comentario = comentario;
-        this.puntuacion = puntuacion;
+        this.nota = nota;
         this.fecha = fecha;
+        this.cliente = cliente;
+        this.curso = curso;
     }
 
     public int getIdCalificacion() {
         return idCalificacion;
     }
 
-    public int getPuntuacion() {
-        return puntuacion;
+    public int getNota() {
+        return nota;
     }
 
     public String getComentario() {
         return comentario;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public Curso getCurso() {
+        return curso;
     }
 
     @Override
