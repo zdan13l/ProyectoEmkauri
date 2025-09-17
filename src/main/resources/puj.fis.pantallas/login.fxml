@@ -5,17 +5,40 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController"
+           style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);">
 
-    <Label text="Bienvenido a Emkauri" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-    <TextField fx:id="usernameField" promptText="Usuario"/>
-    <PasswordField fx:id="passwordField" promptText="Contraseña"/>
+    <VBox alignment="CENTER" spacing="15.0" maxWidth="350"
+          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30;">
 
-    <Button text="Iniciar sesión" onAction="#onLoginClick"/>
-    <Button text="Registrarse" onAction="#onRegisterClick"/>
-</VBox>
+        <effect>
+            <DropShadow radius="10" color="#00000055"/>
+        </effect>
+
+        <Label text="Bienvenido a Emkauri"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+        <Label text="Inicia sesión para continuar"
+               style="-fx-font-size: 13px; -fx-text-fill: #777777;"/>
+
+        <TextField fx:id="usernameField" promptText="Usuario"
+                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                          -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <PasswordField fx:id="passwordField" promptText="Contraseña"
+                       style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                              -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <Button text="Iniciar sesión" onAction="#onLoginClick"
+                style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;"/>
+
+        <Button text="Registrarse" onAction="#onRegisterClick"
+                style="-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-weight: bold;
+                       -fx-border-color: #4A90E2; -fx-border-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;"/>
+    </VBox>
+</StackPane>
