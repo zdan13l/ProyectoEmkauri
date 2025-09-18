@@ -1,5 +1,6 @@
 package modelo;
 
+// Modelo que representa un usuario en el sistema.
 public class Usuario {
     private int idUsuario;
     private String nombre;
@@ -30,8 +31,6 @@ public class Usuario {
     }
 
     @Override
-    public String toString() {
-        return "Usuario";
-    }
+    public String toString() { return "Usuario"; }
 }
 
