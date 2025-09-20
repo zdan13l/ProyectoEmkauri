@@ -1,10 +1,18 @@
 package servicio;
 
 import modelo.Compra;
+import modelo.Cliente;
+import modelo.Curso;
+import modelo.Servicio;
+import modelo.Pago;
+import repositorio.RCompra;
 
+import java.sql.ResultSet;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+// Servicio para manejar lógica de Compra.
 public class SCompra {
     private final List<Compra> compras = new ArrayList<>();
     private final RCompra repoC = new RCompra();
