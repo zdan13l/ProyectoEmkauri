@@ -32,6 +32,7 @@ public class CategoriaController {
     private RCategoria rCategoria;
     private ObservableList<Categoria> categoriaList;
 
+
     @FXML
     public void initialize() {
         rCategoria = new RCategoria();
