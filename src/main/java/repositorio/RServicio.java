@@ -1,7 +1,7 @@
 package repositorio;
 
 import modelo.Servicio;
-import modulo.ConexionDB; // 👈 ajusta este import al que use tu proyecto
+
 
 import java.sql.*;
 import java.util.ArrayList;
