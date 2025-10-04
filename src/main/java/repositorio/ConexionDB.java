@@ -48,7 +48,7 @@ public class ConexionDB {
     // Ejecuta el script DATA.sql para poblar datos mínimos
     public static void loadTestData(Connection conn) {
         try {
-            String dataPath = Paths.get("src/main/resources/sql/data.sql").toAbsolutePath().toString();
+            String dataPath = Paths.get("src/main/resources/sql/DATA.sql").toAbsolutePath().toString();
             RunScript.execute(conn, new FileReader(dataPath));
             System.out.println("Script DATA ejecutado correctamente.");
         } catch (Exception e) {
