@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.CarritoController">
+
+    <center>
+        <VBox spacing="10" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Carrito de compras" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <ListView fx:id="listView" prefHeight="300" />
+
+                <Label fx:id="lblTotal" text="Total: $0.0" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                <HBox spacing="10">
+                    <children>
+                        <Button fx:id="btnEliminar" text="Eliminar seleccionado" onAction="#onEliminar"/>
+                        <Button fx:id="btnConfirmar" text="Confirmar compra" onAction="#onConfirmar"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+        </VBox>
+    </center>
+</BorderPane>
