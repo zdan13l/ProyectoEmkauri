@@ -10,11 +10,18 @@ import servicio.SUsuario;
 public class LoginController {
 
     // Campos vinculados a los elementos de la interfaz.
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
 
     // Servicio para manejar la lógica de usuario.
-    private final SUsuario servicioU = new SUsuario();
+    private final SUsuario servicioU;
+
+    // Constructor con inyección de dependencia del servicio de usuario.
+    public LoginController(SUsuario servicioU) {
+        this.servicioU = servicioU;
+    }
 
     // Maneja el evento de clic en el botón de login.
     @FXML public void onLoginClick(ActionEvent actionEvent) {

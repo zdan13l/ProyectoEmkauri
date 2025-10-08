@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.RegistroController"
+           style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);">
+
+    <VBox alignment="CENTER" spacing="15.0" maxWidth="400"
+          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30;">
+
+        <effect>
+            <DropShadow radius="10" color="#00000055"/>
+        </effect>
+
+        <Label text="Registro de Usuario"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+        <Label text="Completa los datos"
+               style="-fx-font-size: 13px; -fx-text-fill: #777777;"/>
+
+        <!-- Campos comunes -->
+        <TextField fx:id="nombreField" promptText="Nombre completo"
+                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                          -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <TextField fx:id="usuarioField" promptText="Correo electrónico (usuario)"
+                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                          -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <PasswordField fx:id="passwordField" promptText="Contraseña"
+                       style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                              -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <TextField fx:id="documentoField" promptText="Documento de identidad"
+                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
+                          -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
+
+        <!-- Tipo de usuario (RadioButtons) - NO declarar ToggleGroup aquí -->
+        <Label text="Tipo de cuenta:" style="-fx-font-size: 13px; -fx-text-fill: #555555;"/>
+        <HBox alignment="CENTER" spacing="12">
+            <!-- toggleGroup="$tipoUsuarioGroup" referenciará al campo @FXML ToggleGroup tipoUsuarioGroup en el controller -->
+            <RadioButton fx:id="clienteRadio" text="Cliente" toggleGroup="$tipoUsuarioGroup"
+                         style="-fx-font-size: 13px; -fx-text-fill: #4A90E2;"/>
+            <RadioButton fx:id="emprendedorRadio" text="Emprendedor" toggleGroup="$tipoUsuarioGroup"
+                         style="-fx-font-size: 13px; -fx-text-fill: #4A90E2;"/>
+        </HBox>
+
+        <!-- Campos exclusivos Emprendedor (ocultos inicialmente) -->
+        <VBox fx:id="emprendedorBox" spacing="8" visible="false" managed="false"
+              style="-fx-padding: 8 0 0 0;">
+            <TextField fx:id="nombrePublicoField" promptText="Nombre público (perfil)"/>
+            <TextField fx:id="categoriasField" promptText="Categorías (separadas por coma)"/>
+
+            <Label text="Tipo de oferta:" style="-fx-font-size: 13px; -fx-text-fill: #555555;"/>
+            <HBox alignment="CENTER" spacing="10">
+                <RadioButton fx:id="cursoRadio" text="Curso" toggleGroup="$tipoOfertaGroup"/>
+                <RadioButton fx:id="servicioRadio" text="Servicio" toggleGroup="$tipoOfertaGroup"/>
+            </HBox>
+
+            <TextArea fx:id="descripcionField" promptText="Descripción breve" prefRowCount="3"/>
+            <TextArea fx:id="portafolioField" promptText="Experiencia / links (uno por línea)" prefRowCount="3"/>
+        </VBox>
+
+        <!-- Botón de acción -->
+        <Button text="Registrarse" onAction="#onRegistrarClick"
+                style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;"/>
+    </VBox>
+</StackPane>

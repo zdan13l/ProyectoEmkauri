@@ -5,7 +5,12 @@ import repositorio.RUsuario;
 
 // Servicio de negocio para la gestión de usuarios.
 public class SUsuario {
-    private final RUsuario repoU = new RUsuario();
+    private final RUsuario repoU;
+
+    // Constructor con inyección de dependencia.
+    public SUsuario(RUsuario repoU) {
+        this.repoU = repoU;
+    }
 
     // Verifica si las credenciales corresponden a un usuario válido.
     public boolean autenticar(String nombre, String contrasena) {
