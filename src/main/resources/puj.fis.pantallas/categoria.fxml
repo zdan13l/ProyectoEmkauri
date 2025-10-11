@@ -20,7 +20,19 @@
             <TextField fx:id="descripcionField" promptText="Descripción (opcional)" style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;                               -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;" />
             <HBox alignment="CENTER" spacing="10">
                 <Button onAction="#onCreateClick" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Crear" />
-                <Button onAction="#onEditClick" style="-fx-background-color: #50C9CE; -fx-text-fill: white; -fx-font-weight: bold;                                -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Editar" />
+
+                <Button onAction="#onEditClick"
+                        style="-fx-background-color: white;
+                               -fx-text-fill: #4A90E2;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 8;
+                               -fx-padding: 10 20;
+                               -fx-cursor: hand;
+                               -fx-border-color: #4A90E2;
+                               -fx-border-width: 2;
+                               -fx-border-radius: 8;"
+                        text="Editar" />
+
                 <Button onAction="#onDeleteClick" style="-fx-background-color: #FF5252; -fx-text-fill: white; -fx-font-weight: bold;                                -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Eliminar" />
             </HBox>
         </VBox>
