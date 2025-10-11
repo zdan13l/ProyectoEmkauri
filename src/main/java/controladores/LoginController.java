@@ -11,7 +11,7 @@ public class LoginController {
 
     // Campos vinculados a los elementos de la interfaz.
     @FXML
-    private TextField usernameField;
+    private TextField emailField;
     @FXML
     private PasswordField passwordField;
 
@@ -25,22 +25,28 @@ public class LoginController {
 
     // Maneja el evento de clic en el botón de login.
     @FXML public void onLoginClick(ActionEvent actionEvent) {
-        String user = usernameField.getText();
+        String correo = emailField.getText();
         String contrasena = passwordField.getText();
 
-        if (user.isEmpty() || contrasena.isEmpty()) {
+        if (correo.isEmpty() || contrasena.isEmpty()) {
             mostrarAlerta("Error", "Por favor completa todos los campos.");
             return;
         }
 
         // Pedimos al servicio que autentique al usuario.
-        boolean autenticado = servicioU.autenticar(user, contrasena);
+        boolean autenticado = servicioU.autenticar(correo, contrasena);
 
         if (autenticado) {
-            String nombre = servicioU.obtenerNombre(user);
-            String rol = servicioU.obtenerRol(nombre);
+            String nombre = servicioU.obtenerNombre(correo);
+            String apellido = servicioU.obtenerApellido(correo);
+            String rol = servicioU.obtenerRol(correo);
 
-            mostrarAlerta("Bienvenido", "Hola " + nombre + " (" + rol + ")");
+            mostrarAlerta("Bienvenido", "Hola " + nombre + " " + apellido + " (" + rol + ")");
+
+            if (rol == null) {
+                mostrarAlerta("Error", "Rol no reconocido. Contacta al administrador.");
+                return;
+            }
 
             // Redirigir según el rol del usuario (NO IMPLEMENTADO).
             switch (rol) {
@@ -83,7 +89,7 @@ public class LoginController {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            javafx.stage.Stage stage = (javafx.stage.Stage) usernameField.getScene().getWindow();
+            javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.getMessage());

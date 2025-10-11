@@ -22,7 +22,7 @@
         <Label text="Inicia sesión para continuar"
                style="-fx-font-size: 13px; -fx-text-fill: #777777;"/>
 
-        <TextField fx:id="usernameField" promptText="Usuario"
+        <TextField fx:id="emailField" promptText="Correo electrónico"
                    style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8;
                     -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;"/>
 

@@ -13,27 +13,38 @@ public class SUsuario {
     }
 
     // Verifica si las credenciales corresponden a un usuario válido.
-    public boolean autenticar(String nombre, String contrasena) {
-        Usuario user = repoU.autenticar(nombre, contrasena);
+    public boolean autenticar(String correo, String contrasena) {
+        Usuario user = repoU.autenticar(correo, contrasena);
         return user != null;
     }
 
     // Obtiene el nombre del usuario a partir del email.
-    public String obtenerNombre(String nombre) {
-        Usuario user = repoU.buscarPorNombre(nombre);
+    public String obtenerNombre(String correo) {
+        Usuario user = repoU.buscarPorCorreo(correo);
         if (user != null) {
-            return user.getNombre();
+            return user.getDatosPersonales().getNombre();
+        } else {
+            return null;
+        }
+    }
+
+    // Obtiene el apellido del usuario a partir del email.
+    public String obtenerApellido(String correo) {
+        Usuario user = repoU.buscarPorCorreo(correo);
+        if (user != null) {
+            return user.getDatosPersonales().getApellido();
         } else {
             return null;
         }
     }
 
     // Obtiene el rol del usuario (Cliente, Emprendedor, Reclutador) a partir del nombre.
-    public String obtenerRol(String nombre) {
-        Usuario user = repoU.buscarPorNombre(nombre);
+    public String obtenerRol(String correo) {
+        Usuario user = repoU.buscarPorCorreo(correo);
         if (user != null) {
-            return repoU.obtenerRol(user.getIdUsuario());
+            return user.getRol().getNombre();
+        } else {
+            return null;
         }
-        return "Desconocido";
     }
 }

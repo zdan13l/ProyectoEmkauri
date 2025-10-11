@@ -6,14 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import repositorio.ConexionDB;
-import repositorio.RCompra;
 import repositorio.RUsuario;
 import servicio.SUsuario;
 
 import java.sql.Connection;
-import java.util.Scanner;
 
-public class ProyectoEmkauri extends Application {
+public class EmkauriApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {

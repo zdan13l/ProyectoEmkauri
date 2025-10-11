@@ -1,5 +1,6 @@
 package modelo;
 
+// Modelo que representa una categoría de productos o servicios.
 public class Categoria {
     private int idCategoria;
     private String nombre;

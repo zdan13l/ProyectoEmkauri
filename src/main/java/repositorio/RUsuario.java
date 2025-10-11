@@ -1,6 +1,9 @@
 package repositorio;
 
 import modelo.Usuario;
+import modelo.Datos;
+import modelo.Rol;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,21 +12,38 @@ import java.sql.ResultSet;
 public class RUsuario {
 
     // Autentica a un usuario verificando nombre y contraseña.
-    public Usuario autenticar(String nombre, String contrasena) {
+    public Usuario autenticar(String correo, String contrasena) {
         try (Connection conn = ConexionDB.getConnection()) {
-            String sql = "SELECT * FROM Usuario WHERE nombre = ? AND contrasena = ?";
+            String sql = "SELECT u.idUsuario, u.correo, u.contrasena, d.idDatos, d.nombre, d.apellido, d.telefono, r.idRol, r.nombre AS nombreRol " +
+                    "FROM Usuarios u " +
+                    "JOIN DatosPersonales d ON u.idDatos = d.idDatos " +
+                    "JOIN Roles r ON u.idRol = r.idRol " +
+                    "WHERE u.correo = ? AND u.contrasena = ?";
+
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombre);
+            stmt.setString(1, correo);
             stmt.setString(2, contrasena);
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Datos datos = new Datos(
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("telefono")
+                );
+
+                Rol rol = new Rol(
+                        rs.getInt("idRol"),
+                        rs.getString("nombreRol")
+                );
+
                 return new Usuario(
                         rs.getInt("idUsuario"),
-                        rs.getString("nombre"),
-                        rs.getString("email"),
-                        rs.getString("contrasena")
+                        rs.getString("correo"),
+                        rs.getString("contrasena"),
+                        datos,
+                        rol
                 );
             }
         } catch (Exception e) {
@@ -32,50 +52,43 @@ public class RUsuario {
         return null;
     }
 
-    // Busca un usuario por su nombre.
-    public Usuario buscarPorNombre(String nombre) {
+    // Busca un usuario por su correo electrónico.
+    public Usuario buscarPorCorreo(String correo) {
         try (Connection conn = ConexionDB.getConnection()) {
-            String sql = "SELECT * FROM Usuario WHERE nombre = ?";
+            String sql = "SELECT u.idUsuario, u.correo, u.contrasena, d.idDatos, d.nombre, d.apellido, d.telefono, r.idRol, r.nombre AS nombreRol " +
+                    "FROM Usuarios u " +
+                    "JOIN DatosPersonales d ON u.idDatos = d.idDatos " +
+                    "JOIN Roles r ON u.idRol = r.idRol " +
+                    "WHERE u.correo = ?";
+
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nombre);
+            stmt.setString(1, correo);
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Datos datos = new Datos(
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("telefono")
+                );
+
+                Rol rol = new Rol(
+                        rs.getInt("idRol"),
+                        rs.getString("nombreRol")
+                );
+
                 return new Usuario(
                         rs.getInt("idUsuario"),
-                        rs.getString("nombre"),
-                        rs.getString("email"),
-                        rs.getString("contrasena")
+                        rs.getString("correo"),
+                        rs.getString("contrasena"),
+                        datos,
+                        rol
                 );
             }
         } catch (Exception e) {
-            System.err.println("Error buscando usuario: " + e.getMessage());
+            System.err.println("Error buscando usuario por correo: " + e.getMessage());
         }
         return null;
-    }
-
-    // Obtiene el rol de un usuario verificando en las tablas Cliente, Emprendedor o Reclutador.
-    public String obtenerRol(int idUsuario) {
-        try (Connection conn = ConexionDB.getConnection()) {
-            if (estaEnTabla(conn, "Cliente", idUsuario))
-                return "Cliente";
-            if (estaEnTabla(conn, "Emprendedor", idUsuario))
-                return "Emprendedor";
-            if (estaEnTabla(conn, "Reclutador", idUsuario))
-                return "Reclutador";
-        } catch (Exception e) {
-            System.err.println("Error obteniendo rol: " + e.getMessage());
-        }
-        return "Desconocido";
-    }
-
-    // Metodo auxiliar para verificar si el usuario está en una tabla (Cliente, Emprendedor, Reclutador).
-    private boolean estaEnTabla(Connection conn, String tabla, int idUsuario) throws Exception {
-        String sql = "SELECT 1 FROM " + tabla + " WHERE idUsuario = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, idUsuario);
-        ResultSet rs = stmt.executeQuery();
-        return rs.next();
     }
 }

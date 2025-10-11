@@ -55,20 +55,18 @@ public class ConexionDB {
         }
     }
 
-    // Inicia el servidor TCP y la consola web
+    // Inicia el servidor TCP y la consola web.
     public static void startTcpAndWebServer() throws SQLException {
         if (tcpServer == null || !tcpServer.isRunning(true)) {
             tcpServer = Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9093", "-ifNotExists").start();
             System.out.println("Servidor H2 TCP iniciado en: " + tcpServer.getURL());
-            System.out.println("Conéctate con: jdbc:h2:tcp://localhost:9093/mem:emkauriPruebas");
         }
 
         if (webServer == null || !webServer.isRunning(true)) {
             webServer = Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
             System.out.println("Consola H2 iniciada en: " + webServer.getURL());
-            System.out.println("Abre en tu navegador: http://localhost:8082");
 
-            // 👇 Abrir el navegador automáticamente
+            // Abrir el navegador automáticamente.
             try {
                 if (Desktop.isDesktopSupported()) {
                     Desktop.getDesktop().browse(new URI("http://localhost:8082"));

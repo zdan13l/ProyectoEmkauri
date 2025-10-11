@@ -1,0 +1,40 @@
+package modelo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Modelo que representa un producto en el sistema.
+public class Producto {
+    private int idProducto;
+    private String titulo;
+    private String descripcion;
+    private double precio;
+    Usuario emprendedor;
+    List<Calificacion> calificaciones;
+
+    public Producto(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor) {
+        this.idProducto = idProducto;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.emprendedor = emprendedor;
+        this.calificaciones = new ArrayList<>();
+    }
+
+    public int getIdProducto() { return idProducto; }
+    public void setIdProducto(int idProducto) { this.idProducto = idProducto; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
+    public Usuario getEmprendedor() { return emprendedor; }
+    public void setEmprendedor(Usuario emprendedor) { this.emprendedor = emprendedor; }
+    public List<Calificacion> getCalificaciones() { return calificaciones; }
+    public void setCalificaciones(List<Calificacion> calificaciones) { this.calificaciones = calificaciones; }
+    public void agregarCalificacion(Calificacion calificacion) { this.calificaciones.add(calificacion); }
+
+    @Override
+    public String toString() { return "Producto"; }
+}

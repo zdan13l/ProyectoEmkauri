@@ -1,50 +1,39 @@
 package modelo;
 
 import java.util.Date;
+import java.util.List;
 
+// Modelo que representa una compra realizada por un cliente.
 public class Compra {
     private int idCompra;
-    private Date fecha;
-    private Cliente cliente;
-    private Curso curso;
-    private Servicio servicio;
+    private Usuario cliente;
+    private List<Producto> productos;
+    private double montoFinal;
+    private Date fechaCompra;
     private Pago pago;
 
-    public Compra(int idCompra, Date fecha, Cliente cliente, Curso curso, Servicio servicio, Pago pago) {
+    public Compra(int idCompra, Usuario cliente, List<Producto> productos, double montoFinal, Date fechaCompra, Pago pago) {
         this.idCompra = idCompra;
-        this.fecha = fecha;
         this.cliente = cliente;
-        this.curso = curso;
-        this.servicio = servicio;
+        this.productos = productos;
+        this.montoFinal = montoFinal;
+        this.fechaCompra = fechaCompra;
         this.pago = pago;
     }
 
-    public int getIdCompra() {
-        return idCompra;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public Servicio getServicio() {
-        return servicio;
-    }
-
-    public Pago getPago() {
-        return pago;
-    }
+    public int getIdCompra() { return idCompra; }
+    public void setIdCompra(int idCompra) { this.idCompra = idCompra; }
+    public Usuario getCliente() { return cliente; }
+    public void setCliente(Usuario cliente) { this.cliente = cliente; }
+    public List<Producto> getProductos() { return productos; }
+    public void setProductos(List<Producto> productos) { this.productos = productos; }
+    public double getMontoFinal() { return montoFinal; }
+    public void setMontoFinal(double montoFinal) { this.montoFinal = montoFinal; }
+    public Date getFechaCompra() { return fechaCompra; }
+    public void setFechaCompra(Date fechaCompra) { this.fechaCompra = fechaCompra; }
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
 
     @Override
-    public String toString() {
-        return "Compra";
-    }
+    public String toString() { return "Compra"; }
 }
