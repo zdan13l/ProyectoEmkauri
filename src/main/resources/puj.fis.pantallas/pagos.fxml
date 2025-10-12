@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.DropShadow?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.PagosController"
+           style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);">
+
+    <VBox alignment="CENTER" spacing="18.0" maxWidth="980"
+          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 24;">
+        <effect><DropShadow color="#00000055"/></effect>
+
+        <Label text="Gestión de Pagos" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333"/>
+        <Label text="Crea, edita, elimina y asocia pagos a compras" style="-fx-font-size: 13px; -fx-text-fill: #777"/>
+
+        <HBox spacing="16">
+            <!-- TABLA -->
+            <TableView fx:id="tabla" prefHeight="360" prefWidth="640"
+                       style="-fx-background-radius: 10; -fx-background-color: #fafafa;">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+                    <TableColumn fx:id="colMetodo" text="Método" prefWidth="160"/>
+                    <TableColumn fx:id="colMonto" text="Monto" prefWidth="160"/>
+                    <TableColumn fx:id="colFecha" text="Fecha" prefWidth="160"/>
+                </columns>
+            </TableView>
+
+            <!-- FORMULARIO -->
+            <VBox spacing="10" prefWidth="280">
+                <Label text="Formulario" style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="90"/>
+                        <ColumnConstraints prefWidth="190"/>
+                    </columnConstraints>
+
+                    <children>
+                        <Label text="Monto:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtMonto" promptText="0.00" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: #f9f9f9;"/>
+
+                        <Label text="Método:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="cbMetodo" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                                  style="-fx-background-radius: 8; -fx-padding: 2;"/>
+
+                        <Label text="Fecha:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <DatePicker fx:id="dpFecha" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                    style="-fx-background-radius: 8; -fx-padding: 2;"/>
+
+                        <Label text="ID Compra:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtIdCompra" promptText="Opcional" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                                   style="-fx-background-radius: 8; -fx-padding: 8; -fx-background-color: #f9f9f9;"/>
+                    </children>
+                </GridPane>
+
+                <Separator/>
+
+                <VBox spacing="8">
+                    <Button text="Nuevo" onAction="#onNuevo"
+                            style="-fx-background-color: #EEEEEE; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Crear" onAction="#onCrear"
+                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Actualizar" onAction="#onActualizar"
+                            style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Eliminar" onAction="#onEliminar"
+                            style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Asociar a Compra" onAction="#onAsociar"
+                            style="-fx-background-color: #50C9CE; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Desasociar" onAction="#onDesasociar"
+                            style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button text="Refrescar" onAction="#onRefrescar"
+                            style="-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-border-color: #4A90E2; -fx-border-radius: 8; -fx-cursor: hand;"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</StackPane>

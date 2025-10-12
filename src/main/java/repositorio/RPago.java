@@ -1,89 +1,99 @@
 package repositorio;
 
 import modelo.Pago;
-
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
 
+/**
+ * Repositorio JDBC para la entidad Pago.
+ * Utiliza ConexionDB.getConnection() en cada operación (patrón ya usado en RUsuario).
+ */
 public class RPago {
 
-    private final DataSource ds;
-
-    public RPago(DataSource ds) { this.ds = ds; }
-
-    public Pago crear(Pago p) throws SQLException {
-        p.validar();
-        String sql = "INSERT INTO Pagos (id_compra, monto, metodo, fecha, estado) VALUES (?, ?, ?, ?, ?)";
-        try (Connection c = ds.getConnection();
-             PreparedStatement st = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            st.setObject(1, p.getIdCompra(), Types.BIGINT);
-            st.setBigDecimal(2, p.getMonto());
-            st.setString(3, p.getMetodo());
-            st.setDate(4, Date.valueOf(p.getFecha()));
-            st.setString(5, p.getEstado());
+    public Pago crear(Pago p) {
+        String sql = "INSERT INTO Pagos (monto, metodo, fecha) VALUES (?, ?, ?)";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            st.setBigDecimal(1, java.math.BigDecimal.valueOf(p.getMonto()));
+            st.setString(2, p.getMetodo());
+            st.setDate(3, new java.sql.Date(p.getFecha().getTime()));
             st.executeUpdate();
             try (ResultSet rs = st.getGeneratedKeys()) {
-                if (rs.next()) p.setId(rs.getLong(1));
+                if (rs.next()) {
+                    p.setIdPago(rs.getInt(1));
+                }
             }
+            return p;
+        } catch (Exception e) {
+            throw new RuntimeException("Error creando pago: " + e.getMessage(), e);
         }
-        return p;
     }
 
-    public Pago buscarPorId(Long id) throws SQLException {
-        String sql = "SELECT id, id_compra, monto, metodo, fecha, estado FROM Pagos WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.setLong(1, id);
+    public Pago buscarPorId(int idPago) {
+        String sql = "SELECT idPago, monto, metodo, fecha FROM Pagos WHERE idPago=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, idPago);
             try (ResultSet rs = st.executeQuery()) {
                 if (!rs.next()) return null;
-                return map(rs);
+                Pago p = new Pago();
+                p.setIdPago(rs.getInt("idPago"));
+                p.setMonto(rs.getBigDecimal("monto").doubleValue());
+                p.setMetodo(rs.getString("metodo"));
+                Date fecha = new Date(rs.getDate("fecha").getTime());
+                p.setFecha(fecha);
+                return p;
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Error buscando pago: " + e.getMessage(), e);
         }
     }
 
-    public List<Pago> listar() throws SQLException {
-        String sql = "SELECT id, id_compra, monto, metodo, fecha, estado FROM Pagos ORDER BY id DESC";
+    public List<Pago> listar() {
+        String sql = "SELECT idPago, monto, metodo, fecha FROM Pagos ORDER BY idPago DESC";
         List<Pago> list = new ArrayList<>();
-        try (Connection c = ds.getConnection();
-             PreparedStatement st = c.prepareStatement(sql);
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+                Pago p = new Pago();
+                p.setIdPago(rs.getInt("idPago"));
+                p.setMonto(rs.getBigDecimal("monto").doubleValue());
+                p.setMetodo(rs.getString("metodo"));
+                Date fecha = new Date(rs.getDate("fecha").getTime());
+                p.setFecha(fecha);
+                list.add(p);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error listando pagos: " + e.getMessage(), e);
         }
         return list;
     }
 
-    public boolean actualizar(Pago p) throws SQLException {
-        p.validar();
-        String sql = "UPDATE Pagos SET id_compra=?, monto=?, metodo=?, fecha=?, estado=? WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            if (p.getIdCompra() == null) st.setNull(1, Types.BIGINT); else st.setLong(1, p.getIdCompra());
-            st.setBigDecimal(2, p.getMonto());
-            st.setString(3, p.getMetodo());
-            st.setDate(4, Date.valueOf(p.getFecha()));
-            st.setString(5, p.getEstado());
-            st.setLong(6, p.getId());
+    public boolean actualizar(Pago p) {
+        String sql = "UPDATE Pagos SET monto=?, metodo=?, fecha=? WHERE idPago=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setBigDecimal(1, java.math.BigDecimal.valueOf(p.getMonto()));
+            st.setString(2, p.getMetodo());
+            st.setDate(3, new java.sql.Date(p.getFecha().getTime()));
+            st.setInt(4, p.getIdPago());
             return st.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error actualizando pago: " + e.getMessage(), e);
         }
     }
 
-    public boolean eliminar(Long id) throws SQLException {
-        String sql = "DELETE FROM Pagos WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.setLong(1, id);
+    public boolean eliminar(int idPago) {
+        String sql = "DELETE FROM Pagos WHERE idPago=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, idPago);
             return st.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error eliminando pago: " + e.getMessage(), e);
         }
-    }
-
-    private Pago map(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("id");
-        Long idCompra = (Long) rs.getObject("id_compra");
-        BigDecimal monto = rs.getBigDecimal("monto");
-        String metodo = rs.getString("metodo");
-        LocalDate fecha = rs.getDate("fecha").toLocalDate();
-        String estado = rs.getString("estado");
-        return new Pago(id, idCompra, monto, metodo, fecha, estado);
     }
 }

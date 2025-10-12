@@ -4,66 +4,38 @@ import modelo.Pago;
 import repositorio.RCompra;
 import repositorio.RPago;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
-import javax.sql.DataSource;
 
+/**
+ * Implementación del servicio de Pagos con reglas de negocio mínimas.
+ * - CRUD de pagos
+ * - Asociación 1:1 con Compras (una compra no puede tener más de un pago).
+ */
 public class SPago implements ISPago {
-
     private final RPago rPago;
     private final RCompra rCompra;
-    private final DataSource ds;
 
-    public SPago(RPago rPago, RCompra rCompra, DataSource ds) {
+    public SPago(RPago rPago, RCompra rCompra) {
         this.rPago = rPago;
         this.rCompra = rCompra;
-        this.ds = ds;
     }
 
-    @Override public Pago crear(Pago p) throws SQLException { return rPago.crear(p); }
-    @Override public Pago buscarPorId(Long id) throws SQLException { return rPago.buscarPorId(id); }
-    @Override public List<Pago> listar() throws SQLException { return rPago.listar(); }
-    @Override public boolean actualizar(Pago p) throws SQLException { return rPago.actualizar(p); }
+    @Override public Pago crear(Pago pago) { return rPago.crear(pago); }
+    @Override public Pago buscarPorId(int idPago) { return rPago.buscarPorId(idPago); }
+    @Override public List<Pago> listar() { return rPago.listar(); }
+    @Override public boolean actualizar(Pago pago) { return rPago.actualizar(pago); }
+    @Override public boolean eliminar(int idPago) { return rPago.eliminar(idPago); }
 
     @Override
-    public boolean eliminar(Long id) throws SQLException {
-        // Si el pago está asociado, desasociar previamente
-        Pago p = rPago.buscarPorId(id);
-        if (p != null && p.getIdCompra() != null) {
-            rCompra.desasociarPagoDeCompra(p.getIdCompra());
+    public void asociarPagoACompra(int idPago, int idCompra) {
+        if (rCompra.compraTienePago(idCompra)) {
+            throw new IllegalStateException("La compra ya tiene un pago asociado.");
         }
-        return rPago.eliminar(id);
+        rCompra.asociarPagoACompra(idCompra, idPago);
     }
 
     @Override
-    public void asociarPagoACompra(Long idPago, Long idCompra) throws SQLException {
-        // Regla: una compra no puede tener más de un pago
-        if (rCompra.compraTienePago(idCompra))
-            throw new IllegalStateException("La compra ya tiene un pago asociado");
-
-        // Transacción simple
-        try (Connection c = ds.getConnection()) {
-            try {
-                c.setAutoCommit(false);
-                rCompra.asociarPagoACompra(idCompra, idPago);
-                // Actualiza también el campo id_compra en la fila del pago para ver la relación desde ambos lados (opcional)
-                Pago p = rPago.buscarPorId(idPago);
-                if (p == null) throw new IllegalArgumentException("Pago no existe");
-                p.setIdCompra(idCompra);
-                rPago.actualizar(p);
-                c.commit();
-            } catch (Exception e) {
-                c.rollback();
-                throw e;
-            } finally {
-                c.setAutoCommit(true);
-            }
-        }
-    }
-
-    @Override
-    public void desasociarPagoDeCompra(Long idCompra) throws SQLException {
+    public void desasociarPagoDeCompra(int idCompra) {
         rCompra.desasociarPagoDeCompra(idCompra);
     }
 }
