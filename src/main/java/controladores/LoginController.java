@@ -2,25 +2,29 @@ package controladores;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import servicio.SUsuario;
 
-public class LoginController {
+import java.io.IOException;
+
+// Controlador para manejar la lógica de la pantalla de login.
+public class LoginController implements IControlador{
 
     // Campos vinculados a los elementos de la interfaz.
-    @FXML
-    private TextField emailField;
-    @FXML
-    private PasswordField passwordField;
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
 
     // Servicio para manejar la lógica de usuario.
-    private final SUsuario servicioU;
+    private SUsuario servicioU;
 
-    // Constructor con inyección de dependencia del servicio de usuario.
-    public LoginController(SUsuario servicioU) {
-        this.servicioU = servicioU;
+    @Override
+    public void setServicios(Object... servicios) {
+        this.servicioU = (SUsuario) servicios[0];
     }
 
     // Maneja el evento de clic en el botón de login.
@@ -70,9 +74,30 @@ public class LoginController {
         }
     }
 
-    // Maneja el evento de clic en el botón de registro. (NO IMPLEMENTADO).
+    // Maneja el evento de clic en el botón de registro.
     @FXML public void onRegisterClick(ActionEvent actionEvent) {
-        mostrarAlerta("Registro", "Aquí debería abrir el formulario de registro.");
+        try {
+            // Cargar el FXML de registro
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/registro.fxml"));
+
+            // Crear instancia del controlador de registro e inyectar el servicio.
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU);
+            loader.setControllerFactory(controladorFactory::createController);
+
+            // Cargar la escena
+            Scene scene = new Scene(loader.load());
+            Stage registroStage = new Stage();
+            registroStage.setTitle("Registro de Usuario");
+            registroStage.setScene(scene);
+            registroStage.show();
+
+            // Cerrar la ventana actual del login.
+            Stage currentStage = (Stage) ((javafx.scene.Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.close();
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo abrir la pantalla de registro.");
+        }
     }
 
     // Muestra una alerta con el título y mensaje proporcionados.

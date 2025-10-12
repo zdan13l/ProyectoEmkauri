@@ -1,5 +1,6 @@
 package fis.jave.emkauri;
 
+import controladores.Controlador;
 import controladores.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,13 +19,12 @@ public class EmkauriApp extends Application {
         // Inyección de dependencias manual.
         RUsuario repoUsuario = new RUsuario();
         SUsuario servicioUsuario = new SUsuario(repoUsuario);
-        LoginController loginController = new LoginController(servicioUsuario);
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-        fxmlLoader.setController(loginController);
-        Scene scene = new Scene(fxmlLoader.load(), 400, 300);
+        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario).createController(param));
 
+        Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setTitle("Login - Emkauri");
         stage.setScene(scene);
         stage.show();

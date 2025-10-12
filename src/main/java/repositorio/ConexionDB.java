@@ -11,7 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionDB {
-    private static boolean modoPruebas = false;
+    private static boolean modoPruebas;
     private static Server tcpServer;
     private static Server webServer;
 
@@ -63,7 +63,7 @@ public class ConexionDB {
         }
 
         if (webServer == null || !webServer.isRunning(true)) {
-            webServer = Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
+            webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "0").start();
             System.out.println("Consola H2 iniciada en: " + webServer.getURL());
 
             // Abrir el navegador automáticamente.

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 // Repositorio para acceder a la tabla Usuario en la base de datos.
 public class RUsuario {
 
-    // Autentica a un usuario verificando nombre y contraseña.
+    // Auténtica a un usuario verificando nombre y contraseña.
     public Usuario autenticar(String correo, String contrasena) {
         try (Connection conn = ConexionDB.getConnection()) {
             String sql = "SELECT u.idUsuario, u.correo, u.contrasena, d.idDatos, d.nombre, d.apellido, d.telefono, r.idRol, r.nombre AS nombreRol " +
