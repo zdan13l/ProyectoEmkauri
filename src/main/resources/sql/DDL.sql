@@ -132,6 +132,20 @@ CREATE TABLE Solicitudes (
     FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario),
     CHECK ( (idProductoAsociado IS NOT NULL AND idEmprendedorAsociado IS NULL) OR (idProductoAsociado IS NULL AND idEmprendedorAsociado IS NOT NULL) )
 );
+CREATE TABLE IF NOT EXISTS Pagos (
+    id IDENTITY PRIMARY KEY,
+    id_compra BIGINT,
+    monto DECIMAL(15,2) NOT NULL,
+    metodo VARCHAR(50) NOT NULL,
+    fecha DATE NOT NULL,
+    estado VARCHAR(20) NOT NULL
+    );
+ALTER TABLE Compras
+    ADD COLUMN IF NOT EXISTS id_pago BIGINT UNIQUE;
+
+ALTER TABLE Compras
+    ADD CONSTRAINT IF NOT EXISTS fk_compra_pago
+    FOREIGN KEY (id_pago) REFERENCES Pagos(id);
 
 -- ÍNDICES PARA CONSULTAS FRECUENTES
 -- 1. Búsqueda de usuario por correo (login rápido)
