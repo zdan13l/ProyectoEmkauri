@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.CursoAccesoController">
+
+    <!-- TARJETA CENTRADA -->
+    <VBox alignment="CENTER" maxWidth="400" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30;">
+        <effect><DropShadow color="#00000055" /></effect>
+
+        <!-- TÍTULO Y SUBTÍTULO -->
+        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Acceso de Curso" />
+        <Label style="-fx-font-size: 13px; -fx-text-fill: #777777;" text="Selecciona un curso para ver acceso o comprar" />
+
+        <!-- (Opcional) Usuario actual, alineado a la derecha dentro de la tarjeta -->
+        <HBox alignment="CENTER_RIGHT">
+            <children>
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555555;" text="Usuario:" />
+                <Label fx:id="lblUsuario" style="-fx-font-size: 12px; -fx-text-fill: #555555;" text="—" />
+            </children>
+        </HBox>
+
+        <!-- FORMULARIO -->
+        <VBox prefWidth="340" spacing="10">
+            <!-- Curso -->
+            <HBox spacing="10">
+                <children>
+                    <Label text="Curso:" />
+                    <ComboBox fx:id="cbCurso" prefWidth="240" promptText="Seleccione un curso" style="-fx-background-radius: 8; -fx-padding: 8; -fx-border-radius: 8; -fx-border-color: #cccccc; -fx-background-color: #f9f9f9;" />
+                </children>
+            </HBox>
+
+            <!-- Estado -->
+            <HBox spacing="10">
+                <children>
+                    <Label text="Estado:" />
+                    <Label fx:id="lblEstado" text="—" />
+                </children>
+            </HBox>
+
+            <!-- Categoría -->
+            <HBox spacing="10">
+                <children>
+                    <Label text="Categoría:" />
+                    <Label fx:id="lblCategoria" text="—" />
+                </children>
+            </HBox>
+
+            <!-- Precio -->
+            <HBox spacing="10">
+                <children>
+                    <Label text="Precio:" />
+                    <Label fx:id="lblPrecio" text="—" />
+                </children>
+            </HBox>
+
+            <!-- Descripción (usar TextArea, solo lectura) -->
+            <Label style="-fx-font-size: 13px; -fx-text-fill: #555555;" text="Descripción:" />
+            <TextArea fx:id="txtDescripcion" editable="false" prefRowCount="4" style="-fx-background-radius: 8; -fx-border-color: #cccccc;" wrapText="true" />
+
+            <!-- Acceso -->
+            <HBox spacing="10">
+                <children>
+                    <Label text="Acceso:" />
+                    <Label fx:id="lblAcceso" text="—" />
+                </children>
+            </HBox>
+        </VBox>
+
+        <!-- BOTONES -->
+        <HBox alignment="CENTER" spacing="12">
+            <children>
+                <Button fx:id="btnComprar" onAction="#onComprar" prefHeight="41.0" prefWidth="207.0" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Comprar" />
+                <Button fx:id="btnAcceder" onAction="#onAcceder" prefHeight="39.0" prefWidth="211.0" style="-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-weight: bold;                                -fx-border-color: #4A90E2; -fx-border-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Acceder al Contenido" />
+            </children>
+        </HBox>
+    </VBox>
+</StackPane>

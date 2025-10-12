@@ -20,3 +20,4 @@ public class Controlador {
         throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName());
     }
 }
+
