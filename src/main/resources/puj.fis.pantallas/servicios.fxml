@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.ServiciosController">
+
+    <!-- CABECERA -->
+    <top>
+        <HBox spacing="10" style="-fx-background-color:#f5f5f5; -fx-padding:10;">
+            <Label text=" Servicios y Cursos disponibles" style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="txtBuscar" promptText="Buscar por nombre o categoría" prefWidth="260"/>
+        </HBox>
+    </top>
+
+    <!-- CUERPO: lista + detalle -->
+    <center>
+        <SplitPane dividerPositions="0.55">
+            <!-- LISTADO -->
+            <VBox spacing="10" style="-fx-padding:12;">
+                <TableView fx:id="tablaOfertas" prefHeight="520">
+                    <columns>
+                        <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
+                        <TableColumn fx:id="colTipo" text="Tipo" prefWidth="120"/>
+                        <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="140"/>
+                        <TableColumn fx:id="colPrecio" text="Precio" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- DETALLE -->
+            <VBox spacing="10" style="-fx-padding:12;">
+                <Label text="Detalle de la oferta" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+                <GridPane hgap="10" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="75"/>
+                    </columnConstraints>
+
+                    <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label fx:id="lblNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Tipo:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="lblTipo" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Categoría:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label fx:id="lblCategoria" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Precio:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <Label fx:id="lblPrecio" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <Label text="Descripción:"/>
+                <TextArea fx:id="txtDescripcion" editable="false" wrapText="true" prefRowCount="10"/>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Ver más información" onAction="#handleVerMas"/>
+                    <Button text="Solicitar" fx:id="btnSolicitar" onAction="#handleSolicitar"
+                            style="-fx-background-color:#2c7ef7; -fx-text-fill:white;"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+
+</BorderPane>
