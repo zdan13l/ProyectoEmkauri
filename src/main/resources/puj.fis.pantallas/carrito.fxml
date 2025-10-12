@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.CarritoController">
+
+    <top>
+        <HBox spacing="10" style="-fx-background-color:#f5f5f5; -fx-padding:10;">
+            <Label text="🛒 Carrito de Compras" style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Volver al Catálogo" fx:id="btnVolver" onAction="#handleVolver"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" style="-fx-padding:20;">
+            <TableView fx:id="tablaCarrito" prefHeight="380">
+                <columns>
+                    <TableColumn fx:id="colNombre" text="Producto" prefWidth="220"/>
+                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="140"/>
+                    <TableColumn fx:id="colPrecio" text="Precio" prefWidth="110"/>
+                    <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="110"/>
+                    <TableColumn fx:id="colTotal" text="Total" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Label text="Total:" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+                <Label fx:id="lblTotal" text="$0,00" style="-fx-font-size:16px;"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Eliminar Seleccionado" fx:id="btnEliminar" onAction="#handleEliminar"/>
+                <Button text="Vaciar Carrito" fx:id="btnVaciar" onAction="#handleVaciar"/>
+                <Button text="Proceder al Pago" fx:id="btnPagar" style="-fx-background-color:#2c7ef7; -fx-text-fill:white;" onAction="#handlePagar"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
