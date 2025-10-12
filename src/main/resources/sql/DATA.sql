@@ -39,7 +39,7 @@ INSERT INTO Categorias (nombre, descripcion) VALUES
 -- tipoProducto = 'CURSO' o 'SERVICIO'
 INSERT INTO Productos (
     titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto,
-    duracionHoras, nivelDificultad, certificacion
+    duracionCurso, nivelDificultad, certificacion
 ) VALUES
 ('Java desde cero', 'Curso básico de Java', 120000, 3, 1, 'CURSO', 40, 'Básico', 'Certificado de participación'),
 ('Diseño UX', 'Principios de usabilidad y experiencia de usuario', 200000, 6, 2, 'CURSO', 30, 'Intermedio', 'Certificación UX');
@@ -48,8 +48,8 @@ INSERT INTO Productos (
     titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto,
     duracionServicio, ubicacion, modalidad
 ) VALUES
-('Consultoría en bases de datos', 'Optimización de queries y modelado de datos', 300000, 3, 1, 'SERVICIO', '2 horas', 'Online', 'Virtual'),
-('Mentoría en marketing digital', 'Sesiones personalizadas de estrategia digital', 150000, 6, 3, 'SERVICIO', '3 horas', 'Bogotá', 'Presencial');
+('Consultoría en bases de datos', 'Optimización de queries y modelado de datos', 300000, 3, 1, 'SERVICIO', 2, 'Online', 'Virtual'),
+('Mentoría en marketing digital', 'Sesiones personalizadas de estrategia digital', 150000, 6, 3, 'SERVICIO', 3, 'Bogotá', 'Presencial');
 
 -- 6. MATERIALES (solo para cursos)
 INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES
