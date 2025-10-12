@@ -1,7 +1,6 @@
 package fis.jave.emkauri;
 
 import controladores.Controlador;
-import controladores.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,7 +8,6 @@ import javafx.stage.Stage;
 import repositorio.ConexionDB;
 import repositorio.RUsuario;
 import servicio.SUsuario;
-
 import java.sql.Connection;
 
 public class EmkauriApp extends Application {
@@ -31,19 +29,22 @@ public class EmkauriApp extends Application {
     }
 
     public static void main(String[] args) throws Exception {
-        // Modo pruebas por defecto
+        // Modo pruebas por defecto.
         ConexionDB.setModoPruebas(true);
 
+        // Iniciar el servidor TCP y Web si no estamos en modo pruebas.
+        if (ConexionDB.modoPruebas) {
+            ConexionDB.startTcpAndWebServer();
+        }
+
+        // Conectar y cargar los scripts.
         try (Connection conn = ConexionDB.getConnection()) {
             ConexionDB.initSchema(conn);
             ConexionDB.loadTestData(conn);
             System.out.println("DB de PRUEBAS creada en memoria con datos iniciales.");
         }
 
-        // Levantar servidor TCP para poder verla desde consola H2
-        ConexionDB.startTcpAndWebServer();
-
-        // Lanzar la aplicación JavaFX
+        // Lanzar la aplicación JavaFX.
         launch();
     }
 }
