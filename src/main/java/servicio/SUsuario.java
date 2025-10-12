@@ -47,4 +47,20 @@ public class SUsuario implements ISUsuario {
             return null;
         }
     }
+    //Registrar usuario (Cliente o Emprendedor)
+    public boolean registrarUsuario(Usuario usuario, String tipo, String mensaje) {
+        try {
+            if ("Emprendedor".equalsIgnoreCase(tipo)) {
+                return repoU.insertarEmprendedor(usuario, mensaje);
+            } else if ("Cliente".equalsIgnoreCase(tipo)) {
+                return repoU.insertarCliente(usuario);
+            } else {
+                System.err.println("Tipo de usuario no válido: " + tipo);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Error en registro de usuario: " + e.getMessage());
+            return false;
+        }
+    }
 }

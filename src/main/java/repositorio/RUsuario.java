@@ -91,4 +91,91 @@ public class RUsuario implements IRUsuario {
         }
         return null;
     }
+
+    //Insertar Usuario (Cliente)
+    public boolean insertarCliente(Usuario usuario){
+        Connection conn = null;
+        try{
+            conn = ConexionDB.getConnection();
+            conn.setAutoCommit(false);
+
+            //insertar datos personales
+            String sqlDatos = "INSERT INTO DatosPersonales (nombre, apellido, telefono) VALUES (?,?,?)";
+            PreparedStatement stmDatos = conn.prepareStatement(sqlDatos, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmDatos.setString(1, usuario.getDatosPersonales().getNombre());
+            stmDatos.setString(2, usuario.getDatosPersonales().getApellido());
+            stmDatos.setString(3, usuario.getDatosPersonales().getTelefono());
+            stmDatos.executeUpdate();
+
+            ResultSet rs = stmDatos.getGeneratedKeys();
+            int idDatos = 0;
+            if (rs.next()) idDatos = rs.getInt(1);
+
+            //Insertar Cliente (idRol = 2)
+            String sqlUsuario = "INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES (?, ?, ?, 2)";
+            PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario);
+            stmtUsuario.setString(1, usuario.getCorreo());
+            stmtUsuario.setString(2, usuario.getContrasena());
+            stmtUsuario.setInt(3, idDatos);
+            stmtUsuario.executeUpdate();
+
+            conn.commit();
+            System.out.println("Cliente insertado correctamente.");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error insertando cliente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Insertar Emprendedor
+    public boolean insertarEmprendedor(Usuario usuario, String mensajeSolicitud) {
+        Connection conn = null;
+        try {
+            conn = ConexionDB.getConnection();
+            conn.setAutoCommit(false);
+
+            // Insertar datos personales
+            String sqlDatos = "INSERT INTO DatosPersonales (nombre, apellido, telefono) VALUES (?, ?, ?)";
+            PreparedStatement stmtDatos = conn.prepareStatement(sqlDatos, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmtDatos.setString(1, usuario.getDatosPersonales().getNombre());
+            stmtDatos.setString(2, usuario.getDatosPersonales().getApellido());
+            stmtDatos.setString(3, usuario.getDatosPersonales().getTelefono());
+            stmtDatos.executeUpdate();
+
+            ResultSet rs = stmtDatos.getGeneratedKeys();
+            int idDatos = 0;
+            if (rs.next()) idDatos = rs.getInt(1);
+
+            // Insertar Emprendedor (idRol = 1)
+            String sqlUsuario = "INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES (?, ?, ?, 1)";
+            PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmtUsuario.setString(1, usuario.getCorreo());
+            stmtUsuario.setString(2, usuario.getContrasena());
+            stmtUsuario.setInt(3, idDatos);
+            stmtUsuario.executeUpdate();
+
+            rs = stmtUsuario.getGeneratedKeys();
+            int idUsuario = 0;
+            if (rs.next()) idUsuario = rs.getInt(1);
+
+            // Crear solicitud para aprobación del reclutador
+            String sqlSolicitud = "INSERT INTO Solicitudes (idSolicitante, estado, mensaje, idEmprendedorAsociado) VALUES (?, 'PENDIENTE', ?, ?)";
+            PreparedStatement stmtSolicitud = conn.prepareStatement(sqlSolicitud);
+            stmtSolicitud.setInt(1, idUsuario);
+            stmtSolicitud.setString(2, mensajeSolicitud);
+            stmtSolicitud.setInt(3, idUsuario);
+            stmtSolicitud.executeUpdate();
+
+            conn.commit();
+            System.out.println("Emprendedor insertado y solicitud creada correctamente.");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error insertando emprendedor: " + e.getMessage());
+            return false;
+        }
+    }
 }
+
