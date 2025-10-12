@@ -8,23 +8,24 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import servicio.ISUsuario;
 import servicio.SUsuario;
 
 import java.io.IOException;
 
 // Controlador para manejar la lógica de la pantalla de login.
-public class LoginController implements IControlador{
+public class LoginController {
 
     // Campos vinculados a los elementos de la interfaz.
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
     // Servicio para manejar la lógica de usuario.
-    private SUsuario servicioU;
+    private final ISUsuario servicioU;
 
-    @Override
-    public void setServicios(Object... servicios) {
-        this.servicioU = (SUsuario) servicios[0];
+
+    public LoginController(ISUsuario servicioU) {
+        this.servicioU = servicioU;
     }
 
     // Maneja el evento de clic en el botón de login.

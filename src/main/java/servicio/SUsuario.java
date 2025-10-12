@@ -1,14 +1,14 @@
 package servicio;
 
 import modelo.Usuario;
-import repositorio.RUsuario;
+import repositorio.IRUsuario;
 
 // Servicio de negocio para la gestión de usuarios.
-public class SUsuario {
-    private final RUsuario repoU;
+public class SUsuario implements ISUsuario {
+    private final IRUsuario repoU;
 
     // Constructor con inyección de dependencia.
-    public SUsuario(RUsuario repoU) {
+    public SUsuario(IRUsuario repoU) {
         this.repoU = repoU;
     }
 

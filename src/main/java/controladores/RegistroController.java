@@ -7,9 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.VBox;
+import servicio.ISUsuario;
 import servicio.SUsuario;
 
-public class RegistroController implements IControlador {
+public class RegistroController {
 
     // Campos vinculados a los elementos de la interfaz.
     @FXML private VBox emprendedorBox;
@@ -23,11 +24,10 @@ public class RegistroController implements IControlador {
     @FXML private RadioButton emprendedorRadio;
 
     // Servicio para manejar la lógica de usuario.
-    private SUsuario servicioU;
+    private ISUsuario servicioU;
 
-    @Override
-    public void setServicios(Object... servicios) {
-        this.servicioU = (SUsuario) servicios[0];
+    public RegistroController(ISUsuario servicioU) {
+        this.servicioU = servicioU;
     }
     // Aquí va tu lógica del botón de "Registrarse"
     @FXML

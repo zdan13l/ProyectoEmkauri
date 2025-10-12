@@ -6,7 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import repositorio.ConexionDB;
+import repositorio.IRUsuario;
 import repositorio.RUsuario;
+import servicio.ISUsuario;
 import servicio.SUsuario;
 import java.sql.Connection;
 
@@ -15,8 +17,8 @@ public class EmkauriApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Inyección de dependencias manual.
-        RUsuario repoUsuario = new RUsuario();
-        SUsuario servicioUsuario = new SUsuario(repoUsuario);
+        IRUsuario repoUsuario = new RUsuario();
+        ISUsuario servicioUsuario = new SUsuario(repoUsuario);
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));

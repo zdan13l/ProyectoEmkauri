@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 // Repositorio para acceder a la tabla Usuario en la base de datos.
-public class RUsuario {
+public class RUsuario implements IRUsuario {
 
     // Auténtica a un usuario verificando nombre y contraseña.
     public Usuario autenticar(String correo, String contrasena) {
