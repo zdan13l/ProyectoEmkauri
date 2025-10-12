@@ -1,99 +1,133 @@
 package repositorio;
 
 import modelo.Pago;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Repositorio JDBC para la entidad Pago.
- * Utiliza ConexionDB.getConnection() en cada operación (patrón ya usado en RUsuario).
- */
 public class RPago {
 
-    public Pago crear(Pago p) {
+    public Pago crear(Pago pago) {
+        if (pago == null) {
+            throw new IllegalArgumentException("Pago no puede ser nulo.");
+        }
+        validarDatosBasicos(pago);
+
         String sql = "INSERT INTO Pagos (monto, metodo, fecha) VALUES (?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            st.setBigDecimal(1, java.math.BigDecimal.valueOf(p.getMonto()));
-            st.setString(2, p.getMetodo());
-            st.setDate(3, new java.sql.Date(p.getFecha().getTime()));
+            st.setBigDecimal(1, pago.getMonto());
+            st.setString(2, pago.getMetodo());
+            st.setDate(3, Date.valueOf(pago.getFecha()));
             st.executeUpdate();
+
             try (ResultSet rs = st.getGeneratedKeys()) {
                 if (rs.next()) {
-                    p.setIdPago(rs.getInt(1));
+                    long id = rs.getLong(1);
+                    if (!rs.wasNull()) {
+                        pago.setId(id);
+                    }
                 }
             }
-            return p;
-        } catch (Exception e) {
+            return pago;
+        } catch (SQLException e) {
             throw new RuntimeException("Error creando pago: " + e.getMessage(), e);
         }
     }
 
-    public Pago buscarPorId(int idPago) {
+    public Pago buscarPorId(long idPago) {
         String sql = "SELECT idPago, monto, metodo, fecha FROM Pagos WHERE idPago=?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setInt(1, idPago);
+            st.setLong(1, idPago);
             try (ResultSet rs = st.executeQuery()) {
-                if (!rs.next()) return null;
-                Pago p = new Pago();
-                p.setIdPago(rs.getInt("idPago"));
-                p.setMonto(rs.getBigDecimal("monto").doubleValue());
-                p.setMetodo(rs.getString("metodo"));
-                Date fecha = new Date(rs.getDate("fecha").getTime());
-                p.setFecha(fecha);
-                return p;
+                if (!rs.next()) {
+                    return null;
+                }
+                return mapear(rs);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error buscando pago: " + e.getMessage(), e);
         }
     }
 
     public List<Pago> listar() {
         String sql = "SELECT idPago, monto, metodo, fecha FROM Pagos ORDER BY idPago DESC";
-        List<Pago> list = new ArrayList<>();
+        List<Pago> lista = new ArrayList<>();
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
-                Pago p = new Pago();
-                p.setIdPago(rs.getInt("idPago"));
-                p.setMonto(rs.getBigDecimal("monto").doubleValue());
-                p.setMetodo(rs.getString("metodo"));
-                Date fecha = new Date(rs.getDate("fecha").getTime());
-                p.setFecha(fecha);
-                list.add(p);
+                lista.add(mapear(rs));
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error listando pagos: " + e.getMessage(), e);
         }
-        return list;
+        return lista;
     }
 
-    public boolean actualizar(Pago p) {
+    public boolean actualizar(Pago pago) {
+        if (pago == null || pago.getId() == null) {
+            throw new IllegalArgumentException("Pago invalido para actualizar.");
+        }
+        validarDatosBasicos(pago);
+
         String sql = "UPDATE Pagos SET monto=?, metodo=?, fecha=? WHERE idPago=?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setBigDecimal(1, java.math.BigDecimal.valueOf(p.getMonto()));
-            st.setString(2, p.getMetodo());
-            st.setDate(3, new java.sql.Date(p.getFecha().getTime()));
-            st.setInt(4, p.getIdPago());
+            st.setBigDecimal(1, pago.getMonto());
+            st.setString(2, pago.getMetodo());
+            st.setDate(3, Date.valueOf(pago.getFecha()));
+            st.setLong(4, pago.getId());
             return st.executeUpdate() > 0;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error actualizando pago: " + e.getMessage(), e);
         }
     }
 
-    public boolean eliminar(int idPago) {
+    public boolean eliminar(long idPago) {
         String sql = "DELETE FROM Pagos WHERE idPago=?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setInt(1, idPago);
+            st.setLong(1, idPago);
             return st.executeUpdate() > 0;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error eliminando pago: " + e.getMessage(), e);
+        }
+    }
+
+    private Pago mapear(ResultSet rs) throws SQLException {
+        Pago pago = new Pago();
+
+        long id = rs.getLong("idPago");
+        if (!rs.wasNull()) {
+            pago.setId(id);
+        }
+
+        pago.setMonto(rs.getBigDecimal("monto"));
+        pago.setMetodo(rs.getString("metodo"));
+        Date fechaSql = rs.getDate("fecha");
+        if (fechaSql != null) {
+            pago.setFecha(fechaSql.toLocalDate());
+        }
+        return pago;
+    }
+
+    private void validarDatosBasicos(Pago pago) {
+        if (pago.getMonto() == null) {
+            throw new IllegalArgumentException("El monto es obligatorio.");
+        }
+        if (pago.getMetodo() == null || pago.getMetodo().isBlank()) {
+            throw new IllegalArgumentException("El metodo es obligatorio.");
+        }
+        if (pago.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha es obligatoria.");
         }
     }
 }
