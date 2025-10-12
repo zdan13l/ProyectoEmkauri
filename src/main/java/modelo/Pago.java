@@ -9,6 +9,13 @@ public class Pago {
     private String metodo;
     private Date fecha;
 
+    public Pago() {
+        this.idPago = 0;
+        this.monto = 0.0;
+        this.metodo = "";
+        this.fecha = new Date();
+    }
+
     public Pago(int idPago, double monto, String metodo, Date fecha) {
         this.idPago = idPago;
         this.monto = monto;

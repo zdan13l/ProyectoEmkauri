@@ -9,6 +9,14 @@ public class Curso extends Producto {
     private String nivelDificultad;
     private String certificacion;
 
+    public Curso() {
+        super();
+        this.materiales = null;
+        this.duracionHoras = 0;
+        this.nivelDificultad = "";
+        this.certificacion = "";
+    }
+
     public Curso(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, List<Material> materiales, int duracionHoras, String nivelDificultad, String certificacion) {
         super(idProducto, titulo, descripcion, precio, emprendedor);
         this.materiales = materiales;

@@ -5,6 +5,11 @@ public class Rol {
     private int idRol;
     private String nombre;
 
+    public Rol() {
+        this.idRol = 0;
+        this.nombre = "";
+    }
+
     public Rol(int idRol, String nombre) {
         this.idRol = idRol;
         this.nombre = nombre;
@@ -16,5 +21,5 @@ public class Rol {
     public void setNombre(String nombre) { this.nombre = nombre; }
 
     @Override
-    public String toString() { return nombre; }
+    public String toString() { return "Rol"; }
 }

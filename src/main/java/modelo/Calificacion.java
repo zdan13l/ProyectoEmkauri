@@ -11,6 +11,15 @@ public class Calificacion {
     private Producto producto;
     private Date fecha;
 
+    public Calificacion() {
+        this.idCalificacion = 0;
+        this.puntaje = 0;
+        this.comentario = "";
+        this.cliente = new Usuario();
+        this.producto = new Producto();
+        this.fecha = new Date();
+    }
+
     public Calificacion(int idCalificacion, int puntaje, String comentario, Usuario cliente, Producto producto, Date fecha) {
         this.idCalificacion = idCalificacion;
         this.puntaje = puntaje;

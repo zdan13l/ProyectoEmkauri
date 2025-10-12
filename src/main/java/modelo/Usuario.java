@@ -8,6 +8,14 @@ public class Usuario {
     private Datos datos;
     private Rol rol;
 
+    public Usuario() {
+        this.idUsuario = 0;
+        this.correo = "";
+        this.contrasena = "";
+        this.datos = new Datos();
+        this.rol = new Rol();
+    }
+
     public Usuario(int idUsuario, String correo, String contrasena, Datos datos, Rol rol) {
         this.idUsuario = idUsuario;
         this.correo = correo;

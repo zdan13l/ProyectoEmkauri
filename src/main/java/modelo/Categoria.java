@@ -6,6 +6,12 @@ public class Categoria {
     private String nombre;
     private String descripcion;
 
+    public Categoria() {
+        this.idCategoria = 0;
+        this.nombre = "";
+        this.descripcion = "";
+    }
+
     public Categoria(int idCategoria, String nombre, String descripcion) {
         this.idCategoria = idCategoria;
         this.nombre = nombre;

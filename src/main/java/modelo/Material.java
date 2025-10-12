@@ -7,6 +7,13 @@ public class Material {
     private String tipo;
     private String url;
 
+    public Material() {
+        this.idMaterial = 0;
+        this.titulo = "";
+        this.tipo = "";
+        this.url = "";
+    }
+
     public Material(int idMaterial, String titulo, String tipo, String url) {
         this.idMaterial = idMaterial;
         this.titulo = titulo;

@@ -10,6 +10,16 @@ public class Solicitud {
     Producto productoAsociado;
     Usuario emprendedor;
 
+    public Solicitud() {
+        this.idSolicitud = 0;
+        this.solicitante = new Usuario();
+        this.reclutador = new Usuario();
+        this.estado = "";
+        this.mensaje = "";
+        this.productoAsociado = new Producto();
+        this.emprendedor = new Usuario();
+    }
+
     public Solicitud(int idSolicitud, Usuario solicitante, Usuario reclutador, String estado, String mensaje, Producto productoAsociado, Usuario emprendedor) {
         this.idSolicitud = idSolicitud;
         this.solicitante = solicitante;

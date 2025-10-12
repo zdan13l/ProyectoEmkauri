@@ -6,6 +6,12 @@ public class Datos {
     private String apellido;
     private String telefono;
 
+    public Datos() {
+        this.nombre = "";
+        this.apellido = "";
+        this.telefono = "";
+    }
+
     public Datos(String nombre, String apellido, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;

@@ -49,13 +49,13 @@ CREATE TABLE Productos (
     tipoProducto VARCHAR(10) NOT NULL CHECK (tipoProducto IN ('CURSO', 'SERVICIO')),
 
     -- Atributos específicos de Curso.
-    duracionHoras INT,
+    duracionCurso INT,
     nivelDificultad VARCHAR(50),
-    certificacion VARCHAR(255),
+    certificacion VARCHAR(50),
 
     -- Atributos específicos de Servicio.
-    duracionServicio VARCHAR(100),
-    ubicacion VARCHAR(255),
+    duracionServicio INT,
+    ubicacion VARCHAR(50),
     modalidad VARCHAR(50),
 
     FOREIGN KEY (idEmprendedor) REFERENCES Usuarios(idUsuario),
@@ -132,34 +132,3 @@ CREATE TABLE Solicitudes (
     FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario),
     CHECK ( (idProductoAsociado IS NOT NULL AND idEmprendedorAsociado IS NULL) OR (idProductoAsociado IS NULL AND idEmprendedorAsociado IS NOT NULL) )
 );
-
--- ÍNDICES PARA CONSULTAS FRECUENTES
--- 1. Búsqueda de usuario por correo (login rápido)
-CREATE INDEX idxUsuariosCorreo ON Usuarios(correo);
-
--- 2. Búsqueda por rol (cuando se consultan usuarios por tipo)
-CREATE INDEX idxUsuariosidRol ON Usuarios(idRol);
-
--- 3. Acceso rápido a datos personales desde Usuarios
-CREATE INDEX idxusuariosidDatos ON Usuarios(idDatos);
-
--- 4. Autenticación y consultas frecuentes en Productos
-CREATE INDEX idxProductosemprendedor ON Productos(idEmprendedor);
-CREATE INDEX idxproductoscategoria ON Productos(idCategoria);
-CREATE INDEX idxproductostipo ON Productos(tipoProducto);
-
--- 5. Consultas de calificaciones (por cliente o producto)
-CREATE INDEX idxCalificacionesCliente ON Calificaciones(idCliente);
-CREATE INDEX idxCalificacionesProducto ON Calificaciones(idProducto);
-
--- 6. Consultas de compras
-CREATE INDEX idxComprasCliente ON Compras(idCliente);
-CREATE INDEX idxComprasPago ON Compras(idPago);
-
--- 7. Relaciones de compras con productos
-CREATE INDEX idxComprasProductos ON ComprasProductos(idProducto);
-
--- 8. Solicitudes: búsqueda por solicitante, reclutador o estado
-CREATE INDEX idxSolicitudesSolicitante ON Solicitudes(idSolicitante);
-CREATE INDEX idxSolicitudesReclutador ON Solicitudes(idReclutador);
-CREATE INDEX idxSolicitudesEstado ON Solicitudes(estado);

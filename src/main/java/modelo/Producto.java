@@ -12,6 +12,15 @@ public class Producto {
     Usuario emprendedor;
     List<Calificacion> calificaciones;
 
+    public Producto() {
+        this.idProducto = 0;
+        this.titulo = "";
+        this.descripcion = "";
+        this.precio = 0.0;
+        this.emprendedor = new Usuario();
+        this.calificaciones = new ArrayList<>();
+    }
+
     public Producto(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor) {
         this.idProducto = idProducto;
         this.titulo = titulo;

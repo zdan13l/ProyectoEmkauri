@@ -12,6 +12,15 @@ public class Compra {
     private Date fechaCompra;
     private Pago pago;
 
+    public Compra() {
+        this.idCompra = 0;
+        this.cliente = new Usuario();
+        this.productos = null;
+        this.montoFinal = 0.0;
+        this.fechaCompra = new Date();
+        this.pago = new Pago();
+    }
+
     public Compra(int idCompra, Usuario cliente, List<Producto> productos, double montoFinal, Date fechaCompra, Pago pago) {
         this.idCompra = idCompra;
         this.cliente = cliente;
