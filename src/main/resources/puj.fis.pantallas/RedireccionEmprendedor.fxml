@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600" prefWidth="900" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.RedireccionEmprendedorController|">
+<AnchorPane prefHeight="600" prefWidth="900" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.RedireccionEmprendedorController">
 
     <VBox alignment="TOP_CENTER" layoutX="70" layoutY="40" spacing="20" style="-fx-background-color: white;
     -fx-background-radius: 20;
