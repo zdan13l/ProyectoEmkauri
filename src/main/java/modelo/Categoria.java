@@ -1,9 +1,16 @@
 package modelo;
 
+// Modelo que representa una categoría de productos o servicios.
 public class Categoria {
     private int idCategoria;
     private String nombre;
     private String descripcion;
+
+    public Categoria() {
+        this.idCategoria = 0;
+        this.nombre = "";
+        this.descripcion = "";
+    }
 
     public Categoria(int idCategoria, String nombre, String descripcion) {
         this.idCategoria = idCategoria;
