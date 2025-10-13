@@ -6,7 +6,6 @@ import java.util.List;
 public interface IRUsuario {
     Usuario autenticar(String correo, String contrasena);
     Usuario buscarPorCorreo(String correo);
-
     boolean insertarCliente(Usuario usuario);
     boolean insertarEmprendedor(Usuario usuario, String mensajeSolicitud);
 }

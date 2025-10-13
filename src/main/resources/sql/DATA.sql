@@ -78,6 +78,7 @@ INSERT INTO Calificaciones (puntaje, comentario, idCliente, idProducto, fecha) V
 
 -- 11. SOLICITUDES
 INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idEmprendedorAsociado) VALUES
+(3, 5, 'APROBADO', 'Solicitud para aprobar como Emprendedor', 3),
 (6, 5, 'PENDIENTE', 'Solicitud para aprobar como Emprendedor', 6);
 
 INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado) VALUES

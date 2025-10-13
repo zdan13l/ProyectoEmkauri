@@ -7,6 +7,5 @@ public interface ISUsuario {
     String obtenerNombre(String correo);
     String obtenerApellido(String correo);
     String obtenerRol(String correo);
-
-    boolean registrarUsuario(Usuario usuario, String tipo, String mensaje);
+    boolean registrarUsuario(Usuario usuario, String mensaje);
 }
