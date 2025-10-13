@@ -1,40 +1,49 @@
 package repositorio;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
+/**
+ * Repositorio con helpers mínimos para manejar la asociación Pago <-> Compra.
+ * La tabla Compras tiene columna idPago UNIQUE que referencia Pagos(idPago).
+ */
 public class RCompra {
-    private final DataSource ds;
-    public RCompra(DataSource ds) { this.ds = ds; }
 
-    /** ¿La compra ya tiene un pago? */
-    public boolean compraTienePago(Long idCompra) throws SQLException {
-        String sql = "SELECT id_pago FROM Compras WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.setLong(1, idCompra);
+    public boolean compraTienePago(int idCompra) {
+        String sql = "SELECT idPago FROM Compras WHERE idCompra=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, idCompra);
             try (ResultSet rs = st.executeQuery()) {
                 if (!rs.next()) return false;
-                return rs.getObject("id_pago") != null;
+                return rs.getObject("idPago") != null;
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Error verificando pago en compra: " + e.getMessage(), e);
         }
     }
 
-    /** Enlaza pago a compra (1:1). */
-    public void asociarPagoACompra(Long idCompra, Long idPago) throws SQLException {
-        String sql = "UPDATE Compras SET id_pago=? WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.setLong(1, idPago);
-            st.setLong(2, idCompra);
+    public void asociarPagoACompra(int idCompra, int idPago) {
+        String sql = "UPDATE Compras SET idPago=? WHERE idCompra=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, idPago);
+            st.setInt(2, idCompra);
             st.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error asociando pago a compra: " + e.getMessage(), e);
         }
     }
 
-    /** Quita enlace (por si se elimina/anula el pago). */
-    public void desasociarPagoDeCompra(Long idCompra) throws SQLException {
-        String sql = "UPDATE Compras SET id_pago=NULL WHERE id=?";
-        try (Connection c = ds.getConnection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.setLong(1, idCompra);
+    public void desasociarPagoDeCompra(int idCompra) {
+        String sql = "UPDATE Compras SET idPago=NULL WHERE idCompra=?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, idCompra);
             st.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error desasociando pago de compra: " + e.getMessage(), e);
         }
     }
 }
