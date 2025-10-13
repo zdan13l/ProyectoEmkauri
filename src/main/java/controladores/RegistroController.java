@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import modelo.Datos;
 import modelo.Rol;
 import modelo.Usuario;
+import servicio.ISCompra;
 import servicio.ISUsuario;
 import java.io.IOException;
 
@@ -29,9 +30,11 @@ public class RegistroController {
 
     // Servicio para manejar la lógica de usuario.
     private final ISUsuario servicioU;
+    private final ISCompra servicioC;
 
-    public RegistroController(ISUsuario servicioU) {
+    public RegistroController(ISUsuario servicioU, ISCompra servicioC) {
         this.servicioU = servicioU;
+        this.servicioC = servicioC;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
@@ -63,26 +66,8 @@ public class RegistroController {
                 return;
             }
 
-            // Crear objeto Datos.
-            Datos datos = new Datos();
-            datos.setNombre(nombreField.getText());
-            datos.setApellido(apellidoField.getText());
-            datos.setTelefono(telefonoField.getText());
-
-            // Crear objeto Rol según selección.
-            Rol rol = new Rol();
-            if (clienteRadio.isSelected()) {
-                rol.setNombre("Cliente");
-            } else if (emprendedorRadio.isSelected()) {
-                rol.setNombre("Emprendedor");
-            }
-
-            // Crear objeto Usuario
-            Usuario usuario = new Usuario();
-            usuario.setCorreo(emailField.getText());
-            usuario.setContrasena(passwordField.getText());
-            usuario.setDatosPersonales(datos);
-            usuario.setRol(rol);
+            // Crear objeto Usuario desde los campos del formulario.
+            Usuario usuario = getUsuario();
 
             // Registrar el usuario con el servicio.
             boolean registrado = servicioU.registrarUsuario(usuario, mensajeField.getText());
@@ -113,7 +98,7 @@ public class RegistroController {
         try {
             Stage stage = (Stage) nombreField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            loader.setControllerFactory(param -> new Controlador(servicioU).createController(param));
+            loader.setControllerFactory(param -> new Controlador(servicioU, servicioC).createController(param));
             stage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo volver al inicio de sesión.");
@@ -130,6 +115,31 @@ public class RegistroController {
         mensajeField.clear();
         clienteRadio.setSelected(false);
         emprendedorRadio.setSelected(false);
+    }
+
+    // Crea y devuelve un objeto Usuario.
+    private Usuario getUsuario() {
+        // Crear objeto Datos personales.
+        Datos datos = new Datos();
+        datos.setNombre(nombreField.getText());
+        datos.setApellido(apellidoField.getText());
+        datos.setTelefono(telefonoField.getText());
+
+        // Crear objeto Rol según selección.
+        Rol rol = new Rol();
+        if (clienteRadio.isSelected()) {
+            rol.setNombre("Cliente");
+        } else if (emprendedorRadio.isSelected()) {
+            rol.setNombre("Emprendedor");
+        }
+
+        // Crear objeto Usuario
+        Usuario usuario = new Usuario();
+        usuario.setCorreo(emailField.getText());
+        usuario.setContrasena(passwordField.getText());
+        usuario.setDatosPersonales(datos);
+        usuario.setRol(rol);
+        return usuario;
     }
 
     // Muestra una alerta con el título y mensaje proporcionados.

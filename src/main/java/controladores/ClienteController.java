@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import servicio.ISCompra;
 import servicio.ISUsuario;
 import java.io.IOException;
 
@@ -24,10 +25,12 @@ public class ClienteController {
     @FXML private ImageView welcomeIllustration;
 
     // Servicio para manejar la lógica de usuario.
-    private final ISUsuario servicioUsuario;
+    private final ISUsuario servicioU;
+    private final ISCompra servicioC;
 
-    public ClienteController(ISUsuario servicioUsuario) {
-        this.servicioUsuario = servicioUsuario;
+    public ClienteController(ISUsuario servicioU, ISCompra servicioC) {
+        this.servicioU = servicioU;
+        this.servicioC = servicioC;
     }
 
     // Ver catálogo de productos.
@@ -53,7 +56,7 @@ public class ClienteController {
     private void onCerrarSesion(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            Controlador controladorFactory = new Controlador(servicioUsuario);
+            Controlador controladorFactory = new Controlador(servicioU, servicioC);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -62,17 +65,17 @@ public class ClienteController {
             stage.setScene(scene);
 
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo cerrar sesión correctamente.");
+            mostrarAlerta("No se pudo cerrar sesión correctamente.");
         }
     }
 
-    // Metodo generico para cambiar de pantalla.
+    // Método genérico para cambiar de pantalla.
     private void cambiarPantalla(String fxmlPath, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
             // Reutilizamos la fábrica de controladores, inyectando solo servicioUsuario.
-            Controlador controladorFactory = new Controlador(servicioUsuario);
+            Controlador controladorFactory = new Controlador(servicioU, servicioC);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -81,14 +84,14 @@ public class ClienteController {
             stage.setScene(scene);
 
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo cargar la pantalla: " + fxmlPath);
+            mostrarAlerta("No se pudo cargar la pantalla: " + fxmlPath);
         }
     }
 
     // Muestra una alerta con el título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
+    private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();

@@ -13,22 +13,12 @@ public class Controlador {
         this.servicioCompra = servicioCompra;
     }
 
-    public Controlador (ISUsuario servicioUsuario) {
-        this.servicioUsuario = servicioUsuario;
-        this.servicioCompra = null; // Puede ser nulo si no se necesita
-    }
-
-    // Este metodo decide qué controlador crear según la clase solicitada
     public Object createController(Class<?> tipo) {
-        if (tipo == LoginController.class) return new LoginController(servicioUsuario);
-        if (tipo == RegistroController.class) return new RegistroController(servicioUsuario);
-        if (tipo == ClienteController.class) return new ClienteController(servicioUsuario);
+        if (tipo == LoginController.class) return new LoginController(servicioUsuario, servicioCompra);
+        if (tipo == RegistroController.class) return new RegistroController(servicioUsuario, servicioCompra);
+        if (tipo == ClienteController.class) return new ClienteController(servicioUsuario, servicioCompra);
+        if (tipo == CarritoController.class) return new CarritoController(servicioUsuario, servicioCompra);
 
-        // Constructor sin argumentos.
-        try {
-            return tipo.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName(), e);
-        }
+        throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName());
     }
 }

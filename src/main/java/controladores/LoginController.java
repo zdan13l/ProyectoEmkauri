@@ -8,8 +8,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import servicio.ISCompra;
 import servicio.ISUsuario;
-import servicio.SUsuario;
 
 import java.io.IOException;
 
@@ -22,8 +22,10 @@ public class LoginController {
 
     // Servicio para manejar la lógica de usuario.
     private final ISUsuario servicioU;
+    private final ISCompra servicioC;
 
-    public LoginController(ISUsuario servicioU) {
+    public LoginController(ISUsuario servicioU, ISCompra servicioC) {
+        this.servicioC = servicioC;
         this.servicioU = servicioU;
     }
 
@@ -94,7 +96,7 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/registro.fxml"));
 
             // Crear instancia del controlador de registro e inyectar el servicio.
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioC);
             loader.setControllerFactory(controladorFactory::createController);
 
             // Cargar la escena
@@ -134,7 +136,7 @@ public class LoginController {
             }
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(resource);
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioC);
             loader.setControllerFactory(controladorFactory::createController);
 
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
@@ -142,7 +144,7 @@ public class LoginController {
             stage.setScene(scene);
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.toString());
+            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e);
         }
     }
 }

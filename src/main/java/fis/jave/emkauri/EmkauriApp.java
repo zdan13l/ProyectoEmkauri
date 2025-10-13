@@ -24,7 +24,7 @@ public class EmkauriApp extends Application {
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario).createController(param));
+        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra).createController(param));
 
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setTitle("Login - Emkauri");

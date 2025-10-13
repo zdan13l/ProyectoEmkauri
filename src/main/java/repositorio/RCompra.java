@@ -4,7 +4,6 @@ import modelo.Compra;
 import modelo.Producto;
 import modelo.Pago;
 import modelo.Usuario;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
