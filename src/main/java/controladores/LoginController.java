@@ -77,8 +77,8 @@ public class LoginController {
             }
         } catch (RuntimeException e) {
             if (e.getMessage().toLowerCase().contains("solicitud") ||
-                    e.getMessage().toLowerCase().contains("rechazada") ||
-                    e.getMessage().toLowerCase().contains("pendiente")) {
+                e.getMessage().toLowerCase().contains("rechazada") ||
+                e.getMessage().toLowerCase().contains("pendiente")) {
 
                 mostrarAlerta("Acceso restringido", e.getMessage());
             } else {
@@ -126,12 +126,24 @@ public class LoginController {
     // Abre una nueva pantalla según el rol del usuario.
     private void abrirPantalla(String fxmlPath) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+
+            if (resource == null) {
+                mostrarAlerta("Error", "FXML no encontrado: " + fxmlPath);
+                System.err.println("Recurso FXML no encontrado en: " + fxmlPath);
+                return;
+            }
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(resource);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU);
+            loader.setControllerFactory(controladorFactory::createController);
+
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
             javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
+
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.getMessage());
+            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.toString());
         }
     }
 }

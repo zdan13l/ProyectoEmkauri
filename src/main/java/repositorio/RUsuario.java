@@ -146,8 +146,8 @@ public class RUsuario implements IRUsuario {
             if (rs.next())
                 idDatos = rs.getInt(1);
 
-            // Insertar Cliente (idRol = 2)
-            String sqlUsuario = "INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES (?, ?, ?, 2)";
+            // Insertar Cliente.
+            String sqlUsuario = "INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES (?, ?, ?, ?)";
             PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario);
             stmtUsuario.setString(1, usuario.getCorreo());
             stmtUsuario.setString(2, usuario.getContrasena());
