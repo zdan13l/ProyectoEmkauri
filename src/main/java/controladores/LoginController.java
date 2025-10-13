@@ -28,54 +28,67 @@ public class LoginController {
     }
 
     // Maneja el evento de clic en el botón de login.
-    @FXML public void onLoginClick(ActionEvent actionEvent) {
-        String correo = emailField.getText();
-        String contrasena = passwordField.getText();
+    @FXML
+    public void onLoginClick(ActionEvent actionEvent) {
+        try {
+            String correo = emailField.getText();
+            String contrasena = passwordField.getText();
 
-        if (correo.isEmpty() || contrasena.isEmpty()) {
-            mostrarAlerta("Error", "Por favor completa todos los campos.");
-            return;
-        }
-
-        // Pedimos al servicio que autentique al usuario.
-        boolean autenticado = servicioU.autenticar(correo, contrasena);
-
-        if (autenticado) {
-            String nombre = servicioU.obtenerNombre(correo);
-            String apellido = servicioU.obtenerApellido(correo);
-            String rol = servicioU.obtenerRol(correo);
-
-            mostrarAlerta("Bienvenido", "Hola " + nombre + " " + apellido + " (" + rol + ")");
-
-            if (rol == null) {
-                mostrarAlerta("Error", "Rol no reconocido. Contacta al administrador.");
+            if (correo.isEmpty() || contrasena.isEmpty()) {
+                mostrarAlerta("Error", "Por favor completa todos los campos.");
                 return;
             }
 
-            // Redirigir según el rol del usuario (NO IMPLEMENTADO).
-            switch (rol) {
-                case "Cliente":
-                    abrirPantalla("/puj.fis.pantallas/cliente.fxml");
-                    break;
+            // Pedimos al servicio que autentique al usuario.
+            boolean autenticado = servicioU.autenticar(correo, contrasena);
 
-                case "Emprendedor":
-                    abrirPantalla("/puj.fis.pantallas/emprendedor.fxml");
-                    break;
+            if (autenticado) {
+                String nombre = servicioU.obtenerNombre(correo);
+                String apellido = servicioU.obtenerApellido(correo);
+                String rol = servicioU.obtenerRol(correo);
 
-                case "Reclutador":
-                    abrirPantalla("/puj.fis.pantallas/reclutador.fxml");
-                    break;
+                mostrarAlerta("Bienvenido", "Hola " + nombre + " " + apellido + " (" + rol + ")");
 
-                default:
-                    mostrarAlerta("Error", "Rol no reconocido.");
+                if (rol == null) {
+                    mostrarAlerta("Error", "Rol no reconocido. Contacta al administrador.");
+                    return;
+                }
+
+                // Redirigir según el rol del usuario (NO IMPLEMENTADO).
+                switch (rol) {
+                    case "Cliente":
+                        abrirPantalla("/puj.fis.pantallas/cliente.fxml");
+                        break;
+
+                    case "Emprendedor":
+                        abrirPantalla("/puj.fis.pantallas/emprendedor.fxml");
+                        break;
+
+                    case "Reclutador":
+                        abrirPantalla("/puj.fis.pantallas/reclutador.fxml");
+                        break;
+
+                    default:
+                        mostrarAlerta("Error", "Rol no reconocido.");
+                }
+            } else {
+                mostrarAlerta("Error", "Usuario o contraseña incorrectos.");
             }
-        } else {
-            mostrarAlerta("Error", "Usuario o contraseña incorrectos.");
+        } catch (RuntimeException e) {
+            if (e.getMessage().toLowerCase().contains("solicitud") ||
+                e.getMessage().toLowerCase().contains("rechazada") ||
+                e.getMessage().toLowerCase().contains("pendiente")) {
+
+                mostrarAlerta("Acceso restringido", e.getMessage());
+            } else {
+                mostrarAlerta("Error", "Ocurrió un error inesperado: " + e.getMessage());
+            }
         }
     }
 
     // Maneja el evento de clic en el botón de registro.
-    @FXML public void onRegisterClick(ActionEvent actionEvent) {
+    @FXML
+    public void onRegisterClick(ActionEvent actionEvent) {
         try {
             // Cargar el FXML de registro
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/registro.fxml"));
@@ -112,12 +125,24 @@ public class LoginController {
     // Abre una nueva pantalla según el rol del usuario.
     private void abrirPantalla(String fxmlPath) {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+
+            if (resource == null) {
+                mostrarAlerta("Error", "FXML no encontrado: " + fxmlPath);
+                System.err.println("Recurso FXML no encontrado en: " + fxmlPath);
+                return;
+            }
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(resource);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU);
+            loader.setControllerFactory(controladorFactory::createController);
+
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
             javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
+
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.getMessage());
+            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + e.toString());
         }
     }
 }

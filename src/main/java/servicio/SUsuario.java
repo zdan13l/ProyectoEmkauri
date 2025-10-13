@@ -14,8 +14,20 @@ public class SUsuario implements ISUsuario {
 
     // Verifica si las credenciales corresponden a un usuario válido.
     public boolean autenticar(String correo, String contrasena) {
-        Usuario user = repoU.autenticar(correo, contrasena);
-        return user != null;
+        try {
+            Usuario user = repoU.autenticar(correo, contrasena);
+            return user != null;
+        } catch (RuntimeException e) {
+            switch (e.getMessage()) {
+                case "PENDIENTE" ->
+                        throw new RuntimeException("Tu solicitud de registro como emprendedor aún está pendiente de aprobación.");
+                case "RECHAZADO" ->
+                        throw new RuntimeException("Tu solicitud para ser emprendedor fue rechazada. Contacta al reclutador para más información.");
+                case "SIN_SOLICITUD" ->
+                        throw new RuntimeException("Tu cuenta de emprendedor no tiene una solicitud registrada. Comunícate con soporte para completar tu registro.");
+                default -> throw e;
+            }
+        }
     }
 
     // Obtiene el nombre del usuario a partir del email.
@@ -45,6 +57,28 @@ public class SUsuario implements ISUsuario {
             return user.getRol().getNombre();
         } else {
             return null;
+        }
+    }
+    // Registrar usuario (Cliente o Emprendedor).
+    public boolean registrarUsuario(Usuario usuario, String mensaje) {
+        try {
+            if (usuario == null || usuario.getCorreo() == null || usuario.getContrasena() == null || usuario.getRol() == null) {
+                return false;
+            }
+            String tipo = usuario.getRol().getNombre();
+
+             // Si el rol es "Emprendedor", guarda también el mensaje asociado.
+            if ("Emprendedor".equalsIgnoreCase(tipo)) {
+                return repoU.insertarEmprendedor(usuario, mensaje);
+            } else if ("Cliente".equalsIgnoreCase(tipo)) {
+                return repoU.insertarCliente(usuario);
+            } else {
+                System.err.println("Tipo de usuario no válido: " + tipo);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Error en registro de usuario: " + e.getMessage());
+            return false;
         }
     }
 }
