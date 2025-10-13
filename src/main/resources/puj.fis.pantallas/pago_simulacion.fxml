@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" style="-fx-padding:16;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PagoSimulacionController">
+    <Label text="Simular Pago" />
+    <TextField fx:id="txtTitular" promptText="Titular" />
+    <TextField fx:id="txtTarjeta" promptText="Número de tarjeta (solo dígitos)" />
+    <HBox spacing="8">
+        <TextField fx:id="txtMes" maxWidth="60" promptText="MM" />
+        <TextField fx:id="txtAnio" maxWidth="80" promptText="YYYY" />
+        <TextField fx:id="txtCVV" maxWidth="80" promptText="CVV" />
+    </HBox>
+    <TextField fx:id="txtMonto" promptText="Monto (ej: 149000.00)" />
+    <ComboBox fx:id="cbMetodo" promptText="Método" />
+    <Button onAction="#onSimular" text="Simular" />
+    <Label fx:id="lblResultado" text="" />
+</VBox>
