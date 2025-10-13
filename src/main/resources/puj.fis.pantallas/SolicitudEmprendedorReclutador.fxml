@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane prefHeight="600" prefWidth="900"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.SolicitudEmprendedorController"
+            style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);">
+
+    <VBox alignment="TOP_CENTER" layoutX="70" layoutY="40" spacing="20"
+          style="-fx-background-color: white;
+                 -fx-background-radius: 20;
+                 -fx-border-radius: 20;
+                 -fx-padding: 30;
+                 -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 4);
+                 -fx-pref-width: 760; -fx-pref-height: 520;">
+
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 0 20 0 20;">
+            <Button fx:id="btnVolver"
+                    text="← Volver"
+                    onAction="#onVolver"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #4A90E2;
+                           -fx-font-weight: bold;
+                           -fx-font-size: 13px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnCerrarSesion"
+                    text="Cerrar sesión"
+                    onAction="#onCerrarSesion"
+                    style="-fx-background-color: #E63946;
+                           -fx-text-fill: white;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 10;"/>
+        </HBox>
+
+        <ImageView fx:id="logoEmkauri"
+                   fitHeight="90" fitWidth="220"
+                   preserveRatio="true" smooth="true">
+            <Image url="@/img/Emkauri_logo.png"/>
+        </ImageView>
+
+        <Label fx:id="lblTitulo"
+               text="Solicitudes de Emprendedor"
+               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;"/>
+
+        <ScrollPane fitToWidth="true" prefHeight="380" prefWidth="720"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox fx:id="contenedorSolicitudes" alignment="TOP_CENTER" spacing="15"
+                  style="-fx-padding: 10;">
+                <Label text="Aquí aparecerán las solicitudes de emprendedores pendientes..."
+                       style="-fx-font-size: 14px; -fx-text-fill: #2E3A59;"/>
+            </VBox>
+        </ScrollPane>
+
+    </VBox>
+</AnchorPane>
