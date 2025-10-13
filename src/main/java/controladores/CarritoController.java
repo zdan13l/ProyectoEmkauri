@@ -1,123 +1,141 @@
 package controladores;
 
-import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import modelo.Producto; // usamos lo que ya existe
+import modelo.Compra;
+import modelo.Producto;
+import modelo.Usuario;
+import modelo.Pago;
+import servicio.ISCompra;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CarritoController {
 
-    @FXML private TableView<CarritoItem> tablaCarrito;
-    @FXML private TableColumn<CarritoItem, String>  colNombre;
-    @FXML private TableColumn<CarritoItem, String>  colCategoria;
-    @FXML private TableColumn<CarritoItem, Double>  colPrecio;
-    @FXML private TableColumn<CarritoItem, Integer> colCantidad;
-    @FXML private TableColumn<CarritoItem, Double>  colTotal;
-
+    // --------------------------
+    // 🔹 Referencias FXML
+    // --------------------------
+    @FXML private TableView<Producto> tablaCarrito;
+    @FXML private TableColumn<Producto, String> colNombre;
+    @FXML private TableColumn<Producto, Double> colPrecio;
     @FXML private Label lblTotal;
-    @FXML private Button btnPagar, btnEliminar, btnVaciar, btnVolver;
+    @FXML private Button btnComprar;
+    @FXML private Button btnEliminar;
 
-    private final ObservableList<CarritoItem> carrito = FXCollections.observableArrayList();
+    // --------------------------
+    // 🔹 Dependencias inyectadas
+    // --------------------------
+    private final ISCompra servicioCompra;
+    private final Usuario usuarioLogueado;
 
+    // --------------------------
+    // 🔹 Estado interno del carrito
+    // --------------------------
+    private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
+
+    // --------------------------
+    // 🔹 Constructor con dependencias
+    // --------------------------
+    public CarritoController(ISCompra servicioCompra, Usuario usuarioLogueado) {
+        this.servicioCompra = servicioCompra;
+        this.usuarioLogueado = usuarioLogueado;
+    }
+
+    // --------------------------
+    // 🔹 Inicialización de la vista
+    // --------------------------
     @FXML
     public void initialize() {
-        // Mapea a propiedades del DTO CarritoItem (no dependemos de getters inexistentes en Producto)
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        // Configurar las columnas de la tabla
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-        tablaCarrito.setItems(carrito);
+        // Asociar la lista observable con la tabla
+        tablaCarrito.setItems(productosCarrito);
 
-        // --- MOCK de prueba para ver la UI funcionando (puedes borrar cuando conecten la lógica) ---
-        // Si Producto tiene getTitulo() y getPrecio(), esto compila.
-        // Agrega 2 filas de ejemplo para validar la vista.
-        carrito.add(CarritoItem.fromProducto(mockProducto("Curso de JavaFX", 120_000)));
-        carrito.add(CarritoItem.fromProducto(mockProducto("Servicio de Mentoría", 80_000)));
+        // Mostrar el total inicial
         actualizarTotal();
     }
 
-    // Utilidad: actualiza total
-    private void actualizarTotal() {
-        double total = carrito.stream().mapToDouble(CarritoItem::getTotal).sum();
-        lblTotal.setText(String.format("$%,.0f", total).replace(',', '.'));
+    // --------------------------
+    // 🔹 Métodos del controlador
+    // --------------------------
+
+    public void agregarProducto(Producto producto) {
+        productosCarrito.add(producto);
+        actualizarTotal();
     }
 
-    // Handlers
     @FXML
-    private void handleEliminar() {
-        CarritoItem sel = tablaCarrito.getSelectionModel().getSelectedItem();
-        if (sel != null) {
-            carrito.remove(sel);
+    public void eliminarProducto(ActionEvent event) {
+        Producto seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            productosCarrito.remove(seleccionado);
             actualizarTotal();
+        } else {
+            mostrarAlerta("Error", "Selecciona un producto para eliminar.");
         }
     }
 
     @FXML
-    private void handleVaciar() {
-        carrito.clear();
-        actualizarTotal();
-    }
-
-    @FXML
-    private void handlePagar() {
-        // Solo UI: redirección se hará cuando integren CU-009 (pagos)
-        new Alert(Alert.AlertType.INFORMATION, "Redirigiendo a Gestión de Pagos...").showAndWait();
-    }
-
-    @FXML
-    private void handleVolver() {
-        // Solo UI: aquí cargarías el catálogo cuando exista la navegación
-        new Alert(Alert.AlertType.INFORMATION, "Volviendo al Catálogo...").showAndWait();
-    }
-
-    // ===================== DTO de la tabla (UI only) =====================
-    public static class CarritoItem {
-        private final StringProperty  nombre    = new SimpleStringProperty();
-        private final StringProperty  categoria = new SimpleStringProperty("—"); // placeholder
-        private final DoubleProperty  precio    = new SimpleDoubleProperty(0);
-        private final IntegerProperty cantidad  = new SimpleIntegerProperty(1);
-        private final DoubleProperty  total     = new SimpleDoubleProperty(0);
-
-        public static CarritoItem fromProducto(Producto p) {
-            CarritoItem i = new CarritoItem();
-            // Campos seguros del modelo Producto (presentes en esta rama):
-            i.setNombre(p.getTitulo());
-            i.setPrecio(p.getPrecio());
-            i.setCantidad(1);
-            i.setTotal(i.getPrecio() * i.getCantidad());
-
-            // Si en el futuro exponen nombre de categoría, aquí se setea (i.setCategoria(...))
-            return i;
+    public void realizarCompra(ActionEvent event) {
+        if (productosCarrito.isEmpty()) {
+            mostrarAlerta("Error", "El carrito está vacío.");
+            return;
         }
 
-        // Getters/Setters para PropertyValueFactory
-        public String getNombre() { return nombre.get(); }
-        public void setNombre(String v) { nombre.set(v); }
+        try {
+            // Crear objeto compra
+            Compra compra = new Compra();
+            compra.setCliente(usuarioLogueado);
+            compra.setProductos(new ArrayList<>(productosCarrito));
+            compra.setMontoFinal(calcularTotal());
+            compra.setFechaCompra(java.sql.Date.valueOf(LocalDate.now()));
 
-        public String getCategoria() { return categoria.get(); }
-        public void setCategoria(String v) { categoria.set(v); }
+            // Simular un pago (podrías cambiarlo si tienes pantalla de pago)
+            Pago pago = new Pago();
+            pago.setIdPago(1); // ejemplo
+            compra.setPago(pago);
 
-        public double getPrecio() { return precio.get(); }
-        public void setPrecio(double v) { precio.set(v); }
+            // Guardar compra
+            boolean exito = servicioCompra.crearCompra(compra);
 
-        public int getCantidad() { return cantidad.get(); }
-        public void setCantidad(int v) { cantidad.set(v); }
+            if (exito) {
+                mostrarAlerta("Compra exitosa", "Tu compra se ha realizado correctamente.");
+                productosCarrito.clear();
+                actualizarTotal();
+            } else {
+                mostrarAlerta("Error", "No se pudo registrar la compra.");
+            }
 
-        public double getTotal() { return total.get(); }
-        public void setTotal(double v) { total.set(v); }
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Ocurrió un problema al procesar la compra: " + e.getMessage());
+        }
     }
 
-    // ===================== MOCK simple para probar la UI sin tocar servicios =====================
-    private Producto mockProducto(String titulo, double precio) {
-        // Crea un Producto “vacío” y setea solo lo que necesitamos para la vista
-        Producto p = new Producto();
-        p.setTitulo(titulo);
-        p.setPrecio(precio);
-        return p;
+    // --------------------------
+    // 🔹 Métodos auxiliares
+    // --------------------------
+
+    private void actualizarTotal() {
+        lblTotal.setText(String.format("Total: $%.2f", calcularTotal()));
+    }
+
+    private double calcularTotal() {
+        return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum();
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }

@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.CarritoController">
+<StackPane style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.CarritoController">
 
-    <top>
-        <HBox spacing="10" style="-fx-background-color:#f5f5f5; -fx-padding:10;">
-            <Label text="🛒 Carrito de Compras" style="-fx-font-size:18px; -fx-font-weight:bold;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Volver al Catálogo" fx:id="btnVolver" onAction="#handleVolver"/>
+    <VBox alignment="CENTER" maxWidth="950" spacing="20" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30;">
+        <effect>
+            <DropShadow color="#00000055" radius="10" />
+        </effect>
+
+        <!-- ENCABEZADO -->
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 5 0 15 0; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="🛒 Carrito de Compras" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnVolver" onAction="#handleVolver" style="-fx-background-color: transparent; -fx-border-color: #4A90E2;                            -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-border-radius: 8;                            -fx-padding: 8 20; -fx-cursor: hand;" text="Volver" />
         </HBox>
-    </top>
 
-    <center>
-        <VBox spacing="15" style="-fx-padding:20;">
-            <TableView fx:id="tablaCarrito" prefHeight="380">
-                <columns>
-                    <TableColumn fx:id="colNombre" text="Producto" prefWidth="220"/>
-                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="140"/>
-                    <TableColumn fx:id="colPrecio" text="Precio" prefWidth="110"/>
-                    <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="110"/>
-                    <TableColumn fx:id="colTotal" text="Total" prefWidth="120"/>
-                </columns>
-            </TableView>
+        <!-- TABLA DE PRODUCTOS -->
+        <TableView fx:id="tablaCarrito" prefHeight="350" prefWidth="809.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #cccccc;">
+            <columns>
+                <TableColumn fx:id="colNombre" prefWidth="260" text="Producto" />
+                <TableColumn fx:id="colTipo" prefWidth="150" text="Tipo" />
+                <TableColumn fx:id="colEmprendedor" prefWidth="220" text="Emprendedor" />
+                <TableColumn fx:id="colPrecio" prefWidth="180" text="Precio (COP)" />
+            </columns>
+        </TableView>
 
-            <HBox spacing="12" alignment="CENTER_RIGHT">
-                <Label text="Total:" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
-                <Label fx:id="lblTotal" text="$0,00" style="-fx-font-size:16px;"/>
-            </HBox>
+        <!-- TOTAL -->
+        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10 0 0 0;">
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Total:" />
+            <Label fx:id="lblTotal" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4A90E2;" text="0.00" />
+        </HBox>
 
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button text="Eliminar Seleccionado" fx:id="btnEliminar" onAction="#handleEliminar"/>
-                <Button text="Vaciar Carrito" fx:id="btnVaciar" onAction="#handleVaciar"/>
-                <Button text="Proceder al Pago" fx:id="btnPagar" style="-fx-background-color:#2c7ef7; -fx-text-fill:white;" onAction="#handlePagar"/>
-            </HBox>
-        </VBox>
-    </center>
+        <!-- BOTONES DE ACCIÓN -->
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10 0 0 0;">
+            <Button fx:id="btnEliminar" onAction="#handleEliminar" style="-fx-background-color: transparent; -fx-border-color: #4A90E2;                            -fx-text-fill: #4A90E2; -fx-font-weight: bold;                            -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;" text="Eliminar Seleccionado" />
 
-</BorderPane>
+            <Button fx:id="btnVaciar" onAction="#handleVaciar" style="-fx-background-color: transparent; -fx-border-color: #FF4C4C;                            -fx-text-fill: #FF4C4C; -fx-font-weight: bold;                            -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;" text="Vaciar Carrito" />
+
+            <Button fx:id="btnPagar" onAction="#handlePagar" style="-fx-background-color: #4A90E2; -fx-text-fill: white;                            -fx-font-weight: bold; -fx-background-radius: 8;                            -fx-padding: 10 30; -fx-cursor: hand;" text="Proceder al Pago" />
+        </HBox>
+
+    </VBox>
+</StackPane>

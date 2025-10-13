@@ -5,10 +5,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import repositorio.ConexionDB;
-import repositorio.IRUsuario;
-import repositorio.RUsuario;
+import repositorio.*;
+import servicio.ISCompra;
 import servicio.ISUsuario;
+import servicio.SCompra;
 import servicio.SUsuario;
 import java.sql.Connection;
 
@@ -19,6 +19,8 @@ public class EmkauriApp extends Application {
         // Inyección de dependencias manual.
         IRUsuario repoUsuario = new RUsuario();
         ISUsuario servicioUsuario = new SUsuario(repoUsuario);
+        IRCompra repoCompra = new RCompra();
+        ISCompra servicioCompra = new SCompra(repoCompra);
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));

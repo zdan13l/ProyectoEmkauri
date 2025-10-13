@@ -23,7 +23,6 @@ public class LoginController {
     // Servicio para manejar la lógica de usuario.
     private final ISUsuario servicioU;
 
-
     public LoginController(ISUsuario servicioU) {
         this.servicioU = servicioU;
     }
