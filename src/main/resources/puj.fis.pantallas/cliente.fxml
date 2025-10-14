@@ -14,7 +14,7 @@
         <HBox alignment="CENTER_LEFT" prefHeight="100" spacing="20">
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <VBox spacing="6">
-                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenido, Cliente!" />
+                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenid@, Cliente!" />
                     <Label style="-fx-font-size:13px; -fx-text-fill: #7A8BA3;" text="Accede a las secciones principales desde aquí" />
                 </VBox>
             </HBox>

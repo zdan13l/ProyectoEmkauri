@@ -129,6 +129,5 @@ CREATE TABLE Solicitudes (
     FOREIGN KEY (idSolicitante) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idReclutador) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idProductoAsociado) REFERENCES Productos(idProducto),
-    FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario),
-    CHECK ( (idProductoAsociado IS NOT NULL AND idEmprendedorAsociado IS NULL) OR (idProductoAsociado IS NULL AND idEmprendedorAsociado IS NOT NULL) )
+    FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario)
 );

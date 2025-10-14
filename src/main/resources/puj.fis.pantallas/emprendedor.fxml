@@ -13,7 +13,7 @@
         <HBox alignment="CENTER_LEFT" prefHeight="100" spacing="20">
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <VBox spacing="6">
-                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenido, Emprendedor!" />
+                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenid@, Emprendedor!" />
                     <Label style="-fx-font-size:13px; -fx-text-fill: #7A8BA3;" text="Gestiona y crea tus productos, cursos o servicios desde aquí" />
                 </VBox>
             </HBox>
@@ -24,7 +24,7 @@
                 <Button fx:id="btnMisProductos" onAction="#onVerMisProductos" prefHeight="36" style="-fx-background-color: transparent; -fx-text-fill: #2E3A59;
                     -fx-font-weight: 600;" text="Mis Productos" />
 
-                <Button fx:id="btnCalificaciones" onAction="#onVerCalificaciones" prefHeight="36" style="-fx-background-color: #F4F6FA; -fx-background-radius: 10;
+                <Button fx:id="btnCalificaciones" onAction="#onVerCalificaciones" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 10;
                     -fx-cursor: hand;" text="Calificaciones" />
 
                 <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" style="-fx-background-color: #E63946; -fx-text-fill: white; -fx-font-weight: bold;

@@ -34,13 +34,15 @@ public class RegistroController {
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
+    private final ISSolicitud servicioS;
 
-    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
+    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
+        this.servicioS = servicioS;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
@@ -104,7 +106,7 @@ public class RegistroController {
         try {
             Stage stage = (Stage) nombreField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa).createController(param));
+            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS).createController(param));
             stage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo volver al inicio de sesión.");

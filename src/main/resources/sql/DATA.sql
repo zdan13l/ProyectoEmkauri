@@ -33,7 +33,12 @@ INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES
 INSERT INTO Categorias (nombre, descripcion) VALUES
 ('Programación', 'Cursos y servicios relacionados con desarrollo de software'),
 ('Diseño', 'Cursos de diseño gráfico, UI/UX y más'),
-('Marketing', 'Estrategias y herramientas de marketing digital');
+('Marketing', 'Estrategias y herramientas de marketing digital'),
+('Educación', 'Formación académica y enseñanza en distintas áreas'),
+('Arte', 'Artes plásticas, música, teatro y creatividad'),
+('Finanzas', 'Educación financiera, contabilidad y emprendimiento económico'),
+('Salud', 'Bienestar físico, emocional y mental'),
+('Tecnología', 'Innovaciones tecnológicas y herramientas digitales');
 
 -- 5️. PRODUCTOS (CURSOS Y SERVICIOS)
 -- tipoProducto = 'CURSO' o 'SERVICIO'
@@ -81,5 +86,6 @@ INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idEmprend
 (3, 5, 'APROBADO', 'Solicitud para aprobar como Emprendedor', 3),
 (6, 5, 'PENDIENTE', 'Solicitud para aprobar como Emprendedor', 6);
 
-INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado) VALUES
-(3, 5, 'PENDIENTE', 'Revisión del curso Java desde cero', 1);
+INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) VALUES
+(3, 5, 'PENDIENTE', 'Curso Java desde cero', 1, 3),
+(6, 5, 'RECHAZADO', 'Curso de Matematica Basica', 1, 6);

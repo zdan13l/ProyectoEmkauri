@@ -31,13 +31,15 @@ public class ClienteController {
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
+    private final ISSolicitud servicioS;
 
-    public ClienteController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
+    public ClienteController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
+        this.servicioS = servicioS;
     }
 
     // Ver catálogo de productos.
@@ -65,7 +67,7 @@ public class ClienteController {
             SesionActual.cerrarSesion();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -84,7 +86,7 @@ public class ClienteController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
             // Reutilizamos la fábrica de controladores, inyectando solo servicioUsuario.
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

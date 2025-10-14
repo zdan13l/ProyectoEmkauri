@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import modelo.Categoria;
 import modelo.Compra;
 import modelo.Producto;
 import modelo.Usuario;
@@ -25,6 +26,7 @@ public class CatalogoController {
 
     // Campos vinculados a los elementos de la interfaz.
     @FXML private TextField busquedaField;
+    @FXML private Button btnCarrito;
     @FXML private ComboBox<String> categoriaFilter;
     @FXML private TableView<Producto> resultadosTable;
     @FXML private TableColumn<Producto, String> tipoColumn;
@@ -39,16 +41,18 @@ public class CatalogoController {
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
+    private final ISSolicitud servicioS;
 
     // Lista completa de productos y carrito de compras.
     private List<Producto> listaProductos = new ArrayList<>();
 
-    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
+    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
+        this.servicioS = servicioS;
     }
 
     // Inicialización del controlador.
@@ -86,10 +90,32 @@ public class CatalogoController {
 
     // Cargar categorías y productos desde el servicio.
     private void cargarCategorias() {
-        categoriaFilter.setItems(FXCollections.observableArrayList(
-                "Todos", "Programación", "Diseño", "Marketing"
-        ));
-        categoriaFilter.getSelectionModel().select("Todos");
+        try {
+            List<Categoria> categorias = servicioCa.listarCategorias();
+            if (categorias == null || categorias.isEmpty()) {
+                // Si no hay categorías en BD, dejamos una lista por defecto con "Todos"
+                categoriaFilter.setItems(FXCollections.observableArrayList("Todos"));
+                categoriaFilter.getSelectionModel().select("Todos");
+                return;
+            }
+
+            List<String> nombres = categorias.stream()
+                    .map(Categoria::getNombre)
+                    .filter(n -> n != null && !n.isBlank())
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // Insertar "Todos" al principio
+            nombres.add(0, "Todos");
+
+            categoriaFilter.setItems(FXCollections.observableArrayList(nombres));
+            categoriaFilter.getSelectionModel().select("Todos");
+        } catch (Exception e) {
+            // En caso de error con el servicio, usar valores por defecto y notificar en consola
+            System.err.println("Error al cargar categorías: " + e.getMessage());
+            categoriaFilter.setItems(FXCollections.observableArrayList("Todos", "Programación", "Diseño", "Marketing"));
+            categoriaFilter.getSelectionModel().select("Todos");
+        }
     }
 
     // Cargar todos los productos desde el servicio.
@@ -145,7 +171,7 @@ public class CatalogoController {
     private void onVolverClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -154,6 +180,22 @@ public class CatalogoController {
             stage.setScene(scene);
         } catch (IOException e) {
             mostrarAlerta("No se pudo volver a la pantalla del cliente.");
+        }
+    }
+
+    @FXML
+    private void onVerCarrito() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/carrito.fxml"));
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            loader.setControllerFactory(controladorFactory::createController);
+
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) busquedaField.getScene().getWindow();
+            stage.setTitle("Carrito de Compras");
+            stage.setScene(scene);
+        } catch (IOException e) {
+            mostrarAlerta("No se pudo abrir el carrito.");
         }
     }
 

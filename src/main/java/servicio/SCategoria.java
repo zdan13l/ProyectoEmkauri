@@ -1,7 +1,9 @@
 package servicio;
 
+import modelo.Categoria;
 import repositorio.IRCategoria;
-import repositorio.IRProducto;
+
+import java.util.List;
 
 public class SCategoria implements ISCategoria {
     private final IRCategoria repoC;
@@ -9,10 +11,16 @@ public class SCategoria implements ISCategoria {
     public SCategoria(IRCategoria repoC) {
         this.repoC = repoC;
     }
+
     @Override
     public boolean crearCategoria(String nombre) {
         // Implementación para crear una categoría
         return false;
+    }
+
+    @Override
+    public Categoria buscarPorNombre(String nombre) {
+        return repoC.buscarPorNombre(nombre);
     }
 
     @Override
@@ -22,14 +30,15 @@ public class SCategoria implements ISCategoria {
     }
 
     @Override
+    public List<Categoria> listarCategorias() {
+        return repoC.listarTodas();
+    }
+
+    @Override
     public boolean eliminarCategoria(int id) {
         // Implementación para eliminar una categoría
         return false;
     }
 
-    @Override
-    public String obtenerCategoriaPorId(int id) {
-        // Implementación para obtener una categoría por ID
-        return null;
-    }
+
 }

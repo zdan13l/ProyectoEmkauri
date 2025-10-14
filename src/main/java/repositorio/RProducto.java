@@ -9,23 +9,58 @@ public class RProducto implements IRProducto {
 
     // Agregar un nuevo producto a la base de datos.
     public boolean agregar(Producto producto) {
-        String sql = "INSERT INTO Productos (titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Productos (titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto, " +
+                "duracionCurso, nivelDificultad, certificacion, duracionServicio, ubicacion, modalidad) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             ps.setString(1, producto.getTitulo());
             ps.setString(2, producto.getDescripcion());
             ps.setDouble(3, producto.getPrecio());
             ps.setInt(4, producto.getEmprendedor().getIdUsuario());
             ps.setInt(5, producto.getCategoria().getIdCategoria());
-            ps.setString(6, producto instanceof Curso ? "CURSO" : "SERVICIO");
 
-            return ps.executeUpdate() > 0;
+            // 🔹 Diferenciar entre curso y servicio
+            if (producto instanceof Curso curso) {
+                ps.setString(6, "CURSO");
+                ps.setInt(7, curso.getDuracionCurso());
+                ps.setString(8, curso.getNivelDificultad());
+                ps.setString(9, curso.getCertificacion());
+                ps.setNull(10, Types.INTEGER);
+                ps.setNull(11, Types.VARCHAR);
+                ps.setNull(12, Types.VARCHAR);
+            } else if (producto instanceof Servicio servicio) {
+                ps.setString(6, "SERVICIO");
+                ps.setNull(7, Types.INTEGER);
+                ps.setNull(8, Types.VARCHAR);
+                ps.setNull(9, Types.VARCHAR);
+                ps.setInt(10, servicio.getDuracionServicio());
+                ps.setString(11, servicio.getUbicacion());
+                ps.setString(12, servicio.getModalidad());
+            } else {
+                throw new SQLException("Tipo de producto desconocido");
+            }
+
+            int filasAfectadas = ps.executeUpdate();
+
+            // 🔹 Recuperar el ID generado automáticamente
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int idGenerado = rs.getInt(1);
+                    producto.setIdProducto(idGenerado);
+                }
+            }
+
+            return filasAfectadas > 0;
 
         } catch (SQLException e) {
-            System.err.println(" Error al agregar producto: " + e.getMessage());
+            System.err.println("Error al crear producto: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
+
 
     // Listar todos los productos en la base de datos.
     public List<Producto> listarTodos() {
