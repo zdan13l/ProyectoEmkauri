@@ -62,20 +62,25 @@ public class RSolicitud implements IRSolicitud {
     // LISTAR SOLICITUDES PENDIENTES
     // -------------------------------------------------------------------------
     @Override
-    public List<Solicitud> listarPendientes() {
+    public List<Solicitud> listarPendientesTipo(String tipo) {
         List<Solicitud> solicitudes = new ArrayList<>();
         String sql = "SELECT * FROM Solicitudes WHERE estado = 'PENDIENTE'";
 
-        try (Connection conexion = ConexionDB.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        if (tipo.equalsIgnoreCase("PRODUCTO")) {
+            sql += " AND idProductoAsociado IS NOT NULL AND idEmprendedorAsociado IS NOT NULL";
+        } else if (tipo.equalsIgnoreCase("EMPRENDEDOR")) {
+            sql += " AND idProductoAsociado IS NULL AND idEmprendedorAsociado IS NOT NULL";
+        }
+
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                solicitudes.add(mapearSolicitud(rs));
+                Solicitud solicitud = mapearSolicitud(rs);
+                solicitudes.add(solicitud);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al listar solicitudes pendientes: " + e.getMessage());
+            System.err.println("Error al listar las solicitudes pendientes: " + e.getMessage());
         }
 
         return solicitudes;
@@ -85,16 +90,18 @@ public class RSolicitud implements IRSolicitud {
     // APROBAR SOLICITUD
     // -------------------------------------------------------------------------
     @Override
-    public void aprobar(int idSolicitud) {
+    public boolean aprobar(int idSolicitud) {
         actualizarEstado(idSolicitud, "APROBADO");
+        return true;
     }
 
     // -------------------------------------------------------------------------
     // RECHAZAR SOLICITUD
     // -------------------------------------------------------------------------
     @Override
-    public void rechazar(int idSolicitud) {
+    public boolean rechazar(int idSolicitud) {
         actualizarEstado(idSolicitud, "RECHAZADO");
+        return true;
     }
 
     // -------------------------------------------------------------------------

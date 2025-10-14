@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ISSolicitud {
     void crearSolicitud(Solicitud solicitud);
-    List<Solicitud> listarSolicitudesPendientes();
-    void aprobarSolicitud(int idSolicitud);
-    void rechazarSolicitud(int idSolicitud);
+    List<Solicitud> listarSolicitudesPendientes(String tipo);
+    boolean aprobarSolicitud(int idSolicitud);
+    boolean rechazarSolicitud(int idSolicitud);
 }

@@ -19,18 +19,18 @@ public class SSolicitud implements ISSolicitud {
     }
 
     @Override
-    public List<Solicitud> listarSolicitudesPendientes() {
-        return repoS.listarPendientes();
+    public List<Solicitud> listarSolicitudesPendientes(String tipo) {
+        return repoS.listarPendientesTipo(tipo);
     }
 
     @Override
-    public void aprobarSolicitud(int idSolicitud) {
-        repoS.aprobar(idSolicitud);
+    public boolean aprobarSolicitud(int idSolicitud) {
+        return repoS.aprobar(idSolicitud);
     }
 
     @Override
-    public void rechazarSolicitud(int idSolicitud) {
-        repoS.rechazar(idSolicitud);
+    public boolean rechazarSolicitud(int idSolicitud) {
+        return repoS.rechazar(idSolicitud);
     }
 }
 

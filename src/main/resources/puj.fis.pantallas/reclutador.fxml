@@ -9,12 +9,12 @@
 
     <VBox alignment="TOP_CENTER" spacing="36" style="-fx-background-color: white; -fx-background-radius: 20;
                 -fx-border-radius: 20; -fx-padding: 32 48 40 48;-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
-                AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="40">
+          AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="40">
 
         <HBox alignment="CENTER_LEFT" prefHeight="100" spacing="20">
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <VBox spacing="6">
-                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenido, Reclutador!" />
+                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenid@, Reclutador!" />
                     <Label style="-fx-font-size:13px; -fx-text-fill: #7A8BA3;" text="Administra las solicitudes de productos y emprendedores" />
                 </VBox>
             </HBox>
@@ -46,6 +46,9 @@
             <HBox alignment="CENTER" spacing="20">
                 <Button fx:id="btnIrSolicitudesProducto" onAction="#onSolicitudesProducto" style="-fx-background-color:#4A90E2; -fx-text-fill:white;
                             -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Producto" />
+
+                <Button fx:id="btnAgregarCategorias" onAction="#onAgregarCategorias" style="-fx-background-color:#FFD166; -fx-text-fill:#2E3A59;
+                            -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Agregar Categorías" />
 
                 <Button fx:id="btnIrSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" style="-fx-background-color:transparent; -fx-border-color:#C9D7F2;
                             -fx-border-radius:8; -fx-text-fill:#2E3A59; -fx-font-weight:bold; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Emprendedor" />
