@@ -22,7 +22,7 @@ public class ReclutadorController {
     @FXML private Button btnSolicitudesEmprendedor;
     @FXML private Button btnIrSolicitudesEmprendedor;
     @FXML private Button btnIrSolicitudesProducto;
-    @FXML private Button btnAgregarCategorias;
+    @FXML private Button btnCategorias;
     @FXML private Label lblBienvenidaTop;
     @FXML private ImageView logoEmkauri;
 
@@ -141,15 +141,15 @@ public class ReclutadorController {
     }
 
     @FXML
-    private void onAgregarCategorias(ActionEvent event) {
+    private void onCategorias(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/agregarCategoria.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/categoria.fxml"));
             Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
-            Stage stage = (Stage) btnAgregarCategorias.getScene().getWindow();
+            Stage stage = (Stage) btnCategorias.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Agregar Categorías");
+            stage.setTitle("Gestión Categorías");
             stage.show();
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo abrir la pantalla de agregar categorías.");

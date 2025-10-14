@@ -5,6 +5,7 @@ module fis.jave.emkauri {
     requires com.h2database;
     requires java.desktop;
     requires javafx.base;
+    requires javafx.graphics;
 
     opens controladores to javafx.fxml;
     opens modelo to javafx.base;

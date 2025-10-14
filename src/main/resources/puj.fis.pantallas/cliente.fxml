@@ -40,8 +40,10 @@
             <Label style="-fx-font-size:14px; -fx-text-fill: #7A8BA3;" text="Usa los botones de arriba o selecciona una opción abajo" />
 
             <HBox alignment="CENTER" spacing="20">
-                <Button fx:id="btnIrCatalogo" onAction="#onVerProductos" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                -fx-background-radius: 8; -fx-padding: 10 22; -fx-cursor: hand;" text="Ir a Productos" />
-                <Button fx:id="btnIrMisProductos" onAction="#onVerMisProductos" style="-fx-background-color: transparent; -fx-border-color: #C9D7F2;                                -fx-border-radius: 8; -fx-text-fill: #2E3A59;                                -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand;" text="Mis Productos" />
+                <Button fx:id="btnIrCatalogo" onAction="#onVerProductos" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                        -fx-background-radius: 8; -fx-padding: 10 22; -fx-cursor: hand;" text="Ir a Productos" />
+                <Button fx:id="btnIrMisProductos" onAction="#onVerMisProductos" style="-fx-background-color: transparent; -fx-border-color: #C9D7F2; -fx-border-radius: 8; -fx-text-fill: #2E3A59;
+                        -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand;" text="Mis Productos" />
             </HBox>
         </VBox>
 

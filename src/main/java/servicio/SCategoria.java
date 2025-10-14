@@ -13,9 +13,9 @@ public class SCategoria implements ISCategoria {
     }
 
     @Override
-    public boolean crearCategoria(String nombre) {
+    public boolean crearCategoria(Categoria categoria) {
         // Implementación para crear una categoría
-        return false;
+        return repoC.agregar(categoria);
     }
 
     @Override
@@ -24,9 +24,8 @@ public class SCategoria implements ISCategoria {
     }
 
     @Override
-    public boolean actualizarCategoria(int id, String nuevoNombre) {
-        // Implementación para actualizar una categoría
-        return false;
+    public boolean actualizarCategoria(Categoria categoria) {
+        return repoC.actualizar(categoria);
     }
 
     @Override
@@ -36,8 +35,7 @@ public class SCategoria implements ISCategoria {
 
     @Override
     public boolean eliminarCategoria(int id) {
-        // Implementación para eliminar una categoría
-        return false;
+        return repoC.eliminar(id);
     }
 
 

@@ -69,7 +69,8 @@
                     </VBox>
 
                     <HBox alignment="CENTER" spacing="10">
-                        <Button fx:id="btnEnviarSolicitud" onAction="#onEnviarSolicitud" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                        -fx-background-radius: 8; -fx-padding: 8 20; -fx-cursor: hand;" text="Enviar Solicitud" />
+                        <Button fx:id="btnEnviarSolicitud" onAction="#onEnviarSolicitud" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                        -fx-background-radius: 8; -fx-padding: 8 20; -fx-cursor: hand;" text="Enviar Solicitud" />
                     </HBox>
                     <Label fx:id="lblConfirmacion" style="-fx-text-fill: #2E3A59; -fx-font-size: 14px; -fx-font-weight: bold;" />
                 </VBox>

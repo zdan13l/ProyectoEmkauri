@@ -5,9 +5,9 @@ import modelo.Categoria;
 import java.util.List;
 
 public interface ISCategoria {
-    boolean crearCategoria(String nombre);
+    boolean crearCategoria(Categoria categoria);
     Categoria buscarPorNombre(String nombre);
-    boolean actualizarCategoria(int id, String nuevoNombre);
+    boolean actualizarCategoria(Categoria categoria);
     List<Categoria> listarCategorias();
     boolean eliminarCategoria(int id);
 }

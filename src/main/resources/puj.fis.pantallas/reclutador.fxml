@@ -47,8 +47,8 @@
                 <Button fx:id="btnIrSolicitudesProducto" onAction="#onSolicitudesProducto" style="-fx-background-color:#4A90E2; -fx-text-fill:white;
                             -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Producto" />
 
-                <Button fx:id="btnAgregarCategorias" onAction="#onAgregarCategorias" style="-fx-background-color:#FFD166; -fx-text-fill:#2E3A59;
-                            -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Agregar Categorías" />
+                <Button fx:id="btnCategorias" onAction="#onCategorias" style="-fx-background-color:#FFD166; -fx-text-fill:#2E3A59;
+                            -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Gestionar Categorías" />
 
                 <Button fx:id="btnIrSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" style="-fx-background-color:transparent; -fx-border-color:#C9D7F2;
                             -fx-border-radius:8; -fx-text-fill:#2E3A59; -fx-font-weight:bold; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Emprendedor" />
