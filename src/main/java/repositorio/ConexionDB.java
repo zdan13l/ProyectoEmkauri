@@ -2,7 +2,6 @@ package repositorio;
 
 import org.h2.tools.RunScript;
 import org.h2.tools.Server;
-
 import java.awt.Desktop;
 import java.io.FileReader;
 import java.net.URI;
@@ -11,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// Clase para gestionar la conexión a la base de datos H2.
 public class ConexionDB {
     public static boolean modoPruebas;
     private static Server tcpServer;

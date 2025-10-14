@@ -11,11 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import modelo.Categoria;
-import modelo.Compra;
 import modelo.Producto;
-import modelo.Usuario;
 import servicio.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +40,10 @@ public class CatalogoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
-    // Lista completa de productos y carrito de compras.
+    // Lista completa de productos.
     private List<Producto> listaProductos = new ArrayList<>();
 
+    // Constructor que recibe los servicios necesarios.
     public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -55,7 +53,7 @@ public class CatalogoController {
         this.servicioS = servicioS;
     }
 
-    // Inicialización del controlador.
+    // Inicializa el controlador: configura tabla, categorías y productos.
     @FXML
     public void initialize() {
         configurarTabla();
@@ -63,7 +61,7 @@ public class CatalogoController {
         cargarProductos();
     }
 
-    // Configuración de la tabla de resultados.
+    // Configura las columnas de la tabla de resultados.
     private void configurarTabla() {
         nombreColumn.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         descripcionColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -88,12 +86,11 @@ public class CatalogoController {
         );
     }
 
-    // Cargar categorías y productos desde el servicio.
+    // Carga las categorías disponibles en el ComboBox.
     private void cargarCategorias() {
         try {
             List<Categoria> categorias = servicioCa.listarCategorias();
             if (categorias == null || categorias.isEmpty()) {
-                // Si no hay categorías en BD, dejamos una lista por defecto con "Todos"
                 categoriaFilter.setItems(FXCollections.observableArrayList("Todos"));
                 categoriaFilter.getSelectionModel().select("Todos");
                 return;
@@ -105,32 +102,29 @@ public class CatalogoController {
                     .distinct()
                     .collect(Collectors.toList());
 
-            // Insertar "Todos" al principio
             nombres.add(0, "Todos");
 
             categoriaFilter.setItems(FXCollections.observableArrayList(nombres));
             categoriaFilter.getSelectionModel().select("Todos");
         } catch (Exception e) {
-            // En caso de error con el servicio, usar valores por defecto y notificar en consola
-            System.err.println("Error al cargar categorías: " + e.getMessage());
             categoriaFilter.setItems(FXCollections.observableArrayList("Todos", "Programación", "Diseño", "Marketing"));
             categoriaFilter.getSelectionModel().select("Todos");
         }
     }
 
-    // Cargar todos los productos desde el servicio.
+    // Carga todos los productos desde el servicio.
     private void cargarProductos() {
         listaProductos = servicioP.listarProductos();
         mostrarProductos(listaProductos);
     }
 
-    // Mostrar productos en la tabla.
+    // Muestra los productos en la tabla.
     private void mostrarProductos(List<Producto> productos) {
         ObservableList<Producto> datos = FXCollections.observableArrayList(productos);
         resultadosTable.setItems(datos);
     }
 
-    // Comportamiento del botón de búsqueda y filtrado.
+    // Maneja la búsqueda y filtrado de productos.
     @FXML
     private void onSearchClick() {
         String texto = busquedaField.getText().trim().toLowerCase();
@@ -153,20 +147,20 @@ public class CatalogoController {
         mostrarProductos(filtrados);
     }
 
-    // Agregar producto seleccionado al carrito.
+    // Agrega el producto seleccionado al carrito.
     @FXML
     private void onAgregarCarritoClick() {
         Producto seleccionado = resultadosTable.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto antes de agregar al carrito.");
+            mostrarAlerta("Error", "Seleccione un producto antes de agregar al carrito.");
             return;
         }
 
         SesionActual.agregarProductoAlCarrito(seleccionado);
     }
 
-    // Volver a la pantalla del cliente.
+    // Vuelve a la pantalla del cliente.
     @FXML
     private void onVolverClick() {
         try {
@@ -179,10 +173,11 @@ public class CatalogoController {
             stage.setTitle("Menú del Cliente");
             stage.setScene(scene);
         } catch (IOException e) {
-            mostrarAlerta("No se pudo volver a la pantalla del cliente.");
+            mostrarAlerta("Error", "No se pudo volver a la pantalla del cliente.");
         }
     }
 
+    // Abre la pantalla del carrito de compras.
     @FXML
     private void onVerCarrito() {
         try {
@@ -195,14 +190,14 @@ public class CatalogoController {
             stage.setTitle("Carrito de Compras");
             stage.setScene(scene);
         } catch (IOException e) {
-            mostrarAlerta("No se pudo abrir el carrito.");
+            mostrarAlerta("Error", "No se pudo abrir el carrito.");
         }
     }
 
-    // Mostrar alertas informativas.
-    private void mostrarAlerta(String mensaje) {
+    // Muestra una alerta con título y mensaje proporcionados.
+    private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Información");
+        alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();

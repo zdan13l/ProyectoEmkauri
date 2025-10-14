@@ -1,7 +1,6 @@
 package controladores;
 
 import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -14,40 +13,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import modelo.Categoria;
 import servicio.*;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Controlador de la pantalla de gestión de Categorías.
- * Maneja CRUD completo e inyección de dependencias.
- */
+// Controlador para manejar la pantalla de gestión de categorías (CRUD).
 public class CategoriaController {
 
-    // ----------------------------------------------------
-    // 🔹 Dependencias inyectadas
-    // ----------------------------------------------------
-    private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
-    private final ISProducto servicioP;
-    private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
-
-    public CategoriaController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP,
-                               ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
-        this.servicioU = servicioU;
-        this.servicioCo = servicioCo;
-        this.servicioP = servicioP;
-        this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
-    }
-
-    // ----------------------------------------------------
-    // 🔹 Componentes FXML
-    // ----------------------------------------------------
+    // Campos vinculados a los elementos de la interfaz.
     @FXML private TextField txtNombre;
     @FXML private TextField txtDescripcion;
     @FXML private TextField txtBuscar;
@@ -57,11 +30,28 @@ public class CategoriaController {
     @FXML private TableColumn<Categoria, String> colDescripcion;
     @FXML private Button btnVolver;
 
+    // Servicios para manejar la lógica de negocio.
+    private final ISUsuario servicioU;
+    private final ISCompra servicioCo;
+    private final ISProducto servicioP;
+    private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
+    private final ISSolicitud servicioS;
+
+    // Lista observable de categorías para la tabla.
     private final ObservableList<Categoria> listaObservable = FXCollections.observableArrayList();
 
-    // ----------------------------------------------------
-    // 🔹 Inicialización
-    // ----------------------------------------------------
+    // Constructor que recibe los servicios necesarios.
+    public CategoriaController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+        this.servicioU = servicioU;
+        this.servicioCo = servicioCo;
+        this.servicioP = servicioP;
+        this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
+        this.servicioS = servicioS;
+    }
+
+    // Inicializa la tabla y carga las categorías.
     @FXML
     private void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("idCategoria"));
@@ -78,20 +68,17 @@ public class CategoriaController {
             }
         });
 
-        BooleanBinding sinSeleccion = tablaCategorias.getSelectionModel().selectedItemProperty().isNull();
         btnVolver.disableProperty().set(false); // siempre activo
     }
 
-    // ----------------------------------------------------
-    // 🔹 CRUD
-    // ----------------------------------------------------
+    // Agrega una nueva categoría.
     @FXML
     private void handleAgregar() {
         String nombre = txtNombre.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
 
         if (nombre.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Validación", null, "El nombre no puede estar vacío.");
+            mostrarAlerta("Validación", "El nombre no puede estar vacío.");
             return;
         }
 
@@ -108,25 +95,24 @@ public class CategoriaController {
 
         task.setOnSucceeded(evt -> {
             if (task.getValue()) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", null, "Categoría creada correctamente.");
+                mostrarAlerta("Éxito", "Categoría creada correctamente.");
                 limpiarCampos();
                 cargarListaAsync();
             } else {
-                mostrarAlerta(Alert.AlertType.ERROR, "Error", null, "No se pudo crear la categoría.");
+                mostrarAlerta("Error", "No se pudo crear la categoría.");
             }
         });
 
-        task.setOnFailed(evt -> mostrarAlerta(Alert.AlertType.ERROR, "Error", null,
-                "Error al crear la categoría: " + task.getException().getMessage()));
-
+        task.setOnFailed(evt -> mostrarAlerta("Error", "Error al crear la categoría: " + task.getException().getMessage()));
         new Thread(task).start();
     }
 
+    // Actualiza la categoría seleccionada.
     @FXML
     private void handleActualizar() {
         Categoria seleccion = tablaCategorias.getSelectionModel().getSelectedItem();
         if (seleccion == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", null, "Seleccione una categoría para actualizar.");
+            mostrarAlerta("Atención", "Seleccione una categoría para actualizar.");
             return;
         }
 
@@ -134,7 +120,7 @@ public class CategoriaController {
         String nuevaDescripcion = txtDescripcion.getText().trim();
 
         if (nuevoNombre.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Validación", null, "El nombre no puede estar vacío.");
+            mostrarAlerta("Validación", "El nombre no puede estar vacío.");
             return;
         }
 
@@ -152,25 +138,24 @@ public class CategoriaController {
 
         task.setOnSucceeded(evt -> {
             if (task.getValue()) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", null, "Categoría actualizada correctamente.");
+                mostrarAlerta("Éxito", "Categoría actualizada correctamente.");
                 limpiarCampos();
                 cargarListaAsync();
             } else {
-                mostrarAlerta(Alert.AlertType.ERROR, "Error", null, "No se pudo actualizar la categoría.");
+                mostrarAlerta("Error", "No se pudo actualizar la categoría.");
             }
         });
 
-        task.setOnFailed(evt -> mostrarAlerta(Alert.AlertType.ERROR, "Error", null,
-                "Error al actualizar: " + task.getException().getMessage()));
-
+        task.setOnFailed(evt -> mostrarAlerta("Error", "Error al actualizar: " + task.getException().getMessage()));
         new Thread(task).start();
     }
 
+    // Elimina la categoría seleccionada.
     @FXML
     private void handleEliminar() {
         Categoria seleccion = tablaCategorias.getSelectionModel().getSelectedItem();
         if (seleccion == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", null, "Seleccione una categoría para eliminar.");
+            mostrarAlerta("Atención", "Seleccione una categoría para eliminar.");
             return;
         }
 
@@ -190,11 +175,11 @@ public class CategoriaController {
 
             task.setOnSucceeded(evt -> {
                 if (task.getValue()) {
-                    mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", null, "Categoría eliminada correctamente.");
+                    mostrarAlerta("Éxito", "Categoría eliminada correctamente.");
                     limpiarCampos();
                     cargarListaAsync();
                 } else {
-                    mostrarAlerta(Alert.AlertType.ERROR, "Error", null, "No se pudo eliminar la categoría.");
+                    mostrarAlerta("Error", "No se pudo eliminar la categoría.");
                 }
             });
 
@@ -202,6 +187,7 @@ public class CategoriaController {
         }
     }
 
+    // Busca categorías por nombre.
     @FXML
     private void handleBuscar() {
         String nombre = txtBuscar.getText().trim();
@@ -226,12 +212,15 @@ public class CategoriaController {
         new Thread(task).start();
     }
 
+    // Recarga la lista de categorías.
     @FXML
     private void handleListar() { cargarListaAsync(); }
 
+    // Limpia los campos de texto y la selección de la tabla.
     @FXML
     private void handleLimpiar() { limpiarCampos(); }
 
+    // Vuelve a la pantalla del reclutador.
     @FXML
     private void onVolver(ActionEvent event) {
         try {
@@ -245,13 +234,11 @@ public class CategoriaController {
             stage.show();
 
         } catch (IOException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", null, "No se pudo volver al panel del reclutador: " + e.getMessage());
+            mostrarAlerta("Error", "No se pudo volver al panel del reclutador: " + e.getMessage());
         }
     }
 
-    // ----------------------------------------------------
-    // 🔹 Utilidades
-    // ----------------------------------------------------
+    // Carga la lista de categorías de manera asíncrona.
     private void cargarListaAsync() {
         Task<List<Categoria>> task = new Task<>() {
             @Override
@@ -263,6 +250,7 @@ public class CategoriaController {
         new Thread(task).start();
     }
 
+    // Limpia los campos de texto y la selección de la tabla.
     private void limpiarCampos() {
         txtNombre.clear();
         txtDescripcion.clear();
@@ -270,13 +258,13 @@ public class CategoriaController {
         tablaCategorias.getSelectionModel().clearSelection();
     }
 
-    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String header, String contenido) {
-        Platform.runLater(() -> {
-            Alert alerta = new Alert(tipo);
-            alerta.setTitle(titulo);
-            alerta.setHeaderText(header);
-            alerta.setContentText(contenido);
-            alerta.showAndWait();
-        });
+    // Muestra una alerta con título y mensaje proporcionados.
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
+
 }

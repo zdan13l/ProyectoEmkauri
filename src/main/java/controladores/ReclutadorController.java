@@ -12,21 +12,20 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import modelo.Usuario;
 import servicio.*;
-
 import java.io.IOException;
 
+// Controlador para la pantalla principal del reclutador.
 public class ReclutadorController {
 
+    // Elementos de la interfaz gráfica.
     @FXML private Button btnCerrarSesion;
     @FXML private Button btnSolicitudesProducto;
     @FXML private Button btnSolicitudesEmprendedor;
-    @FXML private Button btnIrSolicitudesEmprendedor;
-    @FXML private Button btnIrSolicitudesProducto;
     @FXML private Button btnCategorias;
     @FXML private Label lblBienvenidaTop;
     @FXML private ImageView logoEmkauri;
 
-    // Servicios inyectados
+    // Servicios para manejar la lógica de negocio.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -34,6 +33,7 @@ public class ReclutadorController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Constructor que recibe los servicios necesarios.
     public ReclutadorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -43,116 +43,88 @@ public class ReclutadorController {
         this.servicioS = servicioS;
     }
 
-    // ==========================================================
-    // 🔹 Inicialización
-    // ==========================================================
+    // Inicializa la pantalla con los datos del usuario actual.
     @FXML
     public void initialize() {
         Usuario reclutador = SesionActual.getUsuarioActual();
 
         if (reclutador != null) {
-            lblBienvenidaTop.setText("Bienvenido, " + reclutador.getDatosPersonales().getNombre() + " " + reclutador.getDatosPersonales().getApellido());
+            lblBienvenidaTop.setText("Bienvenido, " +
+                    reclutador.getDatosPersonales().getNombre() + " " +
+                    reclutador.getDatosPersonales().getApellido());
         } else {
             lblBienvenidaTop.setText("Bienvenido, Reclutador");
         }
     }
 
-    // ==========================================================
-    // 🔹 Ver solicitudes de producto
-    // ==========================================================
+    // Maneja el evento de clic en el botón de solicitudes de productos.
     @FXML
     private void onSolicitudesProducto(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudP.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(factory::createController);
-
-            Scene scene = new Scene(loader.load());
-            SolicitudController controller = loader.getController();
-            controller.setTipoSolicitud("producto");
-            controller.cargarSolicitudesPendientes();
-
-            Stage stage = (Stage) btnSolicitudesProducto.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Solicitudes de Productos");
-            stage.show();
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de solicitudes de productos.");
-        }
+        abrirPantallaSolicitudes("/puj.fis.pantallas/solicitudP.fxml", "producto", "Solicitudes de Productos", btnSolicitudesProducto);
     }
 
-
-    // ==========================================================
-    // 🔹 Ver solicitudes de emprendedor
-    // ==========================================================
+    // Maneja el evento de clic en el botón de solicitudes de emprendedores.
     @FXML
     private void onSolicitudesEmprendedor(ActionEvent event) {
+        abrirPantallaSolicitudes("/puj.fis.pantallas/solicitudE.fxml", "emprendedor", "Solicitudes de Emprendedores", btnSolicitudesEmprendedor);
+    }
+
+    // Abre la pantalla de solicitudes según el tipo especificado.
+    private void abrirPantallaSolicitudes(String fxmlPath, String tipo, String titulo, Button boton) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudE.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(factory::createController);
 
             Scene scene = new Scene(loader.load());
             SolicitudController controller = loader.getController();
-            controller.setTipoSolicitud("emprendedor");
+            controller.setTipoSolicitud(tipo);
             controller.cargarSolicitudesPendientes();
 
-            Stage stage = (Stage) btnSolicitudesEmprendedor.getScene().getWindow();
+            Stage stage = (Stage) boton.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Solicitudes de Emprendedores");
+            stage.setTitle(titulo);
             stage.show();
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de solicitudes de emprendedores.");
+            mostrarAlerta("No se pudo abrir la pantalla de " + titulo.toLowerCase() + ".");
         }
     }
 
-
-    // ==========================================================
-    // 🔹 Cerrar sesión
-    // ==========================================================
+    // Maneja el evento de clic en el botón de cerrar sesión.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
         SesionActual.cerrarSesion();
+        cambiarPantalla("/puj.fis.pantallas/login.fxml", "Inicio de Sesión", btnCerrarSesion);
+    }
 
+    // Maneja el evento de clic en el botón de categorías.
+    @FXML
+    private void onCategorias(ActionEvent event) {
+        cambiarPantalla("/puj.fis.pantallas/categoria.fxml", "Gestión Categorías", btnCategorias);
+    }
+
+    // Cambia a otra pantalla especificada por el path del FXML, título y botón que origina el cambio.
+    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
-            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            Stage stage = (Stage) boton.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Inicio de Sesión");
+            stage.setTitle(titulo);
             stage.show();
-
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo regresar a la pantalla de login.");
+            mostrarAlerta("No se pudo abrir la pantalla: " + titulo);
         }
     }
 
-    // ==========================================================
-    // 🔹 Utilidad para mostrar alertas
-    // ==========================================================
-    private void mostrarAlerta(String titulo, String mensaje) {
+    // Muestra una alerta con el tipo, título, encabezado y mensaje especificados.
+    private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
-    }
-
-    @FXML
-    private void onCategorias(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/categoria.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Stage stage = (Stage) btnCategorias.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Gestión Categorías");
-            stage.show();
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de agregar categorías.");
-        }
     }
 }

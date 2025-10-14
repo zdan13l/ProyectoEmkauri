@@ -2,8 +2,10 @@ package controladores;
 
 import servicio.*;
 
+// Controlador con inyección de dependencias para los controladores de la aplicación.
 public class Controlador {
 
+    // Servicios necesarios para los controladores.
     private final ISUsuario servicioUsuario;
     private final ISCompra servicioCompra;
     private final ISProducto servicioProducto;
@@ -11,6 +13,7 @@ public class Controlador {
     private final ISPago servicioPago;
     private final ISSolicitud servicioSolicitud;
 
+    // Constructor con inyección de dependencias.
     public Controlador(ISUsuario servicioUsuario, ISCompra servicioCompra, ISProducto servicioProducto, ISCategoria servicioCategoria, ISPago servicioPago, ISSolicitud servicioSolicitud) {
         this.servicioUsuario = servicioUsuario;
         this.servicioCompra = servicioCompra;
@@ -20,6 +23,7 @@ public class Controlador {
         this.servicioSolicitud = servicioSolicitud;
     }
 
+    // Metodo para crear controladores con los servicios inyectados.
     public Object createController(Class<?> tipo) {
         if (tipo == LoginController.class) return new LoginController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
         if (tipo == RegistroController.class) return new RegistroController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);

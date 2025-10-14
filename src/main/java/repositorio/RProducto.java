@@ -21,7 +21,7 @@ public class RProducto implements IRProducto {
             ps.setInt(4, producto.getEmprendedor().getIdUsuario());
             ps.setInt(5, producto.getCategoria().getIdCategoria());
 
-            // 🔹 Diferenciar entre curso y servicio
+            // Diferenciar entre curso y servicio.
             if (producto instanceof Curso curso) {
                 ps.setString(6, "CURSO");
                 ps.setInt(7, curso.getDuracionCurso());
@@ -44,7 +44,7 @@ public class RProducto implements IRProducto {
 
             int filasAfectadas = ps.executeUpdate();
 
-            // 🔹 Recuperar el ID generado automáticamente
+            // Recuperar el ID generado automáticamente.
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     int idGenerado = rs.getInt(1);
@@ -56,12 +56,11 @@ public class RProducto implements IRProducto {
 
         } catch (SQLException e) {
             System.err.println("Error al crear producto: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
 
-    // Listar todos los productos aprobados
+    // Listar todos los productos aprobados.
     @Override
     public List<Producto> listarTodos() {
         List<Producto> productos = new ArrayList<>();
@@ -92,22 +91,18 @@ public class RProducto implements IRProducto {
     public List<Producto> listarComprados(int idCliente) {
         List<Producto> productos = new ArrayList<>();
 
-        String sql = """
-        SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto,
-               u.idUsuario, u.correo,
-               c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria,
-               p.duracionCurso, p.nivelDificultad, p.certificacion,
-               p.duracionServicio, p.ubicacion, p.modalidad
-        FROM Compras co
-        JOIN ComprasProductos cp ON co.idCompra = cp.idCompra
-        JOIN Productos p ON cp.idProducto = p.idProducto
-        JOIN Usuarios u ON p.idEmprendedor = u.idUsuario
-        LEFT JOIN Categorias c ON p.idCategoria = c.idCategoria
-        WHERE co.idCliente = ?
-    """;
+        String sql = " SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
+                            "u.idUsuario, u.correo, " +
+                            "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
+                            "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
+                            "p.duracionServicio, p.ubicacion, p.modalidad " +
+                        "FROM Productos p " +
+                        "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                        "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                        "JOIN Compras co ON p.idProducto = co.idProducto " +
+                        "WHERE co.idCliente = ?";
 
-        try (Connection conexion = ConexionDB.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setInt(1, idCliente);
 
@@ -119,7 +114,7 @@ public class RProducto implements IRProducto {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Error al listar productos comprados: " + e.getMessage());
+            System.err.println("Error al listar productos comprados: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -140,8 +135,7 @@ public class RProducto implements IRProducto {
                 "LEFT JOIN Categorias c ON p.idCategoria = c.idCategoria " +
                 "WHERE p.idEmprendedor = ?";
 
-        try (Connection conexion = ConexionDB.getConnection();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setInt(1, idEmprendedor);
             try (ResultSet rs = ps.executeQuery()) {
@@ -152,12 +146,11 @@ public class RProducto implements IRProducto {
             }
         } catch (SQLException e) {
             System.err.println(" Error al listar productos por emprendedor: " + e.getMessage());
-            e.printStackTrace();
         }
         return productos;
     }
 
-    // Mapear un ResultSet a un objeto Producto (o sus subclases).
+    // Mapear un ResultSet a un objeto Producto.
     public Producto mapearProducto(ResultSet rs) {
         try {
             // Emprendedor.

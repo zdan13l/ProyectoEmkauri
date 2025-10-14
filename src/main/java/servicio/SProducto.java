@@ -4,53 +4,47 @@ import modelo.Producto;
 import repositorio.IRProducto;
 import java.util.List;
 
+// Servicio de negocio para la gestión de productos.
 public class SProducto implements ISProducto {
 
     private final IRProducto repoP;
 
+    // Constructor con inyección de dependencia.
     public SProducto(IRProducto repoP) {
         this.repoP = repoP;
     }
 
-    @Override
+    // Crea un nuevo producto.
     public boolean crearProducto(Producto producto) {
         return repoP.agregar(producto);
     }
 
-    @Override
+    // Obtiene un producto por su ID.
     public Producto obtenerProductoPorId(int id) {
         return repoP.buscarPorId(id);
     }
 
-    @Override
+    // Busca productos por nombre (título).
     public List<Producto> buscarPorNombre(String nombre) {
         return repoP.buscarPorTitulo(nombre);
     }
 
-    @Override
-    public List<Producto> listarProductos() {
-        return repoP.listarTodos();
-    }
+    // Lista todos los productos disponibles.
+    public List<Producto> listarProductos() { return repoP.listarTodos(); }
 
-    @Override
-    public List<Producto> listarComprados(int idCliente) {
-        return repoP.listarComprados(idCliente);
-    }
+    // Lista los productos comprados por un cliente específico.
+    public List<Producto> listarComprados(int idCliente) { return repoP.listarComprados(idCliente); }
 
-    @Override
-    public List<Producto> listarPorEmprendedor(int idEmprendedor) {
-        return repoP.listarPorEmprendedor(idEmprendedor);
-    }
+    // Lista los productos asociados a un emprendedor específico.
+    public List<Producto> listarPorEmprendedor(int idEmprendedor) { return repoP.listarPorEmprendedor(idEmprendedor); }
 
-    @Override
+    // Actualiza la información de un producto existente.
     public boolean actualizarProducto(Producto producto) {
         return repoP.actualizar(producto);
     }
 
-    @Override
+    // Elimina un producto por su ID.
     public boolean eliminarProducto(int id) {
         return repoP.eliminar(id);
     }
-
-
 }

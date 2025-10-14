@@ -7,12 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Repositorio para gestionar las solicitudes en la base de datos.
 public class RSolicitud implements IRSolicitud {
 
-    // -------------------------------------------------------------------------
-    // GUARDAR SOLICITUD
-    // -------------------------------------------------------------------------
-    @Override
+    // Guardar una nueva solicitud en la base de datos.
     public void guardar(Solicitud solicitud) {
         String sql = "INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -25,7 +23,7 @@ public class RSolicitud implements IRSolicitud {
             if (solicitud.getReclutador() != null && solicitud.getReclutador().getIdUsuario() != 0) {
                 idReclutador = solicitud.getReclutador().getIdUsuario();
             } else {
-                // Buscar reclutador por defecto en la base de datos
+                // Buscar reclutador por defecto en la base de datos.
                 idReclutador = obtenerReclutador(conexion);
             }
 
@@ -58,10 +56,7 @@ public class RSolicitud implements IRSolicitud {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // LISTAR SOLICITUDES PENDIENTES
-    // -------------------------------------------------------------------------
-    @Override
+    // Listar todas las solicitudes pendientes.
     public List<Solicitud> listarPendientesTipo(String tipo) {
         List<Solicitud> solicitudes = new ArrayList<>();
         String sql = "SELECT * FROM Solicitudes WHERE estado = 'PENDIENTE'";
@@ -86,27 +81,19 @@ public class RSolicitud implements IRSolicitud {
         return solicitudes;
     }
 
-    // -------------------------------------------------------------------------
-    // APROBAR SOLICITUD
-    // -------------------------------------------------------------------------
-    @Override
+    // Aprobar una solicitud por su ID.
     public boolean aprobar(int idSolicitud) {
         actualizarEstado(idSolicitud, "APROBADO");
         return true;
     }
 
-    // -------------------------------------------------------------------------
-    // RECHAZAR SOLICITUD
-    // -------------------------------------------------------------------------
-    @Override
+    // Rechazar una solicitud por su ID.
     public boolean rechazar(int idSolicitud) {
         actualizarEstado(idSolicitud, "RECHAZADO");
         return true;
     }
 
-    // -------------------------------------------------------------------------
-    // MÉTODO PRIVADO: ACTUALIZAR ESTADO
-    // -------------------------------------------------------------------------
+    // Actualizar el estado de una solicitud.
     private void actualizarEstado(int idSolicitud, String nuevoEstado) {
         String sql = "UPDATE Solicitudes SET estado = ? WHERE idSolicitud = ?";
 
@@ -122,9 +109,7 @@ public class RSolicitud implements IRSolicitud {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // MAPEAR RESULTSET A OBJETO Solicitud
-    // -------------------------------------------------------------------------
+    // Mapear un ResultSet a un objeto Solicitud.
     private Solicitud mapearSolicitud(ResultSet rs) throws SQLException {
         Solicitud solicitud = new Solicitud();
 
@@ -132,12 +117,12 @@ public class RSolicitud implements IRSolicitud {
         solicitud.setEstado(rs.getString("estado"));
         solicitud.setMensaje(rs.getString("mensaje"));
 
-        // Crear y asignar solicitante
+        // Crear y asignar solicitante.
         Usuario solicitante = new Usuario();
         solicitante.setIdUsuario(rs.getInt("idSolicitante"));
         solicitud.setSolicitante(solicitante);
 
-        // Crear y asignar reclutador
+        // Crear y asignar reclutador.
         int idReclutador = rs.getInt("idReclutador");
         if (!rs.wasNull()) {
             Usuario reclutador = new Usuario();
@@ -145,7 +130,7 @@ public class RSolicitud implements IRSolicitud {
             solicitud.setReclutador(reclutador);
         }
 
-        // Producto asociado
+        // Producto asociado.
         int idProducto = rs.getInt("idProductoAsociado");
         if (!rs.wasNull()) {
             Producto producto = new Producto();
@@ -153,7 +138,7 @@ public class RSolicitud implements IRSolicitud {
             solicitud.setProductoAsociado(producto);
         }
 
-        // Emprendedor asociado
+        // Emprendedor asociado.
         int idEmprendedor = rs.getInt("idEmprendedorAsociado");
         if (!rs.wasNull()) {
             Usuario emprendedor = new Usuario();
@@ -164,6 +149,7 @@ public class RSolicitud implements IRSolicitud {
         return solicitud;
     }
 
+    // Obtener un reclutador por defecto de la base de datos.
     public Integer obtenerReclutador(Connection conexion) {
         String sql = "SELECT idUsuario FROM Usuarios WHERE idRol = " +
                 "(SELECT idRol FROM Roles WHERE nombre = 'Reclutador') LIMIT 1";
@@ -177,5 +163,4 @@ public class RSolicitud implements IRSolicitud {
         }
         return null;
     }
-
 }

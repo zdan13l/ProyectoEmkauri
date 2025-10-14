@@ -20,9 +20,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
+// Controlador para manejar el proceso de pago y comprobante.
 public class PagoController {
 
-    // Servicios
+    // Servicios para manejar la lógica de negocio.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -30,6 +31,7 @@ public class PagoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Constructor con inyección de dependencias.
     public PagoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -39,7 +41,7 @@ public class PagoController {
         this.servicioS = servicioS;
     }
 
-    // ---- PANTALLA 1: FORMULARIO DE PAGO ----
+    // Campos de la pantalla de pago.
     @FXML private TextField txtTitular;
     @FXML private TextField txtNumeroTarjeta;
     @FXML private TextField txtMes;
@@ -50,7 +52,7 @@ public class PagoController {
     @FXML private Button btnCancelar;
     @FXML private Button btnConfirmarPago;
 
-    // ---- PANTALLA 2: COMPROBANTE DE PAGO ----
+    // Campos de la pantalla de comprobante.
     @FXML private Label lblNombreCliente;
     @FXML private Label lblCorreoCliente;
     @FXML private Label lblTotalPagado;
@@ -59,43 +61,32 @@ public class PagoController {
     @FXML private Button btnVolverInicio;
     @FXML private Button btnGuardar;
 
-    private Pago pagoActual; // para guardar el comprobante
-    // Inicialización automática (solo se ejecuta si los componentes existen)
+    private Pago pagoActual;
+
+    // Inicialización de la pantalla.
     @FXML
     public void initialize() {
-        if (lblTotalPago != null) {  // estamos en pantalla de pago
+        if (lblTotalPago != null) { // pantalla de pago
             double total = SesionActual.getCarrito().stream()
                     .mapToDouble(Producto::getPrecio)
                     .sum();
             lblTotalPago.setText(String.format("$ %.2f", total));
-        } else if (lblFecha != null) {  // estamos en pantalla de comprobante
+        } else if (lblFecha != null) { // pantalla de comprobante
             inicializarComprobante();
         }
     }
 
-    // Botón Cancelar en pantalla 1
+    // Maneja la acción de cancelar el pago.
     @FXML
-    public void handleCancelar(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/carrito.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnCancelar.getScene().getWindow();
-            stage.setTitle("Carrito de Compras");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al carrito.");
-        }
+    public void handleCancelar(ActionEvent event) {
+        cambiarPantalla("/puj.fis.pantallas/carrito.fxml", "Carrito de Compras", btnCancelar);
     }
 
-    // Botón Confirmar Pago en pantalla 1
+    // Maneja la acción de confirmar el pago.
     @FXML
-    public void handleConfirmarPago(ActionEvent actionEvent) {
-        if (txtTitular == null) return; // seguridad por si estamos en otra vista
+    public void handleConfirmarPago(ActionEvent event) {
+        if (txtTitular == null) return;
 
-        // Validaciones simples
         if (txtTitular.getText().isEmpty() || txtNumeroTarjeta.getText().isEmpty()
                 || txtMes.getText().isEmpty() || txtAnio.getText().isEmpty()
                 || txtCVV.getText().isEmpty() || txtCorreo.getText().isEmpty()) {
@@ -103,7 +94,6 @@ public class PagoController {
             return;
         }
 
-        // Crear objeto Pago
         double total = SesionActual.getCarrito().stream()
                 .mapToDouble(Producto::getPrecio)
                 .sum();
@@ -113,27 +103,15 @@ public class PagoController {
         pagoActual.setMonto(total);
         pagoActual.setFecha(new Date());
 
-        // Guardar en la sesión para que esté disponible en el comprobante
         SesionActual.setPagoActual(pagoActual);
 
-        // Simular procesamiento y abrir pantalla de confirmación
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/comprobante.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnConfirmarPago.getScene().getWindow();
-            stage.setTitle("Pago Exitoso");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de confirmación de pago.");
-        }
+        cambiarPantalla("/puj.fis.pantallas/comprobante.fxml", "Pago Exitoso", btnConfirmarPago);
     }
 
-    // ---- Inicializar pantalla de comprobante ----
+    // Inicializa los datos del comprobante.
     private void inicializarComprobante() {
         pagoActual = SesionActual.getPagoActual();
+
         if (SesionActual.getUsuarioActual() != null) {
             lblNombreCliente.setText("Nombre: " + SesionActual.getUsuarioActual().getDatosPersonales().getNombre());
             lblCorreoCliente.setText("Correo: " + SesionActual.getUsuarioActual().getCorreo());
@@ -148,9 +126,9 @@ public class PagoController {
         lblCodigoTransaccion.setText("Código de transacción: #" + UUID.randomUUID().toString().substring(0, 8));
     }
 
-    // ---- Botón Guardar en pantalla de comprobante ----
+    // Maneja la acción de guardar el comprobante en un archivo JSON.
     @FXML
-    public void handleGuardar(ActionEvent actionEvent) {
+    public void handleGuardar(ActionEvent event) {
         if (pagoActual == null) {
             mostrarAlerta("Error", "No hay un pago registrado para guardar.");
             return;
@@ -163,50 +141,27 @@ public class PagoController {
                 + "}";
 
         try {
-            // 📂 Ruta de la carpeta comprobantes dentro del proyecto
-            Path carpeta = Paths.get(System.getProperty("user.dir"),
-                    "src", "main", "resources", "comprobantes");
-
-            // Crear carpeta si no existe
+            Path carpeta = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "comprobantes");
             Files.createDirectories(carpeta);
 
-            // Crear archivo con nombre único
             Path destino = carpeta.resolve("comprobante_" + pagoActual.getCodigo() + ".json");
-
-            // Guardar el JSON
             Files.writeString(destino, json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-            mostrarAlerta("Guardado exitoso",
-                    "Comprobante guardado correctamente en:\n" + destino.toAbsolutePath());
+            mostrarAlerta("Guardado exitoso", "Comprobante guardado correctamente en:\n" + destino.toAbsolutePath());
 
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo guardar el comprobante:\n" + e.getMessage());
         }
     }
 
-
-    // ---- Botón Volver al inicio en pantalla de comprobante ----
+    // Maneja la acción de volver al inicio.
     @FXML
-    public void handleVolverInicio(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnVolverInicio.getScene().getWindow();
-            stage.setTitle("Menú Principal");
-            stage.setScene(scene);
-
-            // Vaciar carrito tras compra
-            SesionActual.vaciarCarrito();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al menú principal.");
-        }
+    public void handleVolverInicio(ActionEvent event) {
+        cambiarPantalla("/puj.fis.pantallas/cliente.fxml", "Menú Principal", btnVolverInicio);
+        SesionActual.vaciarCarrito();
     }
 
-    // ---- Utilidad ----
+    // Muestra una alerta con el título y mensaje proporcionados.
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -215,8 +170,25 @@ public class PagoController {
         alert.showAndWait();
     }
 
-    // Función mínima para escapar comillas y barras.
+    // Escapa caracteres especiales en una cadena para JSON.
     private String escape(String s) {
         return s == null ? "" : s.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    // Cambia la pantalla actual a la especificada por el path FXML.
+    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            loader.setControllerFactory(controladorFactory::createController);
+
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) boton.getScene().getWindow();
+            stage.setTitle(titulo);
+            stage.setScene(scene);
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
+        }
     }
 }

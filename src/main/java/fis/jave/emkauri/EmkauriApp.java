@@ -10,10 +10,12 @@ import servicio.*;
 
 import java.sql.Connection;
 
+// Clase principal de la aplicación JavaFX.
 public class EmkauriApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
         // Inyección de dependencias manual.
         IRUsuario repoUsuario = new RUsuario();
         ISUsuario servicioUsuario = new SUsuario(repoUsuario);
@@ -32,12 +34,14 @@ public class EmkauriApp extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
         fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud).createController(param));
 
+        // Configurar y mostrar la escena.
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setTitle("Login - Emkauri");
         stage.setScene(scene);
         stage.show();
     }
 
+    // Metodo principal.
     public static void main(String[] args) throws Exception {
         // Modo pruebas por defecto.
         ConexionDB.setModoPruebas(true);

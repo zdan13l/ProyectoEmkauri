@@ -4,6 +4,7 @@ import modelo.Producto;
 import java.sql.ResultSet;
 import java.util.List;
 
+// Interfaz para operaciones CRUD en la entidad Producto.
 public interface IRProducto {
     boolean agregar(Producto producto);
     boolean actualizar(Producto producto);

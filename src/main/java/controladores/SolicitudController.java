@@ -11,15 +11,13 @@ import modelo.Producto;
 import modelo.Solicitud;
 import modelo.Usuario;
 import servicio.*;
-
 import java.io.IOException;
 import java.util.List;
 
+// Controlador para la pantalla de gestión de solicitudes (productos y emprendedores).
 public class SolicitudController {
 
-    // -------------------------------------------------------------------------
-    // Servicios inyectados
-    // -------------------------------------------------------------------------
+    // Servicios inyectados.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -27,23 +25,16 @@ public class SolicitudController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
-    // -------------------------------------------------------------------------
-    // Parámetro adicional para saber qué tipo de solicitudes mostrar
-    // -------------------------------------------------------------------------
-    private String tipoSolicitud; // "producto" o "emprendedor"
+    // Tipo de solicitud a mostrar: "producto" o "emprendedor".
+    private String tipoSolicitud;
 
-    // -------------------------------------------------------------------------
-    // Elementos FXML
-    // -------------------------------------------------------------------------
+    // Elementos FXML.
     @FXML private VBox contenedorSolicitudes;
     @FXML private Button btnVolver;
     @FXML private Button btnCerrarSesion;
 
-    // -------------------------------------------------------------------------
-    // Constructor con inyección de dependencias
-    // -------------------------------------------------------------------------
-    public SolicitudController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP,
-                               ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    // Constructor con inyección de dependencias.
+    public SolicitudController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
@@ -52,24 +43,18 @@ public class SolicitudController {
         this.servicioS = servicioS;
     }
 
-    // -------------------------------------------------------------------------
-    // Setter para definir el tipo de solicitud (lo pasaremos desde el ReclutadorController)
-    // -------------------------------------------------------------------------
+    // Setter para definir el tipo de solicitud.
     public void setTipoSolicitud(String tipoSolicitud) {
         this.tipoSolicitud = tipoSolicitud;
     }
 
-    // -------------------------------------------------------------------------
-    // Inicialización
-    // -------------------------------------------------------------------------
+    // Inicialización del controlador.
     @FXML
     public void initialize() {
         System.out.println("[INFO] Pantalla de solicitudes inicializada.");
     }
 
-    // -------------------------------------------------------------------------
-    // CARGAR SOLICITUDES PENDIENTES
-    // -------------------------------------------------------------------------
+    // Cargar solicitudes pendientes desde el servicio.
     public void cargarSolicitudesPendientes() {
         contenedorSolicitudes.getChildren().clear();
 
@@ -96,20 +81,18 @@ public class SolicitudController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             Label error = new Label("Error al cargar las solicitudes: " + e.getMessage());
             contenedorSolicitudes.getChildren().add(error);
         }
     }
 
+    // Crear un card visual para cada solicitud.
     private VBox crearCardSolicitud(Solicitud solicitud) {
         VBox card = new VBox();
         card.setSpacing(10);
         card.setStyle("-fx-background-color: #ffffff; -fx-padding: 15; -fx-border-color: #ccc; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // ==============================================
-        // INFORMACIÓN BÁSICA
-        // ==============================================
+        // Información básica de la solicitud.
         Label lblTitulo = new Label("📋 Solicitud #" + solicitud.getIdSolicitud());
         lblTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
@@ -117,9 +100,7 @@ public class SolicitudController {
         Label lblMensaje = new Label("Mensaje: " + solicitud.getMensaje());
         lblMensaje.setWrapText(true);
 
-        // ==============================================
-        // Si es de producto
-        // ==============================================
+        // Si la solicitud es de producto.
         if ("producto".equalsIgnoreCase(tipoSolicitud) && solicitud.getProductoAsociado() != null) {
             Producto p = solicitud.getProductoAsociado();
             Label lblNombre = new Label("Producto: " + p.getTitulo());
@@ -128,9 +109,7 @@ public class SolicitudController {
             card.getChildren().addAll(lblNombre, lblCategoria, lblPrecio);
         }
 
-        // ==============================================
-        // Si es de emprendedor
-        // ==============================================
+        // Si la solicitud es de emprendedor.
         if ("emprendedor".equalsIgnoreCase(tipoSolicitud) && solicitud.getEmprendedor() != null) {
             Usuario u = solicitud.getEmprendedor();
             Label lblNombre = new Label("Nombre: " + u.getDatosPersonales().getNombre() + " " + u.getDatosPersonales().getApellido());
@@ -138,9 +117,7 @@ public class SolicitudController {
             card.getChildren().addAll(lblNombre, lblCorreo);
         }
 
-        // ==============================================
-        // BOTONES
-        // ==============================================
+        // Botones de acción.
         HBox acciones = new HBox(10);
         acciones.setStyle("-fx-alignment: center-right;");
 
@@ -154,84 +131,71 @@ public class SolicitudController {
 
         acciones.getChildren().addAll(btnAprobar, btnRechazar);
 
-        // ==============================================
-        // ENSAMBLAR CARD
-        // ==============================================
+        // Ensamblar card final.
         card.getChildren().addAll(lblTitulo, lblEstado, lblMensaje, acciones);
 
         return card;
     }
 
-    // -------------------------------------------------------------------------
-    // APROBAR / RECHAZAR
-    // -------------------------------------------------------------------------
+    // Aprobar solicitud.
     private void aprobarSolicitud(int idSolicitud) {
         try {
             boolean exito = servicioS.aprobarSolicitud(idSolicitud);
             if (exito) {
-                mostrarAlerta("✅ Solicitud aprobada", "La solicitud fue aprobada correctamente.");
+                mostrarAlerta("Solicitud aprobada", "La solicitud fue aprobada correctamente.");
                 cargarSolicitudesPendientes();
             } else {
-                mostrarAlerta("⚠️ No se pudo aprobar", "No se encontró la solicitud o ya fue procesada.");
+                mostrarAlerta("No se pudo aprobar", "No se encontró la solicitud o ya fue procesada.");
             }
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo aprobar la solicitud: " + e.getMessage());
         }
     }
 
+    // Rechazar solicitud
     private void rechazarSolicitud(int idSolicitud) {
         try {
             boolean exito = servicioS.rechazarSolicitud(idSolicitud);
             if (exito) {
-                mostrarAlerta("❌ Solicitud rechazada", "La solicitud fue rechazada correctamente.");
+                mostrarAlerta(" Solicitud rechazada", "La solicitud fue rechazada correctamente.");
                 cargarSolicitudesPendientes();
             } else {
-                mostrarAlerta("⚠️ No se pudo rechazar", "No se encontró la solicitud o ya fue procesada.");
+                mostrarAlerta(" No se pudo rechazar", "No se encontró la solicitud o ya fue procesada.");
             }
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo rechazar la solicitud: " + e.getMessage());
         }
     }
 
-    // -------------------------------------------------------------------------
-    // NAVEGACIÓN
-    // -------------------------------------------------------------------------
+    // Volver al panel del reclutador.
     @FXML
     private void onVolver(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/reclutador.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
-            loader.setControllerFactory(factory::createController);
-
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Panel del Reclutador");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al panel del reclutador.");
-        }
+        cambiarPantalla("/puj.fis.pantallas/reclutador.fxml", "Panel del Reclutador", btnVolver);
     }
 
+    // Cerrar sesión.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
+        cambiarPantalla("/puj.fis.pantallas/login.fxml", "Inicio de sesión", btnCerrarSesion);
+    }
+
+    // Metodo genérico para cambiar de pantalla.
+    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(factory::createController);
 
-            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            Stage stage = (Stage) boton.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Inicio de sesión");
+            stage.setTitle(titulo);
             stage.show();
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo cerrar la sesión.");
+            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
         }
     }
 
-    // -------------------------------------------------------------------------
-    // ALERTAS
-    // -------------------------------------------------------------------------
+    // Mostrar alertas de información.
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

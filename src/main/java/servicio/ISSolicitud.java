@@ -3,6 +3,7 @@ package servicio;
 import modelo.Solicitud;
 import java.util.List;
 
+// Interfaz para la gestión de solicitudes.
 public interface ISSolicitud {
     void crearSolicitud(Solicitud solicitud);
     List<Solicitud> listarSolicitudesPendientes(String tipo);

@@ -11,15 +11,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import modelo.Compra;
-import modelo.Pago;
 import modelo.Producto;
 import modelo.Usuario;
 import servicio.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 
 // Controlador para manejar la lógica de la pantalla del carrito de compras.
 public class CarritoController {
@@ -44,8 +40,10 @@ public class CarritoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Lista observable que contiene los productos del carrito.
     private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
 
+    // Constructor que recibe los servicios necesarios.
     public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -58,22 +56,27 @@ public class CarritoController {
     // Inicializa la tabla y carga los productos del carrito.
     @FXML
     public void initialize() {
-        // Configurar las columnas de la tabla.
+        configurarColumnas();
+        cargarProductosCarrito();
+        actualizarTotal();
+    }
+
+    // Configura las columnas de la tabla de productos.
+    private void configurarColumnas() {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
 
-        // Emprendedor (correo o nombre).
+        // Emprendedor (correo o nombre)
         colEmprendedor.setCellValueFactory(cellData ->
                 Bindings.createStringBinding(() -> {
                     Usuario emp = cellData.getValue().getEmprendedor();
                     if (emp == null) return "";
-                    // Mostrar nombre si existe, de lo contrario el correo
                     return emp.getCorreo() != null ? emp.getCorreo() :
                             (emp.getDatosPersonales().getNombre() != null ? emp.getDatosPersonales().getNombre() : "");
                 })
         );
 
-        // Tipo de producto (Curso o Servicio).
+        // Tipo de producto (Curso o Servicio)
         colTipo.setCellValueFactory(cellData ->
                 Bindings.createStringBinding(() -> {
                     String tipo = cellData.getValue().getClass().getSimpleName();
@@ -82,11 +85,12 @@ public class CarritoController {
                     return "DESCONOCIDO";
                 })
         );
+    }
 
-        // Cargar los productos del carrito actual.
+    // Carga los productos del carrito actual en la tabla.
+    private void cargarProductosCarrito() {
         productosCarrito.setAll(SesionActual.getCarrito());
         tablaCarrito.setItems(productosCarrito);
-        actualizarTotal();
     }
 
     // Agrega un producto al carrito y actualiza el total.
@@ -95,7 +99,41 @@ public class CarritoController {
         actualizarTotal();
     }
 
-    // Procesa el pago y crea la compra.
+    // Elimina el producto seleccionado del carrito.
+    @FXML
+    public void handleEliminar(ActionEvent actionEvent) {
+        Producto seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            SesionActual.getCarrito().remove(seleccionado);
+            productosCarrito.remove(seleccionado);
+            actualizarTotal();
+        } else {
+            mostrarAlerta("Error", "Selecciona un producto para eliminar.");
+        }
+    }
+
+    // Vacia todo el carrito despues de una confirmacion.
+    @FXML
+    public void handleVaciar(ActionEvent actionEvent) {
+        if (productosCarrito.isEmpty()) {
+            mostrarAlerta("Aviso", "El carrito ya está vacío.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Deseas vaciar el carrito?", ButtonType.YES, ButtonType.NO);
+        confirm.setTitle("Confirmación");
+        confirm.setHeaderText(null);
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                SesionActual.vaciarCarrito();
+                productosCarrito.clear();
+                actualizarTotal();
+            }
+        });
+    }
+
+    // Procesa el pago y abre la pantalla de confirmación.
     @FXML
     public void handlePagar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
@@ -113,7 +151,6 @@ public class CarritoController {
             stage.setTitle("Confirmar Pago");
             stage.setScene(scene);
         } catch (IOException e) {
-            e.printStackTrace();
             mostrarAlerta("Error", "No se pudo abrir la pantalla de pago.");
         }
     }
@@ -135,41 +172,7 @@ public class CarritoController {
         }
     }
 
-    // Vacía todo el carrito después de una confirmación.
-    @FXML
-    public void handleVaciar(ActionEvent actionEvent) {
-        if (productosCarrito.isEmpty()) {
-            mostrarAlerta("Aviso", "El carrito ya está vacío.");
-            return;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Deseas vaciar el carrito?", ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmación");
-        confirm.setHeaderText(null);
-
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                SesionActual.vaciarCarrito();
-                productosCarrito.clear();
-                actualizarTotal();
-            }
-        });
-    }
-
-    // Elimina el producto seleccionado del carrito.
-    @FXML
-    public void handleEliminar(ActionEvent actionEvent) {
-        Producto seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            SesionActual.getCarrito().remove(seleccionado);
-            productosCarrito.remove(seleccionado);
-            actualizarTotal();
-        } else {
-            mostrarAlerta("Error", "Selecciona un producto para eliminar.");
-        }
-    }
-
-    // Actualiza la etiqueta del total con el monto calculado.
+    // Actualiza la etiqueta del total del carrito.
     private void actualizarTotal() {
         lblTotal.setText(String.format("$%.2f", calcularTotal()));
     }
@@ -179,7 +182,7 @@ public class CarritoController {
         return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum();
     }
 
-    // Muestra una alerta con el título y mensaje proporcionados.
+    // Muestra una alerta con título y mensaje proporcionados.
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

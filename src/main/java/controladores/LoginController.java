@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import modelo.Usuario;
 import servicio.*;
-
 import java.io.IOException;
 
 // Controlador para manejar la lógica de la pantalla de login.
@@ -21,7 +20,7 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
-    // Servicio para manejar la lógica.
+    // Servicios para manejar la lógica de negocio.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -29,6 +28,7 @@ public class LoginController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Constructor que recibe los servicios necesarios.
     public LoginController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioCo = servicioCo;
         this.servicioU = servicioU;

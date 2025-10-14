@@ -5,38 +5,29 @@ import repositorio.IRCategoria;
 
 import java.util.List;
 
+// Servicio que implementa la lógica de negocio para las categorías.
 public class SCategoria implements ISCategoria {
     private final IRCategoria repoC;
 
+    // Constructor con inyección de dependencia del repositorio.
     public SCategoria(IRCategoria repoC) {
         this.repoC = repoC;
     }
 
-    @Override
-    public boolean crearCategoria(Categoria categoria) {
-        // Implementación para crear una categoría
-        return repoC.agregar(categoria);
-    }
+    // Crea una nueva categoría.
+    public boolean crearCategoria(Categoria categoria) { return repoC.agregar(categoria); }
 
-    @Override
-    public Categoria buscarPorNombre(String nombre) {
-        return repoC.buscarPorNombre(nombre);
-    }
+    // Obtiene una categoría por su ID.
+    public Categoria buscarPorNombre(String nombre) { return repoC.buscarPorNombre(nombre); }
 
-    @Override
-    public boolean actualizarCategoria(Categoria categoria) {
-        return repoC.actualizar(categoria);
-    }
+    // Actualiza una categoría existente.
+    public boolean actualizarCategoria(Categoria categoria) { return repoC.actualizar(categoria); }
 
-    @Override
+    // Lista todas las categorías.
     public List<Categoria> listarCategorias() {
         return repoC.listarTodas();
     }
 
-    @Override
-    public boolean eliminarCategoria(int id) {
-        return repoC.eliminar(id);
-    }
-
-
+    // Elimina una categoría por su ID.
+    public boolean eliminarCategoria(int id) { return repoC.eliminar(id); }
 }

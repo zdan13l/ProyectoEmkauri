@@ -11,10 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import servicio.*;
-
 import java.io.IOException;
 
-// Controlador para manejar la lógica de la pantalla del cliente.
+// Controlador para manejar la pantalla del cliente.
 public class ClienteController {
 
     // Campos vinculados a los elementos de la interfaz.
@@ -25,7 +24,7 @@ public class ClienteController {
     @FXML private Button btnCerrarSesion;
     @FXML private ImageView welcomeIllustration;
 
-    // Servicio para manejar la lógica de usuario.
+    // Servicios para manejar la lógica de negocio.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -33,6 +32,7 @@ public class ClienteController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Constructor que recibe los servicios necesarios.
     public ClienteController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -42,25 +42,25 @@ public class ClienteController {
         this.servicioS = servicioS;
     }
 
-    // Ver catálogo de productos.
+    // Navegar al catálogo de productos.
     @FXML
     private void onVerProductos(ActionEvent event) {
         cambiarPantalla("/puj.fis.pantallas/catalogo.fxml", "Catálogo de Productos");
     }
 
-    // Ver mis productos (productos del cliente).
+    // Navegar a la pantalla de "Mis Productos".
     @FXML
     private void onVerMisProductos(ActionEvent event) {
         cambiarPantalla("/puj.fis.pantallas/productosC.fxml", "Mis Productos");
     }
 
-    // Ver carrito de compras.
+    // Navegar a la pantalla del carrito de compras.
     @FXML
     private void onVerCarrito(ActionEvent event) {
         cambiarPantalla("/puj.fis.pantallas/carrito.fxml", "Mi Carrito");
     }
 
-    // Cerrar sesión y volver a la pantalla de login.
+    // Cierra sesión y vuelve a la pantalla de login.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
         try {
@@ -80,12 +80,12 @@ public class ClienteController {
         }
     }
 
-    // Método genérico para cambiar de pantalla.
+    // Metodo genérico para cambiar de pantalla.
     private void cambiarPantalla(String fxmlPath, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
-            // Reutilizamos la fábrica de controladores, inyectando solo servicioUsuario.
+            // Reutilizamos la fábrica de controladores para inyectar los servicios.
             Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
 
@@ -99,7 +99,7 @@ public class ClienteController {
         }
     }
 
-    // Muestra una alerta con el título y mensaje proporcionados.
+    // Muestra una alerta con el mensaje proporcionado.
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Error");

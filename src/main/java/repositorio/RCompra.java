@@ -12,7 +12,6 @@ import java.util.List;
 public class RCompra implements IRCompra {
 
     // Insertar una nueva compra junto con sus productos asociados.
-    @Override
     public boolean insertar(Compra compra) {
         String sqlCompra = "INSERT INTO Compras (idCliente, montoFinal, idPago) VALUES (?, ?, ?)";
         String sqlCompraProducto = "INSERT INTO ComprasProductos (idCompra, idProducto, precioCompra) VALUES (?, ?, ?)";
@@ -59,7 +58,6 @@ public class RCompra implements IRCompra {
     }
 
     // Obtener una compra por su ID, incluyendo productos asociados.
-    @Override
     public Compra obtenerPorId(int id) {
         String sql = "SELECT * FROM Compras WHERE idCompra = ?";
         Compra compra = null;
@@ -117,7 +115,6 @@ public class RCompra implements IRCompra {
     }
 
     // Listar todas las compras en el sistema.
-    @Override
     public List<Compra> listar() {
         List<Compra> compras = new ArrayList<>();
         String sql = "SELECT * FROM Compras";
@@ -146,7 +143,6 @@ public class RCompra implements IRCompra {
     }
 
     // Actualizar los detalles de una compra existente.
-    @Override
     public boolean actualizar(Compra compra) {
         String sql = "UPDATE Compras SET montoFinal = ?, idPago = ? WHERE idCompra = ?";
 
@@ -163,7 +159,6 @@ public class RCompra implements IRCompra {
     }
 
     // Eliminar una compra por su ID.
-    @Override
     public boolean eliminar(int id) {
         String sql = "DELETE FROM Compras WHERE idCompra = ?";
 

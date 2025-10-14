@@ -10,35 +10,51 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import modelo.*;
 import servicio.*;
-
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
+// Controlador para la pantalla de solicitud de productos (cursos o servicios).
 public class SolicitudProductoController {
 
-    @FXML private Button btnVolver;
-    @FXML private Button btnEnviarSolicitud;
-    @FXML private RadioButton rbCurso;
-    @FXML private RadioButton rbServicio;
-    @FXML private ToggleGroup tipoProductoGroup;
+    // Elementos FXML del formulario.
+    @FXML
+    private Button btnVolver;
+    @FXML
+    private Button btnEnviarSolicitud;
+    @FXML
+    private RadioButton rbCurso;
+    @FXML
+    private RadioButton rbServicio;
+    @FXML
+    private ToggleGroup tipoProductoGroup;
+    @FXML
+    private TextField txtTitulo;
+    @FXML
+    private TextArea txtDescripcion;
+    @FXML
+    private TextField txtPrecio;
+    @FXML
+    private ComboBox<String> cmbCategoria;
+    @FXML
+    private VBox boxCurso;
+    @FXML
+    private VBox boxServicio;
+    @FXML
+    private TextField txtDuracionCurso;
+    @FXML
+    private TextField txtNivelDificultad;
+    @FXML
+    private TextField txtCertificacion;
+    @FXML
+    private TextField txtDuracionServicio;
+    @FXML
+    private TextField txtUbicacion;
+    @FXML
+    private TextField txtModalidad;
+    @FXML
+    private Label lblConfirmacion;
 
-    @FXML private TextField txtTitulo;
-    @FXML private TextArea txtDescripcion;
-    @FXML private TextField txtPrecio;
-    @FXML private ComboBox<String> cmbCategoria;
-
-    @FXML private VBox boxCurso;
-    @FXML private VBox boxServicio;
-    @FXML private TextField txtDuracionCurso;
-    @FXML private TextField txtNivelDificultad;
-    @FXML private TextField txtCertificacion;
-    @FXML private TextField txtDuracionServicio;
-    @FXML private TextField txtUbicacion;
-    @FXML private TextField txtModalidad;
-
-    @FXML private Label lblConfirmacion;
-
+    // Servicios inyectados.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -46,8 +62,10 @@ public class SolicitudProductoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
+    // Tipo de producto predeterminado (si viene de otra pantalla).
     private String tipoPredeterminado;
 
+    // Constructor con inyección de dependencias.
     public SolicitudProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -57,15 +75,13 @@ public class SolicitudProductoController {
         this.servicioS = servicioS;
     }
 
-    // ==========================================================
-    // 🔹 Inicialización del formulario
-    // ==========================================================
+    // Inicialización del formulario.
     @FXML
     public void initialize() {
         rbCurso.setDisable(false);
         rbServicio.setDisable(false);
 
-        // Cambiar visibilidad de paneles según el tipo seleccionado
+        // Cambiar visibilidad de paneles según el tipo de producto seleccionado.
         tipoProductoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == rbCurso) {
                 boxCurso.setVisible(true);
@@ -80,12 +96,10 @@ public class SolicitudProductoController {
             }
         });
 
-        // 🔹 Cargar categorías desde la BD usando SCategoria
+        // Cargar categorías desde la base de datos.
         try {
             List<Categoria> categorias = servicioCa.listarCategorias();
-            if (categorias == null || categorias.isEmpty()) {
-                System.err.println("No se encontraron categorías en la base de datos.");
-            } else {
+            if (categorias != null && !categorias.isEmpty()) {
                 for (Categoria cat : categorias) {
                     cmbCategoria.getItems().add(cat.getNombre());
                 }
@@ -94,27 +108,20 @@ public class SolicitudProductoController {
             System.err.println("Error al cargar categorías: " + e.getMessage());
         }
 
-        // 🔹 Seleccionar tipo predeterminado si viene de la pantalla anterior
-        if ("curso".equalsIgnoreCase(tipoPredeterminado)) {
-            rbCurso.setSelected(true);
-        } else if ("servicio".equalsIgnoreCase(tipoPredeterminado)) {
-            rbServicio.setSelected(true);
-        }
+        // Seleccionar tipo predeterminado si viene de la pantalla anterior.
+        configurarTipo();
     }
 
-    // ==========================================================
-    // 🔹 Enviar solicitud
-    // ==========================================================
+    // Acción al enviar solicitud.
     @FXML
     public void onEnviarSolicitud(ActionEvent event) {
         Usuario usuarioActual = SesionActual.getUsuarioActual();
-
         if (usuarioActual == null) {
             mostrarAlerta("Error", "Debes iniciar sesión antes de enviar una solicitud.");
             return;
         }
 
-        // Validar campos básicos
+        // Validar campos obligatorios.
         if (txtTitulo.getText().isEmpty() || txtDescripcion.getText().isEmpty() ||
                 txtPrecio.getText().isEmpty() || cmbCategoria.getValue() == null) {
             mostrarAlerta("Campos vacíos", "Por favor completa todos los campos obligatorios.");
@@ -123,8 +130,6 @@ public class SolicitudProductoController {
 
         try {
             double precio = Double.parseDouble(txtPrecio.getText());
-
-            // Buscar categoría real en base de datos
             Categoria categoria = servicioCa.buscarPorNombre(cmbCategoria.getValue());
             if (categoria == null) {
                 mostrarAlerta("Error", "La categoría seleccionada no existe en el sistema.");
@@ -133,7 +138,7 @@ public class SolicitudProductoController {
 
             Producto nuevoProducto;
 
-            // Dependiendo del tipo, crear Curso o Servicio
+            // Crear producto según el tipo seleccionado.
             if (rbCurso.isSelected()) {
                 int duracion = Integer.parseInt(txtDuracionCurso.getText());
                 String nivel = txtNivelDificultad.getText();
@@ -156,13 +161,12 @@ public class SolicitudProductoController {
 
             // Guardar el producto antes de crear la solicitud
             boolean productoGuardado = servicioP.crearProducto(nuevoProducto);
-
             if (!productoGuardado || nuevoProducto.getIdProducto() == 0) {
                 mostrarAlerta("Error", "No se pudo registrar el producto asociado.");
                 return;
             }
 
-            // Crear la solicitud
+            // Crear la solicitud asociada.
             Solicitud solicitud = new Solicitud();
             solicitud.setSolicitante(usuarioActual);
             solicitud.setEmprendedor(usuarioActual);
@@ -175,21 +179,16 @@ public class SolicitudProductoController {
 
             mostrarAlerta("Éxito", "Solicitud enviada correctamente. Espera aprobación.");
             limpiarFormulario();
-
-            // Volver al panel del emprendedor
             volverAlPanelEmprendedor();
 
         } catch (NumberFormatException e) {
             mostrarAlerta("Error", "Verifica los valores numéricos (precio o duración).");
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo enviar la solicitud: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
-    // ==========================================================
-    // 🔹 Utilidades
-    // ==========================================================
+    // Limpiar formulario después de enviar solicitud.
     private void limpiarFormulario() {
         txtTitulo.clear();
         txtDescripcion.clear();
@@ -202,11 +201,13 @@ public class SolicitudProductoController {
         lblConfirmacion.setText("");
     }
 
+    // Volver al panel del emprendedor.
     @FXML
     public void onVolver(ActionEvent actionEvent) {
         volverAlPanelEmprendedor();
     }
 
+    // Navegar de vuelta al panel del emprendedor.
     private void volverAlPanelEmprendedor() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/emprendedor.fxml"));
@@ -223,6 +224,7 @@ public class SolicitudProductoController {
         }
     }
 
+    // Mostrar alertas de información.
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -231,10 +233,12 @@ public class SolicitudProductoController {
         alert.showAndWait();
     }
 
+    // Setter para tipo predeterminado.
     public void setTipoPredeterminado(String tipo) {
         this.tipoPredeterminado = tipo;
     }
 
+    // Configurar el tipo de producto seleccionado al iniciar.
     public void configurarTipo() {
         if ("curso".equalsIgnoreCase(tipoPredeterminado)) {
             rbCurso.setSelected(true);

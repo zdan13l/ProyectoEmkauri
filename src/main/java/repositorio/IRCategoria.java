@@ -1,9 +1,9 @@
 package repositorio;
 
 import modelo.Categoria;
-
 import java.util.List;
 
+// Interfaz para operaciones CRUD en la entidad Categoria.
 public interface IRCategoria {
     boolean agregar(Categoria categoria);
     Categoria buscarPorNombre(String nombre);

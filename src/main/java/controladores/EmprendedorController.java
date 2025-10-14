@@ -15,16 +15,19 @@ import servicio.*;
 
 import java.io.IOException;
 
+// Controlador para manejar la pantalla del Emprendedor.
 public class EmprendedorController {
 
+    // Campos vinculados a los elementos de la interfaz.
     @FXML private Label lblBienvenidaTop;
     @FXML private Button btnCalificaciones;
     @FXML private Button btnIrCrearCurso;
-    @FXML private Button btnCerrarSesion;
     @FXML private Button btnIrCrearServicio;
     @FXML private Button btnMisProductos;
+    @FXML private Button btnCerrarSesion;
     @FXML private ImageView welcomeIllustration;
 
+    // Servicios para manejar la lógica de negocio.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
@@ -32,7 +35,7 @@ public class EmprendedorController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
 
-    // Constructor con todos los servicios
+    // Constructor que recibe los servicios necesarios.
     public EmprendedorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
@@ -42,6 +45,7 @@ public class EmprendedorController {
         this.servicioS = servicioS;
     }
 
+    // Inicializa la pantalla mostrando el nombre del usuario.
     @FXML
     public void initialize() {
         Usuario usuario = SesionActual.getUsuarioActual();
@@ -52,23 +56,25 @@ public class EmprendedorController {
         }
     }
 
-    // 🔹 Ver mis productos
+    // Ver mis productos.
     @FXML
     public void onVerMisProductos(ActionEvent event) {
         cambiarPantalla("/puj.fis.pantallas/productosE.fxml", "Mis Productos");
     }
 
+    // Crear un nuevo curso.
     @FXML
     public void onCrearCurso(ActionEvent event) {
         abrirSolicitud("curso");
     }
 
+    // Crear un nuevo servicio.
     @FXML
     public void onCrearServicio(ActionEvent event) {
         abrirSolicitud("servicio");
     }
 
-    // 🔹 Nuevo método auxiliar para abrir el formulario de solicitud con tipo predeterminado
+    // Abre el formulario de solicitud de producto según el tipo.
     private void abrirSolicitud(String tipo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudProducto.fxml"));
@@ -78,10 +84,8 @@ public class EmprendedorController {
             Scene scene = new Scene(loader.load());
             SolicitudProductoController controller = loader.getController();
 
-            // 🔹 Primero, pasar el tipo
+            // Configurar tipo predeterminado en el formulario.
             controller.setTipoPredeterminado(tipo);
-
-            // 🔹 Luego, configurar la selección visual (ya con la vista cargada)
             controller.configurarTipo();
 
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
@@ -91,23 +95,21 @@ public class EmprendedorController {
 
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo abrir el formulario de solicitud.");
-            e.printStackTrace();
         }
     }
 
-
-
-    // 🔹 Ver calificaciones
+    // Ver calificaciones.
     @FXML
     public void onVerCalificaciones(ActionEvent event) {
         cambiarPantalla("/puj.fis.pantallas/calificaciones.fxml", "Mis Calificaciones");
     }
 
-    // 🔹 Cerrar sesión
+    // Cerrar sesión y volver a la pantalla de login.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
         try {
             SesionActual.cerrarSesion();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
             Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
             loader.setControllerFactory(controladorFactory::createController);
@@ -116,13 +118,13 @@ public class EmprendedorController {
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Inicio de Sesión");
             stage.show();
+
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo cerrar sesión correctamente.");
-            e.printStackTrace();
         }
     }
 
-    // 🔹 Método auxiliar para cambiar de pantalla
+    // Metodo genérico para cambiar de pantalla.
     private void cambiarPantalla(String rutaFXML, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
@@ -136,11 +138,10 @@ public class EmprendedorController {
 
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-            e.printStackTrace();
         }
     }
 
-    // 🔹 Mostrar alertas
+    // Muestra una alerta con título y mensaje proporcionados.
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
