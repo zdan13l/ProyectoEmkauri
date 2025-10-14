@@ -89,27 +89,26 @@ public class RUsuario implements IRUsuario {
 
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, correo);
-
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 Datos datos = new Datos(
-                        rs.getString("nombre"),
-                        rs.getString("apellido"),
-                        rs.getString("telefono")
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("telefono")
                 );
 
                 Rol rol = new Rol(
-                        rs.getInt("idRol"),
-                        rs.getString("nombreRol")
-                );
+                    rs.getInt("idRol"),
+                    rs.getString("nombreRol")
+                    );
 
                 return new Usuario(
-                        rs.getInt("idUsuario"),
-                        rs.getString("correo"),
-                        rs.getString("contrasena"),
-                        datos,
-                        rol
+                    rs.getInt("idUsuario"),
+                    rs.getString("correo"),
+                    rs.getString("contrasena"),
+                    datos,
+                    rol
                 );
             }
         } catch (Exception e) {

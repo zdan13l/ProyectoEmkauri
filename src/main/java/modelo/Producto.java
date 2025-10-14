@@ -10,6 +10,7 @@ public class Producto {
     private String descripcion;
     private double precio;
     Usuario emprendedor;
+    Categoria categoria;
     List<Calificacion> calificaciones;
 
     public Producto() {
@@ -18,15 +19,17 @@ public class Producto {
         this.descripcion = "";
         this.precio = 0.0;
         this.emprendedor = new Usuario();
+        this.categoria = new Categoria();
         this.calificaciones = new ArrayList<>();
     }
 
-    public Producto(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor) {
+    public Producto(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria) {
         this.idProducto = idProducto;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.emprendedor = emprendedor;
+        this.categoria = categoria;
         this.calificaciones = new ArrayList<>();
     }
 
@@ -40,6 +43,8 @@ public class Producto {
     public void setPrecio(double precio) { this.precio = precio; }
     public Usuario getEmprendedor() { return emprendedor; }
     public void setEmprendedor(Usuario emprendedor) { this.emprendedor = emprendedor; }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
     public List<Calificacion> getCalificaciones() { return calificaciones; }
     public void setCalificaciones(List<Calificacion> calificaciones) { this.calificaciones = calificaciones; }
     public void agregarCalificacion(Calificacion calificacion) { this.calificaciones.add(calificacion); }

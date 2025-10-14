@@ -1,6 +1,7 @@
 package controladores;
 
 import fis.jave.emkauri.SesionActual;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,8 +15,11 @@ import modelo.Compra;
 import modelo.Pago;
 import modelo.Producto;
 import modelo.Usuario;
+import servicio.ISCategoria;
 import servicio.ISCompra;
+import servicio.ISProducto;
 import servicio.ISUsuario;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,36 +39,62 @@ public class CarritoController {
     @FXML private Button btnVaciar;
     @FXML private Button btnVolver;
 
-    // Servicios para manejar la lógica de usuario y compras.
-    private final ISUsuario servicioUsuario;
-    private final ISCompra servicioCompra;
+    // Servicios para manejar la lógica de usuario, compra, producto y categoría.
+    private final ISUsuario servicioU;
+    private final ISCompra servicioCo;
+    private final ISProducto servicioP;
+    private final ISCategoria servicioCa;
 
     private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
 
-    public CarritoController(ISUsuario servicioUsuario, ISCompra servicioCompra) {
-        this.servicioUsuario = servicioUsuario;
-        this.servicioCompra = servicioCompra;
+    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+        this.servicioU = servicioU;
+        this.servicioCo = servicioCo;
+        this.servicioP = servicioP;
+        this.servicioCa = servicioCa;
     }
 
-    // Inicialización del controlador.
+    // Inicializa la tabla y carga los productos del carrito.
     @FXML
     public void initialize() {
+        // Configurar las columnas de la tabla.
         colNombre.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        colEmprendedor.setCellValueFactory(new PropertyValueFactory<>("nombreEmprendedor"));
-        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 
+        // Emprendedor (correo o nombre).
+        colEmprendedor.setCellValueFactory(cellData ->
+                Bindings.createStringBinding(() -> {
+                    Usuario emp = cellData.getValue().getEmprendedor();
+                    if (emp == null) return "";
+                    // Mostrar nombre si existe, de lo contrario el correo
+                    return emp.getCorreo() != null ? emp.getCorreo() :
+                            (emp.getDatosPersonales().getNombre() != null ? emp.getDatosPersonales().getNombre() : "");
+                })
+        );
+
+        // Tipo de producto (Curso o Servicio).
+        colTipo.setCellValueFactory(cellData ->
+                Bindings.createStringBinding(() -> {
+                    String tipo = cellData.getValue().getClass().getSimpleName();
+                    if (tipo.equalsIgnoreCase("Curso")) return "CURSO";
+                    if (tipo.equalsIgnoreCase("Servicio")) return "SERVICIO";
+                    return "DESCONOCIDO";
+                })
+        );
+
+        // Cargar los productos del carrito actual.
+        productosCarrito.setAll(SesionActual.getCarrito());
         tablaCarrito.setItems(productosCarrito);
         actualizarTotal();
     }
 
-    // Método para agregar un producto al carrito
+    // Agrega un producto al carrito y actualiza el total.
     public void agregarProducto(Producto producto) {
         productosCarrito.add(producto);
         actualizarTotal();
     }
 
-    // PAGAR - Procesa la compra de los productos en el carrito.
+    // Procesa el pago y crea la compra.
     @FXML
     public void handlePagar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
@@ -81,13 +111,11 @@ public class CarritoController {
         try {
             double total = calcularTotal();
 
-            // Crear el objeto de pago.
             Pago pago = new Pago();
             pago.setMonto(total);
             pago.setMetodo("Tarjeta");
             pago.setFecha(new Date());
 
-            // Crear la compra.
             Compra compra = new Compra();
             compra.setCliente(usuarioActual);
             compra.setProductos(new ArrayList<>(productosCarrito));
@@ -95,12 +123,12 @@ public class CarritoController {
             compra.setFechaCompra(new Date());
             compra.setPago(pago);
 
-            // Guardar la compra usando el servicio.
-            boolean exito = servicioCompra.crearCompra(compra);
+            boolean exito = servicioCo.crearCompra(compra);
 
             if (exito) {
                 mostrarAlerta("Compra realizada", "Tu compra fue registrada con éxito.");
                 productosCarrito.clear();
+                SesionActual.vaciarCarrito();
                 actualizarTotal();
             } else {
                 mostrarAlerta("Error", "No se pudo registrar la compra.");
@@ -112,12 +140,12 @@ public class CarritoController {
         }
     }
 
-    // VOLVER - Regresa a la pantalla del cliente.
+    // Vuelve a la pantalla principal del cliente.
     @FXML
     public void handleVolver(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioUsuario, servicioCompra);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -129,7 +157,7 @@ public class CarritoController {
         }
     }
 
-    // VACIAR - Limpia completamente el carrito.
+    // Vacía todo el carrito después de una confirmación.
     @FXML
     public void handleVaciar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
@@ -143,17 +171,19 @@ public class CarritoController {
 
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
+                SesionActual.vaciarCarrito();
                 productosCarrito.clear();
                 actualizarTotal();
             }
         });
     }
 
-    // ELIMINAR - Borra solo el producto seleccionado.
+    // Elimina el producto seleccionado del carrito.
     @FXML
     public void handleEliminar(ActionEvent actionEvent) {
         Producto seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
         if (seleccionado != null) {
+            SesionActual.getCarrito().remove(seleccionado);
             productosCarrito.remove(seleccionado);
             actualizarTotal();
         } else {
@@ -161,12 +191,12 @@ public class CarritoController {
         }
     }
 
-    // Actualiza la etiqueta del total con el monto actual del carrito.
+    // Actualiza la etiqueta del total con el monto calculado.
     private void actualizarTotal() {
         lblTotal.setText(String.format("$%.2f", calcularTotal()));
     }
 
-    // Calcula el total sumando los precios de todos los productos en el carrito.
+    // Calcula el total sumando los precios de los productos en el carrito.
     private double calcularTotal() {
         return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum();
     }

@@ -10,7 +10,9 @@ import javafx.stage.Stage;
 import modelo.Datos;
 import modelo.Rol;
 import modelo.Usuario;
+import servicio.ISCategoria;
 import servicio.ISCompra;
+import servicio.ISProducto;
 import servicio.ISUsuario;
 import java.io.IOException;
 
@@ -30,11 +32,15 @@ public class RegistroController {
 
     // Servicio para manejar la lógica de usuario.
     private final ISUsuario servicioU;
-    private final ISCompra servicioC;
+    private final ISCompra servicioCo;
+    private final ISProducto servicioP;
+    private final ISCategoria servicioCa;
 
-    public RegistroController(ISUsuario servicioU, ISCompra servicioC) {
+    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
         this.servicioU = servicioU;
-        this.servicioC = servicioC;
+        this.servicioCo = servicioCo;
+        this.servicioP = servicioP;
+        this.servicioCa = servicioCa;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
@@ -98,7 +104,7 @@ public class RegistroController {
         try {
             Stage stage = (Stage) nombreField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            loader.setControllerFactory(param -> new Controlador(servicioU, servicioC).createController(param));
+            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa).createController(param));
             stage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo volver al inicio de sesión.");

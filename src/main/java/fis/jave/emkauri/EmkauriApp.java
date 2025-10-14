@@ -6,10 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import repositorio.*;
-import servicio.ISCompra;
-import servicio.ISUsuario;
-import servicio.SCompra;
-import servicio.SUsuario;
+import servicio.*;
+
 import java.sql.Connection;
 
 public class EmkauriApp extends Application {
@@ -21,10 +19,14 @@ public class EmkauriApp extends Application {
         ISUsuario servicioUsuario = new SUsuario(repoUsuario);
         IRCompra repoCompra = new RCompra();
         ISCompra servicioCompra = new SCompra(repoCompra);
+        IRProducto repoProducto = new RProducto();
+        ISProducto servicioProducto = new SProducto(repoProducto);
+        IRCategoria repoCategoria = new RCategoria();
+        ISCategoria servicioCategoria = new SCategoria(repoCategoria);
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra).createController(param));
+        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria).createController(param));
 
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setTitle("Login - Emkauri");
