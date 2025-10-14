@@ -6,10 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
 
-public class SolicitudEmprendedorController {
-
-    @FXML
-    private Label lblTitulo;
+public class SolicitudController {
 
     @FXML
     private VBox contenedorSolicitudes;
@@ -19,6 +16,10 @@ public class SolicitudEmprendedorController {
 
     @FXML
     private Button btnCerrarSesion;
+    @FXML
+    private Button btnAprobar;
+    @FXML
+    private Button btnRechazar;
 
     @FXML
     public void initialize() {

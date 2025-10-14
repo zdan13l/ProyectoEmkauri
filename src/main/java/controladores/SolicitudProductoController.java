@@ -9,49 +9,25 @@ public class SolicitudProductoController {
 
 
     @FXML
-    private VBox boxCurso;
-    @FXML
-    private RadioButton rbCurso;
-    @FXML
-    private TextField txtCertificacion;
-    @FXML
-    private TextField txtDuracionServicio;
-    @FXML
-    private VBox boxServicio;
-    @FXML
-    private TextField txtUbicacion;
-    @FXML
-    private Button btnEnviarSolicitud;
-    @FXML
-    private ComboBox cmbCategoria;
-    @FXML
-    private TextField txtPrecio;
-    @FXML
-    private RadioButton rbServicio;
-    @FXML
-    private TextField txtModalidad;
-    @FXML
     private Button btnVolver;
     @FXML
-    private ToggleGroup tipoProductoGroup;
+    private Button btnAprobar;
     @FXML
-    private TextField txtDuracionCurso;
+    private Button btnRechazar;
     @FXML
-    private ScrollPane scrollForm;
+    private Button btnCerrarSesion;
     @FXML
-    private Label lblConfirmacion;
-    @FXML
-    private TextArea txtDescripcion;
-    @FXML
-    private TextField txtTitulo;
-    @FXML
-    private TextField txtNivelDificultad;
+    private VBox contenedorSolicitudes;
 
     @FXML
     public void onVolver(ActionEvent actionEvent) {
     }
 
-    @javafx.fxml.FXML
+    @Deprecated
     public void onEnviarSolicitud(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void onCerrarSesion(ActionEvent actionEvent) {
     }
 }

@@ -4,11 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.event.ActionEvent;
+import javafx.scene.image.ImageView;
 
 public class ReclutadorController {
-
-    @FXML
-    private Label lblBienvenida;
 
     @FXML
     private Button btnCerrarSesion;
@@ -18,11 +16,18 @@ public class ReclutadorController {
 
     @FXML
     private Button btnSolicitudesEmprendedor;
+    @FXML
+    private Button btnIrSolicitudesEmprendedor;
+    @FXML
+    private Button btnIrSolicitudesProducto;
+    @FXML
+    private Label lblBienvenidaTop;
+    @FXML
+    private ImageView logoEmkauri;
 
     @FXML
     public void initialize() {
-        lblBienvenida.setText("¡Bienvenido, Reclutador!");
-        System.out.println("[INFO] Pantalla principal del reclutador inicializada correctamente.");
+
     }
 
     @FXML
