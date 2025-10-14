@@ -61,31 +61,30 @@ public class RProducto implements IRProducto {
         }
     }
 
-
-    // Listar todos los productos en la base de datos.
+    // Listar todos los productos aprobados
+    @Override
     public List<Producto> listarTodos() {
         List<Producto> productos = new ArrayList<>();
 
-        String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto," +
-                            "u.idUsuario, u.correo," +
-                            "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria," +
-                            "p.duracionCurso, p.nivelDificultad, p.certificacion," +
+        String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
+                            " u.idUsuario, u.correo, " +
+                            "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
+                            "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
                             "p.duracionServicio, p.ubicacion, p.modalidad " +
                         "FROM Productos p " +
                         "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
-                        "JOIN Categorias c ON p.idCategoria = c.idCategoria";
+                        "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                        "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
+                        "WHERE s.estado = 'APROBADO'";
 
-        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
-
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Producto p = mapearProducto(rs);
                 if (p != null) productos.add(p);
             }
         } catch (SQLException e) {
-            System.err.println(" Error al listar productos: " + e.getMessage());
+            System.err.println(" Error al listar productos aprobados: " + e.getMessage());
         }
-
         return productos;
     }
 

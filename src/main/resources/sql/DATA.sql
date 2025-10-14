@@ -87,5 +87,5 @@ INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idEmprend
 (6, 5, 'PENDIENTE', 'Solicitud para aprobar como Emprendedor', 6);
 
 INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) VALUES
-(3, 5, 'PENDIENTE', 'Curso Java desde cero', 1, 3),
-(6, 5, 'RECHAZADO', 'Curso de Matematica Basica', 1, 6);
+(3, 5, 'APROBADO', 'Curso Java desde cero', 1, 3),
+(6, 5, 'PENDIENTE', 'Curso Diseño UX', 2, 6);
