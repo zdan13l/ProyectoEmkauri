@@ -55,7 +55,7 @@ public class EmprendedorController {
     // 🔹 Ver mis productos
     @FXML
     public void onVerMisProductos(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/misProductos.fxml", "Mis Productos");
+        cambiarPantalla("/puj.fis.pantallas/productosE.fxml", "Mis Productos");
     }
 
     @FXML

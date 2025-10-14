@@ -51,7 +51,7 @@ public class ClienteController {
     // Ver mis productos (productos del cliente).
     @FXML
     private void onVerMisProductos(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/misProductos.fxml", "Mis Productos");
+        cambiarPantalla("/puj.fis.pantallas/productosC.fxml", "Mis Productos");
     }
 
     // Ver carrito de compras.

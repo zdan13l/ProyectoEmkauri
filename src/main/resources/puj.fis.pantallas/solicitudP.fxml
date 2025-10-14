@@ -4,7 +4,7 @@
 
 <AnchorPane prefHeight="569.0" prefWidth="960.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.SolicitudController">
     <VBox alignment="TOP_CENTER" layoutY="66.0" prefHeight="463.0" prefWidth="800.0" spacing="36" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-padding: 32 48 40 48; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
-          AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="66.0">
+            AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="66.0">
         <HBox alignment="CENTER_LEFT" prefHeight="60" spacing="20">
             <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: transparent; -fx-border-color: #4A90E2; -fx-border-width: 2; -fx-border-radius: 8; -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;" text="Volver" />
             <Region HBox.hgrow="ALWAYS" />

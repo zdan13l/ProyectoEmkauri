@@ -41,7 +41,6 @@ INSERT INTO Categorias (nombre, descripcion) VALUES
 ('Tecnología', 'Innovaciones tecnológicas y herramientas digitales');
 
 -- 5️. PRODUCTOS (CURSOS Y SERVICIOS)
--- tipoProducto = 'CURSO' o 'SERVICIO'
 INSERT INTO Productos (
     titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto,
     duracionCurso, nivelDificultad, certificacion
@@ -88,4 +87,6 @@ INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idEmprend
 
 INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) VALUES
 (3, 5, 'APROBADO', 'Curso Java desde cero', 1, 3),
-(6, 5, 'PENDIENTE', 'Curso Diseño UX', 2, 6);
+(6, 5, 'PENDIENTE', 'Curso Diseño UX', 2, 3),
+(3, 5, 'RECHAZADO', 'Servicio Consultoría en bases de datos', 3, 3),
+(6, 5, 'APROBADO', 'Servicio Mentoría en marketing digital', 4, 6);

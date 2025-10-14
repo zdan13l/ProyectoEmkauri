@@ -23,8 +23,23 @@ public class SProducto implements ISProducto {
     }
 
     @Override
+    public List<Producto> buscarPorNombre(String nombre) {
+        return repoP.buscarPorTitulo(nombre);
+    }
+
+    @Override
     public List<Producto> listarProductos() {
         return repoP.listarTodos();
+    }
+
+    @Override
+    public List<Producto> listarComprados(int idCliente) {
+        return repoP.listarComprados(idCliente);
+    }
+
+    @Override
+    public List<Producto> listarPorEmprendedor(int idEmprendedor) {
+        return repoP.listarPorEmprendedor(idEmprendedor);
     }
 
     @Override
@@ -37,8 +52,5 @@ public class SProducto implements ISProducto {
         return repoP.eliminar(id);
     }
 
-    @Override
-    public List<Producto> buscarPorNombre(String nombre) {
-        return repoP.buscarPorTitulo(nombre);
-    }
+
 }

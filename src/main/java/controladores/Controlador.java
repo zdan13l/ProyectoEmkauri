@@ -32,6 +32,8 @@ public class Controlador {
         if (tipo == ReclutadorController.class) return new ReclutadorController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
         if (tipo == SolicitudController.class) return new SolicitudController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
         if (tipo == CategoriaController.class) return new CategoriaController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
+        if (tipo == ProductoEController.class) return new ProductoEController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
+        if (tipo == ProductoCController.class) return new ProductoCController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud);
 
         throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName());
     }

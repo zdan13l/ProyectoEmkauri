@@ -3,21 +3,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="540" prefWidth="820.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="controladores.CategoriaController">
-
+<AnchorPane prefHeight="540" prefWidth="820.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';"
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="controladores.CategoriaController">
     <VBox alignment="TOP_CENTER" spacing="18" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
 
-        <!-- 🔹 Encabezado -->
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);">
             <Label style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #333;" text="📁 Gestión de Categorías" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: transparent; -fx-border-color: #4A90E2;                            -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-border-radius: 8; -fx-padding: 6 18; -fx-cursor: hand;" text="Volver" />
+            <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: transparent; -fx-border-color: #4A90E2; -fx-text-fill: #4A90E2;
+            -fx-font-weight: bold; -fx-border-radius: 8; -fx-padding: 6 18; -fx-cursor: hand;" text="Volver" />
         </HBox>
 
-        <!-- 🔹 Cuerpo principal -->
         <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,3);">
 
-            <!-- Formulario -->
             <GridPane hgap="14" style="-fx-padding: 5 0 15 0;" vgap="10">
                 <columnConstraints>
                     <ColumnConstraints percentWidth="25" />
@@ -33,26 +31,30 @@
                 <Label style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Buscar por nombre:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <TextField fx:id="txtBuscar" promptText="Nombre a buscar..." HBox.hgrow="ALWAYS" />
-                    <Button fx:id="btnBuscar" onAction="#handleBuscar" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                    -fx-background-radius: 8; -fx-padding: 6 14;" text="Buscar" />
+                    <Button fx:id="btnBuscar" onAction="#handleBuscar" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                    -fx-background-radius: 8; -fx-padding: 6 14;" text="Buscar" />
                 </HBox>
             <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
             </rowConstraints>
             </GridPane>
 
-            <!-- Botones de acción -->
             <HBox alignment="CENTER_LEFT" spacing="14">
-                <Button fx:id="btnAgregar" onAction="#handleAgregar" style="-fx-background-color: #27AE60; -fx-text-fill: white;                                -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Agregar" />
-                <Button fx:id="btnActualizar" onAction="#handleActualizar" style="-fx-background-color: #F39C12; -fx-text-fill: white;                                -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Actualizar" />
-                <Button fx:id="btnEliminar" onAction="#handleEliminar" style="-fx-background-color: #E74C3C; -fx-text-fill: white;                                -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Eliminar" />
-                <Button fx:id="btnLimpiar" onAction="#handleLimpiar" style="-fx-background-color: #95A5A6; -fx-text-fill: white;                                -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Limpiar" />
-                <Button fx:id="btnListar" onAction="#handleListar" style="-fx-background-color: #3498DB; -fx-text-fill: white;                                -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Listar" />
+                <Button fx:id="btnAgregar" onAction="#handleAgregar" style="-fx-background-color: #27AE60; -fx-text-fill: white;
+                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Agregar" />
+                <Button fx:id="btnActualizar" onAction="#handleActualizar" style="-fx-background-color: #F39C12; -fx-text-fill: white;
+                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Actualizar" />
+                <Button fx:id="btnEliminar" onAction="#handleEliminar" style="-fx-background-color: #E74C3C; -fx-text-fill: white;
+                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Eliminar" />
+                <Button fx:id="btnLimpiar" onAction="#handleLimpiar" style="-fx-background-color: #95A5A6; -fx-text-fill: white;
+                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Limpiar" />
+                <Button fx:id="btnListar" onAction="#handleListar" style="-fx-background-color: #3498DB; -fx-text-fill: white;
+                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 6 14;" text="Listar" />
             </HBox>
 
-            <!-- Tabla -->
-            <TableView fx:id="tablaCategorias" prefHeight="206.0" prefWidth="757.0" style="-fx-background-radius: 10; -fx-border-radius: 10;                               -fx-border-color: #ccc; -fx-border-width: 1;">
+            <TableView fx:id="tablaCategorias" prefHeight="206.0" prefWidth="757.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ccc; -fx-border-width: 1;">
                 <columns>
                     <TableColumn fx:id="colId" prefWidth="80" text="ID" />
                     <TableColumn fx:id="colNombre" prefWidth="220" text="Nombre" />

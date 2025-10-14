@@ -6,8 +6,10 @@ import java.util.List;
 public interface ISProducto {
     boolean crearProducto(Producto producto);
     Producto obtenerProductoPorId(int id);
+    List<Producto> buscarPorNombre(String nombre);
     List<Producto> listarProductos();
+    List<Producto> listarComprados(int idCliente);
+    List<Producto> listarPorEmprendedor(int idEmprendedor);
     boolean actualizarProducto(Producto producto);
     boolean eliminarProducto(int id);
-    List<Producto> buscarPorNombre(String nombre);
 }

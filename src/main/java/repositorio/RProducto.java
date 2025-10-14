@@ -88,6 +88,75 @@ public class RProducto implements IRProducto {
         return productos;
     }
 
+    // Listar productos comprados por un cliente específico.
+    public List<Producto> listarComprados(int idCliente) {
+        List<Producto> productos = new ArrayList<>();
+
+        String sql = """
+        SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto,
+               u.idUsuario, u.correo,
+               c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria,
+               p.duracionCurso, p.nivelDificultad, p.certificacion,
+               p.duracionServicio, p.ubicacion, p.modalidad
+        FROM Compras co
+        JOIN ComprasProductos cp ON co.idCompra = cp.idCompra
+        JOIN Productos p ON cp.idProducto = p.idProducto
+        JOIN Usuarios u ON p.idEmprendedor = u.idUsuario
+        LEFT JOIN Categorias c ON p.idCategoria = c.idCategoria
+        WHERE co.idCliente = ?
+    """;
+
+        try (Connection conexion = ConexionDB.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setInt(1, idCliente);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Producto p = mapearProducto(rs);
+                    if (p != null) productos.add(p);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al listar productos comprados: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return productos;
+    }
+
+
+    public List<Producto> listarPorEmprendedor(int idEmprendedor) {
+        List<Producto> productos = new ArrayList<>();
+
+        String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
+                " u.idUsuario, u.correo, " +
+                " c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
+                " p.duracionCurso, p.nivelDificultad, p.certificacion, " +
+                " p.duracionServicio, p.ubicacion, p.modalidad " +
+                "FROM Productos p " +
+                "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                "LEFT JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                "WHERE p.idEmprendedor = ?";
+
+        try (Connection conexion = ConexionDB.getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setInt(1, idEmprendedor);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Producto p = mapearProducto(rs);
+                    if (p != null) productos.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println(" Error al listar productos por emprendedor: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
     // Mapear un ResultSet a un objeto Producto (o sus subclases).
     public Producto mapearProducto(ResultSet rs) {
         try {
