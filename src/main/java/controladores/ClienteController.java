@@ -10,10 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import servicio.ISCategoria;
-import servicio.ISCompra;
-import servicio.ISProducto;
-import servicio.ISUsuario;
+import servicio.*;
+
 import java.io.IOException;
 
 // Controlador para manejar la lógica de la pantalla del cliente.
@@ -32,12 +30,14 @@ public class ClienteController {
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
 
-    public ClienteController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+    public ClienteController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
     }
 
     // Ver catálogo de productos.
@@ -65,7 +65,7 @@ public class ClienteController {
             SesionActual.cerrarSesion();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -84,7 +84,7 @@ public class ClienteController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
             // Reutilizamos la fábrica de controladores, inyectando solo servicioUsuario.
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

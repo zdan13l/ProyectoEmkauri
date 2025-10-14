@@ -10,10 +10,8 @@ import javafx.stage.Stage;
 import modelo.Datos;
 import modelo.Rol;
 import modelo.Usuario;
-import servicio.ISCategoria;
-import servicio.ISCompra;
-import servicio.ISProducto;
-import servicio.ISUsuario;
+import servicio.*;
+
 import java.io.IOException;
 
 // Controlador para la pantalla de registro de usuarios.
@@ -30,17 +28,19 @@ public class RegistroController {
     @FXML private TextField nombreField;
     @FXML private TextField apellidoField;
 
-    // Servicio para manejar la lógica de usuario.
+    // Servicio para manejar la lógica.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
 
-    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
@@ -104,7 +104,7 @@ public class RegistroController {
         try {
             Stage stage = (Stage) nombreField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa).createController(param));
+            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa).createController(param));
             stage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo volver al inicio de sesión.");

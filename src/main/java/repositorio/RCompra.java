@@ -20,14 +20,14 @@ public class RCompra implements IRCompra {
         try (Connection conexion = ConexionDB.getConnection()) {
             conexion.setAutoCommit(false);
 
-            // 1. Insertar la compra principal.
+            // Insertar la compra principal.
             PreparedStatement psCompra = conexion.prepareStatement(sqlCompra, Statement.RETURN_GENERATED_KEYS);
             psCompra.setInt(1, compra.getCliente().getIdUsuario());
             psCompra.setDouble(2, compra.getMontoFinal());
             psCompra.setInt(3, compra.getPago().getIdPago());
             psCompra.executeUpdate();
 
-            // 2. Obtener ID generado.
+            // Obtener ID generado.
             ResultSet rs = psCompra.getGeneratedKeys();
             int idCompra = 0;
 
@@ -35,7 +35,7 @@ public class RCompra implements IRCompra {
                 idCompra = rs.getInt(1);
             }
 
-            // 3. Insertar productos asociados a la compra.
+            // Insertar productos asociados a la compra.
             PreparedStatement psProductos = conexion.prepareStatement(sqlCompraProducto);
             for (Producto p : compra.getProductos()) {
                 psProductos.setInt(1, idCompra);

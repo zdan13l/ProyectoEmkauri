@@ -7,19 +7,22 @@ public class Pago {
     private int idPago;
     private double monto;
     private String metodo;
+    private String codigo;
     private Date fecha;
 
     public Pago() {
         this.idPago = 0;
         this.monto = 0.0;
         this.metodo = "";
+        this.codigo = "";
         this.fecha = new Date();
     }
 
-    public Pago(int idPago, double monto, String metodo, Date fecha) {
+    public Pago(int idPago, double monto, String metodo, String codigo, Date fecha) {
         this.idPago = idPago;
         this.monto = monto;
         this.metodo = metodo;
+        this.codigo = codigo;
         this.fecha = fecha;
     }
 
@@ -29,6 +32,8 @@ public class Pago {
     public void setMonto(double monto) { this.monto = monto; }
     public String getMetodo() { return metodo; }
     public void setMetodo(String metodo) { this.metodo = metodo; }
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
     public Date getFecha() { return fecha; }
     public void setFecha(Date fecha) { this.fecha = fecha; }
 

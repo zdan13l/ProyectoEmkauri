@@ -41,3 +41,4 @@ build/
 *.mv.db
 *.trace.db
 *.lock.db
+src/main/resources/comprobantes

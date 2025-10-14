@@ -25,7 +25,7 @@ public class EmprendedorController {
     @FXML
     private void onCerrarSesion(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Inicio de Sesión");
@@ -39,7 +39,7 @@ public class EmprendedorController {
     @FXML
     private void onVerMisProductos(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/misProductos.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/misProductos.fxml"));
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Mis Productos");
@@ -53,7 +53,7 @@ public class EmprendedorController {
     @FXML
     private void onCrearCurso(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/crearCurso.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudProducto.fxml"));
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Crear Curso");
@@ -67,7 +67,7 @@ public class EmprendedorController {
     @FXML
     private void onCrearServicio(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/crearServicio.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudProducto.fxml"));
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Crear Servicio");

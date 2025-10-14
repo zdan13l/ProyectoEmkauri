@@ -43,51 +43,11 @@ public class BusquedaController {
 
     @FXML
     public void initialize() {
-        rCurso = new RCurso();
-        rServicio = new RServicio();
-        rCategoria = new RCategoria();
 
-        tipoColumn.setCellValueFactory(cellData -> {
-            Object item = cellData.getValue();
-            if (item instanceof Curso) {
-                return new javafx.beans.property.SimpleStringProperty("Curso");
-            } else if (item instanceof Servicio) {
-                return new javafx.beans.property.SimpleStringProperty("Servicio");
-            }
-            return new javafx.beans.property.SimpleStringProperty("");
-        });
-        nombreColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("nombre"));
-        descripcionColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("descripcion"));
-        categoriaColumn.setCellValueFactory(cellData -> {
-            Object item = cellData.getValue();
-            if (item instanceof Curso) {
-                return new javafx.beans.property.SimpleStringProperty(((Curso) item).getCategoria().getNombre());
-            } else if (item instanceof Servicio) {
-                return new javafx.beans.property.SimpleStringProperty(((Servicio) item).getCategoria().getNombre());
-            }
-            return new javafx.beans.property.SimpleStringProperty("");
-        });
-        precioColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("precio"));
-
-        List<Categoria> categorias = rCategoria.findAll();
-        categoriaFilter.getItems().add(new Categoria(0, "Todas", null));
-        categoriaFilter.getItems().addAll(categorias);
-        categoriaFilter.getSelectionModel().selectFirst(); // Seleccionar "Todas" por defecto
     }
 
     @FXML
     public void onSearchClick(ActionEvent event) {
-        String query = busquedaField.getText();
-        Categoria categoriaSeleccionada = categoriaFilter.getSelectionModel().getSelectedItem();
-        int idCategoria = (categoriaSeleccionada != null) ? categoriaSeleccionada.getIdCategoria() : 0;
 
-        List<Curso> cursos = rCurso.findByFiltros(query, idCategoria);
-        List<Servicio> servicios = rServicio.findByFiltros(query, idCategoria);
-
-        ObservableList<Object> resultados = FXCollections.observableArrayList();
-        resultados.addAll(cursos);
-        resultados.addAll(servicios);
-
-        resultadosTable.setItems(resultados);
     }
 }

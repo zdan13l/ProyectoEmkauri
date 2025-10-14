@@ -23,10 +23,12 @@ public class EmkauriApp extends Application {
         ISProducto servicioProducto = new SProducto(repoProducto);
         IRCategoria repoCategoria = new RCategoria();
         ISCategoria servicioCategoria = new SCategoria(repoCategoria);
+        IRPago repoPago = new RPago();
+        ISPago servicioPago = new SPago(repoPago);
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria).createController(param));
+        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago).createController(param));
 
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setTitle("Login - Emkauri");

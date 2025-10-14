@@ -1,5 +1,6 @@
 package controladores;
 
+import fis.jave.emkauri.SesionActual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +9,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import servicio.ISCategoria;
-import servicio.ISCompra;
-import servicio.ISProducto;
-import servicio.ISUsuario;
+import modelo.Usuario;
+import servicio.*;
 
 import java.io.IOException;
 
@@ -22,17 +21,19 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
-    // Servicio para manejar la lógica de usuario.
+    // Servicio para manejar la lógica.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
 
-    public LoginController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+    public LoginController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
         this.servicioCo = servicioCo;
         this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
     }
 
     // Maneja el evento de clic en el botón de login.
@@ -51,6 +52,8 @@ public class LoginController {
             boolean autenticado = servicioU.autenticar(correo, contrasena);
 
             if (autenticado) {
+                Usuario usuario = servicioU.obternerUsuario(correo);
+                SesionActual.setUsuarioActual(usuario);
                 String nombre = servicioU.obtenerNombre(correo);
                 String apellido = servicioU.obtenerApellido(correo);
                 String rol = servicioU.obtenerRol(correo);
@@ -102,7 +105,7 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/registro.fxml"));
 
             // Crear instancia del controlador de registro e inyectar el servicio.
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             // Cargar la escena
@@ -142,7 +145,7 @@ public class LoginController {
             }
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(resource);
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());

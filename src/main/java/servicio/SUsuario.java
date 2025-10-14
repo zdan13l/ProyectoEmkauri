@@ -12,6 +12,11 @@ public class SUsuario implements ISUsuario {
         this.repoU = repoU;
     }
 
+    // Obtiene el usuario por su correo electrónico.
+    public Usuario obternerUsuario(String correo) {
+        return repoU.buscarPorCorreo(correo);
+    }
+
     // Verifica si las credenciales corresponden a un usuario válido.
     public boolean autenticar(String correo, String contrasena) {
         try {

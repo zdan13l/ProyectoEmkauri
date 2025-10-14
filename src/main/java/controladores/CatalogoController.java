@@ -13,10 +13,8 @@ import javafx.stage.Stage;
 import modelo.Compra;
 import modelo.Producto;
 import modelo.Usuario;
-import servicio.ISCategoria;
-import servicio.ISCompra;
-import servicio.ISProducto;
-import servicio.ISUsuario;
+import servicio.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +38,17 @@ public class CatalogoController {
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
 
     // Lista completa de productos y carrito de compras.
     private List<Producto> listaProductos = new ArrayList<>();
 
-    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
     }
 
     // Inicialización del controlador.
@@ -145,7 +145,7 @@ public class CatalogoController {
     private void onVolverClick() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

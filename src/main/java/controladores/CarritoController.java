@@ -15,10 +15,7 @@ import modelo.Compra;
 import modelo.Pago;
 import modelo.Producto;
 import modelo.Usuario;
-import servicio.ISCategoria;
-import servicio.ISCompra;
-import servicio.ISProducto;
-import servicio.ISUsuario;
+import servicio.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,19 +36,21 @@ public class CarritoController {
     @FXML private Button btnVaciar;
     @FXML private Button btnVolver;
 
-    // Servicios para manejar la lógica de usuario, compra, producto y categoría.
+    // Servicios para manejar la lógica.
     private final ISUsuario servicioU;
     private final ISCompra servicioCo;
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
+    private final ISPago servicioPa;
 
     private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
 
-    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa) {
+    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
+        this.servicioPa = servicioPa;
     }
 
     // Inicializa la tabla y carga los productos del carrito.
@@ -102,41 +101,18 @@ public class CarritoController {
             return;
         }
 
-        Usuario usuarioActual = SesionActual.getUsuarioActual();
-        if (usuarioActual == null) {
-            mostrarAlerta("Error", "No hay usuario autenticado.");
-            return;
-        }
-
         try {
-            double total = calcularTotal();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/pago.fxml"));
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
+            loader.setControllerFactory(controladorFactory::createController);
 
-            Pago pago = new Pago();
-            pago.setMonto(total);
-            pago.setMetodo("Tarjeta");
-            pago.setFecha(new Date());
-
-            Compra compra = new Compra();
-            compra.setCliente(usuarioActual);
-            compra.setProductos(new ArrayList<>(productosCarrito));
-            compra.setMontoFinal(total);
-            compra.setFechaCompra(new Date());
-            compra.setPago(pago);
-
-            boolean exito = servicioCo.crearCompra(compra);
-
-            if (exito) {
-                mostrarAlerta("Compra realizada", "Tu compra fue registrada con éxito.");
-                productosCarrito.clear();
-                SesionActual.vaciarCarrito();
-                actualizarTotal();
-            } else {
-                mostrarAlerta("Error", "No se pudo registrar la compra.");
-            }
-
-        } catch (Exception e) {
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) btnPagar.getScene().getWindow();
+            stage.setTitle("Confirmar Pago");
+            stage.setScene(scene);
+        } catch (IOException e) {
             e.printStackTrace();
-            mostrarAlerta("Error", "Ocurrió un error al procesar la compra: " + e.getMessage());
+            mostrarAlerta("Error", "No se pudo abrir la pantalla de pago.");
         }
     }
 
@@ -145,7 +121,7 @@ public class CarritoController {
     public void handleVolver(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
