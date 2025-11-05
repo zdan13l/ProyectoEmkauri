@@ -27,15 +27,17 @@ public class LoginController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Constructor que recibe los servicios necesarios.
-    public LoginController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public LoginController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioCo = servicioCo;
         this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Maneja el evento de clic en el botón de login.
@@ -107,7 +109,7 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/registro.fxml"));
 
             // Crear instancia del controlador de registro e inyectar el servicio.
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             // Cargar la escena
@@ -147,7 +149,7 @@ public class LoginController {
             }
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(resource);
-            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            controladores.Controlador controladorFactory = new controladores.Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());

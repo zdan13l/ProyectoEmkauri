@@ -61,18 +61,20 @@ public class SolicitudProductoController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Tipo de producto predeterminado (si viene de otra pantalla).
     private String tipoPredeterminado;
 
     // Constructor con inyección de dependencias.
-    public SolicitudProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public SolicitudProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Inicialización del formulario.
@@ -211,7 +213,7 @@ public class SolicitudProductoController {
     private void volverAlPanelEmprendedor() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/emprendedor.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Stage stage = (Stage) btnVolver.getScene().getWindow();

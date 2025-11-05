@@ -17,6 +17,8 @@ public class EmkauriApp extends Application {
     public void start(Stage stage) throws Exception {
 
         // Inyección de dependencias manual.
+        IRCalificacion repoCalificacion = new RCalificacion();
+        ISCalificacion servicioCalificacion = new SCalificacion(repoCalificacion);
         IRUsuario repoUsuario = new RUsuario();
         ISUsuario servicioUsuario = new SUsuario(repoUsuario);
         IRCompra repoCompra = new RCompra();
@@ -32,10 +34,10 @@ public class EmkauriApp extends Application {
 
         // Cargar la interfaz de login.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud).createController(param));
+        fxmlLoader.setControllerFactory(param -> new Controlador(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion).createController(param));
 
         // Configurar y mostrar la escena.
-        Scene scene = new Scene(fxmlLoader.load(), 400, 300);
+        Scene scene = new Scene(fxmlLoader.load(), 450, 400);
         stage.setTitle("Login - Emkauri");
         stage.setScene(scene);
         stage.show();

@@ -36,18 +36,20 @@ public class ProductoEController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Lista observable para los productos del emprendedor.
     private final ObservableList<Producto> productos = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public ProductoEController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public ProductoEController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Inicialización del controlador.
@@ -117,8 +119,27 @@ public class ProductoEController {
 
     // Abre la pantalla para administrar el producto seleccionado.
     private void abrirPantallaAdministrar(Producto producto) {
-        cambiarPantalla("/puj.fis.pantallas/administrarProducto.fxml",
-                "Administrar " + producto.getTitulo(), btnAdministrar);
+        String rutaFXML = producto.getCategoria().getNombre().equalsIgnoreCase("SERVICIO")
+                ? "/puj.fis.pantallas/administrarCurso.fxml"
+                : "/puj.fis.pantallas/administrarServicio.fxml";
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
+            loader.setControllerFactory(factory::createController);
+            Scene scene = new Scene(loader.load());
+
+            AdminProductoController controller = loader.getController();
+            controller.setProducto(producto);
+
+            Stage stage = (Stage) btnAdministrar.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Administrar " + producto.getTitulo());
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo abrir la pantalla de administración.");
+        }
     }
 
     // Maneja la acción de volver al menú del emprendedor.
@@ -140,7 +161,7 @@ public class ProductoEController {
     private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

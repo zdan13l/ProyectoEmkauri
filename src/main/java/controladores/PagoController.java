@@ -30,15 +30,17 @@ public class PagoController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Constructor con inyección de dependencias.
-    public PagoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public PagoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Campos de la pantalla de pago.
@@ -179,7 +181,7 @@ public class PagoController {
     private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

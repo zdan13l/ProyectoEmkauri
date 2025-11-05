@@ -20,7 +20,7 @@
 
         <VBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 4 0 4 0;">
             <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Tus cursos y servicios adquiridos" />
-            <Label style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;" text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o'Calificaciones'." />
+            <Label style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;" text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o dirigete a 'Calificar Productos'." />
         </VBox>
 
         <TableView fx:id="tablaProductosCliente" prefHeight="360" prefWidth="820" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #e6eef9; -fx-border-width: 1;">
@@ -37,7 +37,7 @@
 
         <HBox alignment="CENTER_LEFT" prefHeight="60" spacing="12" style="-fx-padding: 8 0 0 0;">
             <Button fx:id="btnVerDetalle" onAction="#onVerDetalle" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 18;" text="Ver Detalle" />
-            <Button fx:id="btnCalificaciones" onAction="#onCalificaciones" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 18;" text="Calificaciones" />
+            <Button fx:id="btnCalificaciones" onAction="#onCalificaciones" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 18;" text="Calificar Productos" />
             <Region HBox.hgrow="ALWAYS" />
         </HBox>
 

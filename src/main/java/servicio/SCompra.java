@@ -27,12 +27,8 @@ public class SCompra implements ISCompra {
     }
 
     // Actualiza una compra existente.
-    public boolean actualizarCompra(Compra compra) {
-        return repoC.actualizar(compra);
-    }
+    public boolean actualizarCompra(Compra compra) { return repoC.actualizar(compra); }
 
     // Elimina una compra por su ID.
-    public boolean eliminarCompra(int id) {
-        return repoC.eliminar(id);
-    }
+    public boolean eliminarCompra(int id) { return repoC.eliminar(id); }
 }

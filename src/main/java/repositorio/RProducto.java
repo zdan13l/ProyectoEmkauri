@@ -91,19 +91,20 @@ public class RProducto implements IRProducto {
     public List<Producto> listarComprados(int idCliente) {
         List<Producto> productos = new ArrayList<>();
 
-        String sql = " SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
+        String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
                             "u.idUsuario, u.correo, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
                             "p.duracionServicio, p.ubicacion, p.modalidad " +
-                        "FROM Productos p " +
-                        "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
-                        "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
-                        "JOIN Compras co ON p.idProducto = co.idProducto " +
-                        "WHERE co.idCliente = ?";
+                    "FROM Productos p " +
+                    "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                    "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                    "JOIN ComprasProductos cp ON p.idProducto = cp.idProducto " +
+                    "JOIN Compras co ON cp.idCompra = co.idCompra " +
+                    "WHERE co.idCliente = ?";
+
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
-
             ps.setInt(1, idCliente);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -112,7 +113,6 @@ public class RProducto implements IRProducto {
                     if (p != null) productos.add(p);
                 }
             }
-
         } catch (SQLException e) {
             System.err.println("Error al listar productos comprados: " + e.getMessage());
             e.printStackTrace();

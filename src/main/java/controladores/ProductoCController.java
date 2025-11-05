@@ -37,18 +37,20 @@ public class ProductoCController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Lista observable para los productos del cliente.
     private final ObservableList<Producto> productosCliente = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public ProductoCController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public ProductoCController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Inicialización del controlador.
@@ -116,16 +118,10 @@ public class ProductoCController {
         cambiarPantalla("/puj.fis.pantallas/detalleProducto.fxml", "Detalle de " + seleccionado.getTitulo(), btnVerDetalle);
     }
 
-    // Maneja la acción de ver las calificaciones del producto seleccionado.
+    // Maneja la acción de calificar los productos.
     @FXML
     private void onCalificaciones() {
-        Producto seleccionado = tablaProductosCliente.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para ver sus calificaciones.");
-            return;
-        }
-
-        cambiarPantalla("/puj.fis.pantallas/calificaciones.fxml", "Calificaciones de " + seleccionado.getTitulo(), btnCalificaciones);
+        cambiarPantalla("/puj.fis.pantallas/calificar.fxml", "Calificaciones de Productos", btnCalificaciones);
     }
 
     // Maneja la acción de volver al menú del cliente.
@@ -158,7 +154,7 @@ public class ProductoCController {
     private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());

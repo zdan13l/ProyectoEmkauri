@@ -34,15 +34,17 @@ public class EmprendedorController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Constructor que recibe los servicios necesarios.
-    public EmprendedorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public EmprendedorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Inicializa la pantalla mostrando el nombre del usuario.
@@ -78,7 +80,7 @@ public class EmprendedorController {
     private void abrirSolicitud(String tipo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudProducto.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Scene scene = new Scene(loader.load());
@@ -111,7 +113,7 @@ public class EmprendedorController {
             SesionActual.cerrarSesion();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
@@ -128,7 +130,7 @@ public class EmprendedorController {
     private void cambiarPantalla(String rutaFXML, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(controladorFactory::createController);
 
             Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
@@ -138,6 +140,8 @@ public class EmprendedorController {
 
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
+            // Debug
+            e.printStackTrace();
         }
     }
 

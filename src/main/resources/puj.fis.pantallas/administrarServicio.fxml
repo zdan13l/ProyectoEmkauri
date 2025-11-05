@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="650.0" prefWidth="880.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.AdminProductoController">
+
+    <VBox alignment="TOP_CENTER" spacing="22" style="-fx-background-color: white; -fx-background-radius: 16;                  -fx-padding: 30 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="60" AnchorPane.rightAnchor="60" AnchorPane.topAnchor="40">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Region HBox.hgrow="ALWAYS" />
+            <Label alignment="CENTER" prefHeight="28.0" prefWidth="576.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Administrar Servicio" textAlignment="CENTER" />
+            <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: #E94E77; -fx-text-fill: white; -fx-font-weight: bold;                            -fx-background-radius: 10; -fx-padding: 8 20; -fx-cursor: hand;" text="Volver" />
+        </HBox>
+
+        <Separator />
+
+        <VBox alignment="TOP_CENTER" prefWidth="750" spacing="18">
+
+            <VBox alignment="CENTER_LEFT" spacing="8">
+                <Label style="-fx-font-weight: bold;" text="Título" />
+                <TextField fx:id="txtTitulo" promptText="Ej: Consultoría Financiera" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+            </VBox>
+
+            <VBox alignment="CENTER_LEFT" spacing="8">
+                <Label style="-fx-font-weight: bold;" text="Descripción" />
+                <TextArea fx:id="txtDescripcion" prefRowCount="3" promptText="Describe brevemente el servicio..." style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" wrapText="true" />
+            </VBox>
+
+            <HBox spacing="18">
+                <VBox alignment="CENTER_LEFT" spacing="6">
+                    <Label style="-fx-font-weight: bold;" text="Precio (COP)" />
+                    <TextField fx:id="txtPrecio" promptText="Ej: 80000" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="6">
+                    <Label style="-fx-font-weight: bold;" text="Duración (minutos)" />
+                    <TextField fx:id="txtDuracionServicio" promptText="Ej: 60" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                </VBox>
+            </HBox>
+
+            <VBox alignment="CENTER_LEFT" spacing="6">
+                <Label style="-fx-font-weight: bold;" text="Ubicación" />
+                <TextField fx:id="txtUbicacion" promptText="Ej: En línea o Bogotá" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+            </VBox>
+
+            <VBox alignment="CENTER_LEFT" spacing="6">
+                <Label style="-fx-font-weight: bold;" text="Modalidad" />
+                <TextField fx:id="txtModalidad" promptText="Presencial / Virtual" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+            </VBox>
+
+            <Separator style="-fx-opacity: 0.4;" />
+
+            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                            -fx-background-radius: 8; -fx-padding: 10 40; -fx-cursor: hand;" text="Guardar Cambios" />
+        </VBox>
+    </VBox>
+</AnchorPane>

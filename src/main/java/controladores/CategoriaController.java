@@ -37,18 +37,20 @@ public class CategoriaController {
     private final ISCategoria servicioCa;
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
+    private final ISCalificacion servicioCal;
 
     // Lista observable de categorías para la tabla.
     private final ObservableList<Categoria> listaObservable = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public CategoriaController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS) {
+    public CategoriaController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
         this.servicioU = servicioU;
         this.servicioCo = servicioCo;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
+        this.servicioCal = servicioCal;
     }
 
     // Inicializa la tabla y carga las categorías.
@@ -225,7 +227,7 @@ public class CategoriaController {
     private void onVolver(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/reclutador.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS);
+            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
             loader.setControllerFactory(factory::createController);
 
             Stage stage = (Stage) btnVolver.getScene().getWindow();
