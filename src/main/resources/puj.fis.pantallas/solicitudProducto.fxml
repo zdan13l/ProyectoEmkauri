@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="834.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.SolicitudProductoController">
+
+    <VBox alignment="TOP_CENTER" spacing="20" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 24 40 24 40;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="70">
+
+        <HBox alignment="CENTER" prefHeight="33.0" prefWidth="40.0" spacing="12">
+            <Button fx:id="btnVolver" onAction="#onVolver" prefHeight="33.0" prefWidth="77.0" style="-fx-background-color: #E94E77; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 20; -fx-cursor: hand;" text="Volver" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label prefHeight="32.0" prefWidth="367.0" style="-fx-font-size:22px; -fx-font-weight:700; -fx-text-fill:#2E3A59;" text="Solicitud de Nuevo Producto" />
+            <Region HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <Separator prefWidth="800" style="-fx-opacity: 0.3;" />
+
+        <ScrollPane fx:id="scrollForm" fitToWidth="true" pannable="true" prefHeight="500" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="20"> <padding> <Insets bottom="20" left="20" right="20" top="20" /> </padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Tipo de producto:" />
+                        <RadioButton fx:id="rbCurso" disable="true" style="-fx-text-fill: #2E3A59;" text="Curso">
+                            <toggleGroup> <ToggleGroup fx:id="tipoProductoGroup" /> </toggleGroup></RadioButton>
+                        <RadioButton fx:id="rbServicio" disable="true" style="-fx-text-fill: #2E3A59;" text="Servicio" toggleGroup="$tipoProductoGroup" />
+                    </HBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Título:" />
+                        <TextField fx:id="txtTitulo" promptText="Escribe un título descriptivo..." style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" />
+                    </VBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Descripción:" />
+                        <TextArea fx:id="txtDescripcion" prefRowCount="4" promptText="Describe el curso o servicio..." style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" wrapText="true" />
+                    </VBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Precio:" />
+                        <TextField fx:id="txtPrecio" promptText="Ej: 49.99" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" />
+                    </VBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Categoría:" />
+                        <ComboBox fx:id="cmbCategoria" prefWidth="250" promptText="Selecciona una categoría" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                    </VBox>
+
+                    <VBox fx:id="boxCurso" alignment="CENTER_LEFT" managed="false" spacing="10" visible="false">
+                        <Label style="-fx-font-weight: bold;" text="Duración (horas):" />
+                        <TextField fx:id="txtDuracionCurso" promptText="Ej: 20" />
+                        <Label style="-fx-font-weight: bold;" text="Nivel de dificultad:" />
+                        <TextField fx:id="txtNivelDificultad" promptText="Ej: Principiante" />
+                        <Label style="-fx-font-weight: bold;" text="Certificación:" />
+                        <TextField fx:id="txtCertificacion" promptText="Ej: Certificado de finalización" />
+                    </VBox>
+
+                    <VBox fx:id="boxServicio" alignment="CENTER_LEFT" managed="false" spacing="10" visible="false">
+                        <Label style="-fx-font-weight: bold;" text="Duración (minutos):" />
+                        <TextField fx:id="txtDuracionServicio" promptText="Ej: 60" />
+                        <Label style="-fx-font-weight: bold;" text="Ubicación:" />
+                        <TextField fx:id="txtUbicacion" promptText="Ej: Medellín o En línea" />
+                        <Label style="-fx-font-weight: bold;" text="Modalidad:" />
+                        <TextField fx:id="txtModalidad" promptText="Ej: Presencial / Virtual" />
+                    </VBox>
+
+                    <HBox alignment="CENTER" spacing="10">
+                        <Button fx:id="btnEnviarSolicitud" onAction="#onEnviarSolicitud" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                        -fx-background-radius: 8; -fx-padding: 8 20; -fx-cursor: hand;" text="Enviar Solicitud" />
+                    </HBox>
+                    <Label fx:id="lblConfirmacion" style="-fx-text-fill: #2E3A59; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

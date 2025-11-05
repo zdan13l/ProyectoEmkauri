@@ -1,56 +1,92 @@
--- Insertar Usuarios
-INSERT INTO Usuario (nombre, email, contrasena) VALUES
-('DanielO', 'zdan1el@emkauri.com', '1234'),
-('AndresL', 'loret01@emkauri.com', 'asdf'),
-('MafeC', 'mafc12@emkauri.com', 'qwerty'),
-('AndresO', 'dresssOrtiz@emkauri.com', '6789'),
-('SantiagoH', 'santiagoh@emkauri.com', 'jkl'),
-('AndresP', 'aPinzon10@emkauri.com', 'password');
+-- SQL DDL para insertar datos.
 
--- Insertar Emprendedores
-INSERT INTO Emprendedor (idUsuario, estado) VALUES
-(3, 'Activo'),
-(6, 'Pendiente');
+-- Autor: PowerRangers
+-- Versión: 2.0
+-- Base de datos: H2
 
--- Insertar Clientes
-INSERT INTO Cliente (idUsuario) VALUES
-(1),
-(2),
-(4);
+-- 1. ROLES BÁSICOS
+INSERT INTO Roles (nombre) VALUES
+('Emprendedor'),
+('Cliente'),
+('Reclutador');
 
--- Insertar Reclutadores
-INSERT INTO Reclutador (idUsuario) VALUES
-(5);
+-- 2. DATOS PERSONALES
+INSERT INTO DatosPersonales (nombre, apellido, telefono) VALUES
+('Daniel', 'Ortiz', '3001112233'),
+('Andres', 'Loreto', '3002223344'),
+('Maria', 'Cruz', '3003334455'),
+('Andres', 'Ortiz', '3004445566'),
+('Santiago', 'Hernandez', '3005556677'),
+('Andres', 'Pinzon', '3006667788');
 
--- Insertar Categorías
-INSERT INTO Categoria (nombre, descripcion) VALUES
+-- 3. USUARIOS
+-- idRol, 1Emprendedor, 2Cliente, 3Reclutador.
+INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES
+('zdan1el@emkauri.co', '1234', 1, 2),   -- Daniel (Cliente)
+('loret01@emkauri.co', 'asdf', 2, 2),   -- AndresL (Cliente)
+('mafc12@emkauri.co', 'qwert', 3, 1),  -- MafeC (Emprendedora)
+('dresss@emkauri.co', '6789', 4, 2),    -- AndresO (Cliente)
+('santiagoh@emkauri.co', 'jkl', 5, 3),  -- SantiagoH (Reclutador)
+('apinzon@emkauri.co', 'password', 6, 1); -- AndresP (Emprendedor)
+
+-- 4️. CATEGORÍAS
+INSERT INTO Categorias (nombre, descripcion) VALUES
 ('Programación', 'Cursos y servicios relacionados con desarrollo de software'),
 ('Diseño', 'Cursos de diseño gráfico, UI/UX y más'),
-('Marketing', 'Estrategias y herramientas de marketing digital');
+('Marketing', 'Estrategias y herramientas de marketing digital'),
+('Educación', 'Formación académica y enseñanza en distintas áreas'),
+('Arte', 'Artes plásticas, música, teatro y creatividad'),
+('Finanzas', 'Educación financiera, contabilidad y emprendimiento económico'),
+('Salud', 'Bienestar físico, emocional y mental'),
+('Tecnología', 'Innovaciones tecnológicas y herramientas digitales');
 
--- Insertar Cursos
-INSERT INTO Curso (nombre, descripcion, estado, precio, idCategoria, idEmprendedor) VALUES
-('Java desde cero', 'Curso básico de Java', 'Activo', 120.000, 1, 3),
-('Diseño UX', 'Principios de usabilidad y experiencia de usuario', 'Activo', 200.000, 2, 6);
+-- 5️. PRODUCTOS (CURSOS Y SERVICIOS)
+INSERT INTO Productos (
+    titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto,
+    duracionCurso, nivelDificultad, certificacion
+) VALUES
+('Java desde cero', 'Curso básico de Java', 120000, 3, 1, 'CURSO', 40, 'Básico', 'Certificado de participación'),
+('Diseño UX', 'Principios de usabilidad y experiencia de usuario', 200000, 6, 2, 'CURSO', 30, 'Intermedio', 'Certificación UX');
 
--- Insertar Servicios
-INSERT INTO Servicio (nombre, descripcion, estado, precio, idCategoria, idEmprendedor) VALUES
-('Consultoría en bases de datos', 'Optimización de queries y modelado de datos', 'Activo', 300.000, 1, 3),
-('Mentoría en marketing digital', 'Sesiones personalizadas de estrategia digital', 'Pendiente', 150.000, 3, 6);
+INSERT INTO Productos (
+    titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto,
+    duracionServicio, ubicacion, modalidad
+) VALUES
+('Consultoría en bases de datos', 'Optimización de queries y modelado de datos', 300000, 3, 1, 'SERVICIO', 2, 'Online', 'Virtual'),
+('Mentoría en marketing digital', 'Sesiones personalizadas de estrategia digital', 150000, 6, 3, 'SERVICIO', 3, 'Bogotá', 'Presencial');
 
--- Insertar Pagos
-INSERT INTO Pago (monto, metodo, estado, fecha) VALUES
-(120.00, 'Tarjeta', 'Completado', CURRENT_DATE),
-(300.00, 'Efectivo', 'Pendiente', CURRENT_DATE);
+-- 6. MATERIALES (solo para cursos)
+INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES
+('Introducción a Java', 'PDF', 'https://emkauri.com/materials/java_intro.pdf', 1),
+('Diseño centrado en el usuario', 'Video', 'https://emkauri.com/materials/ux_video.mp4', 2);
 
--- Insertar Compras
-INSERT INTO Compra (fecha, idCliente, idCurso, idPago) VALUES
-(CURRENT_DATE, 1, 1, 1);
+-- 7. PAGOS
+INSERT INTO Pagos (monto, metodo, fecha) VALUES
+(120000, 'Tarjeta', CURRENT_DATE),
+(300000, 'Efectivo', CURRENT_DATE);
 
-INSERT INTO Compra (fecha, idCliente, idServicio, idPago) VALUES
-(CURRENT_DATE, 2, 1, 2);
+-- 8. COMPRAS
+INSERT INTO Compras (idCliente, montoFinal, idPago) VALUES
+(1, 120000, 1), -- Daniel compra curso Java
+(2, 300000, 2); -- AndresL compra servicio BD
 
--- Insertar Calificaciones
-INSERT INTO Calificacion (nota, comentario, fecha, idCliente, idCurso) VALUES
-(90, 'Muy buen curso, me ayudó mucho', CURRENT_DATE, 1, 1),
-(75, 'Contenido interesante pero algo corto', CURRENT_DATE, 2, 1);
+-- 9. COMPRAS-PRODUCTOS (asocia compra con productos)
+INSERT INTO ComprasProductos (idCompra, idProducto, precioCompra) VALUES
+(1, 1, 120000),
+(2, 3, 300000);
+
+-- 10. CALIFICACIONES
+INSERT INTO Calificaciones (puntaje, comentario, idCliente, idProducto, fecha) VALUES
+(5, 'Muy buen curso, me ayudó mucho', 1, 1, CURRENT_DATE),
+(4, 'Contenido interesante pero algo corto', 2, 1, CURRENT_DATE);
+
+-- 11. SOLICITUDES
+INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idEmprendedorAsociado) VALUES
+(3, 5, 'APROBADO', 'Solicitud para aprobar como Emprendedor', 3),
+(6, 5, 'PENDIENTE', 'Solicitud para aprobar como Emprendedor', 6);
+
+INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) VALUES
+(3, 5, 'APROBADO', 'Curso Java desde cero', 1, 3),
+(6, 5, 'PENDIENTE', 'Curso Diseño UX', 2, 3),
+(3, 5, 'RECHAZADO', 'Servicio Consultoría en bases de datos', 3, 3),
+(6, 5, 'APROBADO', 'Servicio Mentoría en marketing digital', 4, 6);

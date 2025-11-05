@@ -1,84 +1,133 @@
-CREATE TABLE Usuario (
+-- SQL DDL para la plataforma Emkauri.
+
+-- Autor: PowerRangers
+-- Versión: 2.0
+-- Base de datos: H2
+
+-- 1. TABLAS DE SOPORTE PARA USUARIOS.
+CREATE TABLE Roles (
+    idRol INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(50) UNIQUE NOT NULL -- "Emprendedor", "Cliente", "Reclutador".
+);
+
+CREATE TABLE DatosPersonales (
+    idDatos INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    telefono VARCHAR(25)
+);
+
+-- 2. TABLA PRINCIPAL DE USUARIOS.
+CREATE TABLE Usuarios (
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    contrasena VARCHAR(255) NOT NULL
+    correo VARCHAR(255) UNIQUE NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    idDatos INT UNIQUE NOT NULL,
+    idRol INT NOT NULL,
+
+    FOREIGN KEY (idDatos) REFERENCES DatosPersonales(idDatos),
+    FOREIGN KEY (idRol) REFERENCES Roles(idRol)
 );
 
-CREATE TABLE Cliente (
-    idUsuario INT PRIMARY KEY,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
-);
 
-CREATE TABLE Emprendedor (
-    idUsuario INT PRIMARY KEY,
-    estado VARCHAR(20) NOT NULL,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
-);
-
-CREATE TABLE Reclutador (
-    idUsuario INT PRIMARY KEY,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
-);
-
-CREATE TABLE Categoria (
+-- 3. TABLAS RELACIONADAS A PRODUCTOS
+CREATE TABLE Categorias (
     idCategoria INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
+    nombre VARCHAR(100) UNIQUE NOT NULL,
     descripcion TEXT
 );
 
-CREATE TABLE Curso (
-    idCurso INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
+CREATE TABLE Productos (
+    idProducto INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    estado VARCHAR(20) NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    idCategoria INT,
+    precio NUMERIC(10, 2) NOT NULL CHECK (precio >= 0),
     idEmprendedor INT NOT NULL,
-    FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria),
-    FOREIGN KEY (idEmprendedor) REFERENCES Emprendedor(idUsuario)
+    idCategoria INT NOT NULL,
+
+    -- Columna discriminadora para la herencia
+    tipoProducto VARCHAR(10) NOT NULL CHECK (tipoProducto IN ('CURSO', 'SERVICIO')),
+
+    -- Atributos específicos de Curso.
+    duracionCurso INT,
+    nivelDificultad VARCHAR(50),
+    certificacion VARCHAR(50),
+
+    -- Atributos específicos de Servicio.
+    duracionServicio INT,
+    ubicacion VARCHAR(50),
+    modalidad VARCHAR(50),
+
+    FOREIGN KEY (idEmprendedor) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria)
 );
 
-CREATE TABLE Servicio (
-    idServicio INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    estado VARCHAR(20) NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    idCategoria INT,
-    idEmprendedor INT NOT NULL,
-    FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria),
-    FOREIGN KEY (idEmprendedor) REFERENCES Emprendedor(idUsuario)
-);
-
-CREATE TABLE Pago (
-    idPago INT PRIMARY KEY AUTO_INCREMENT,
-    monto DECIMAL(10,2) NOT NULL,
-    metodo VARCHAR(50) NOT NULL,
-    estado VARCHAR(20) NOT NULL,
-    fecha DATE NOT NULL
-);
-
-CREATE TABLE Compra (
-    idCompra INT PRIMARY KEY AUTO_INCREMENT,
-    fecha DATE NOT NULL,
-    idCliente INT NOT NULL,
-    idCurso INT,
-    idServicio INT,
-    idPago INT NOT NULL,
-    FOREIGN KEY (idCliente) REFERENCES Cliente(idUsuario),
-    FOREIGN KEY (idCurso) REFERENCES Curso(idCurso),
-    FOREIGN KEY (idServicio) REFERENCES Servicio(idServicio),
-    FOREIGN KEY (idPago) REFERENCES Pago(idPago)
-);
-
-CREATE TABLE Calificacion (
-    idCalificacion INT PRIMARY KEY AUTO_INCREMENT,
-    nota INT NOT NULL CHECK (nota BETWEEN 0 AND 100),
-    comentario TEXT,
-    fecha DATE NOT NULL,
-    idCliente INT NOT NULL,
+CREATE TABLE Materiales (
+    idMaterial INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(255) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    url TEXT NOT NULL,
     idCurso INT NOT NULL,
-    FOREIGN KEY (idCliente) REFERENCES Cliente(idUsuario),
-    FOREIGN KEY (idCurso) REFERENCES Curso(idCurso)
+
+    FOREIGN KEY (idCurso) REFERENCES Productos(idProducto)
+);
+
+-- 4. TABLAS DE LÓGICA DE NEGOCIO
+CREATE TABLE Calificaciones (
+    idCalificacion INT PRIMARY KEY AUTO_INCREMENT,
+    puntaje INT NOT NULL CHECK (puntaje BETWEEN 1 AND 5),
+    comentario TEXT,
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+    idCliente INT NOT NULL,
+    idProducto INT NOT NULL,
+
+    FOREIGN KEY (idCliente) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto),
+    UNIQUE (idCliente, idProducto)
+);
+
+CREATE TABLE Pagos (
+    idPago INT PRIMARY KEY AUTO_INCREMENT,
+    monto NUMERIC(10, 2) NOT NULL,
+    metodo VARCHAR(50) NOT NULL,
+    fecha DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE Compras (
+    idCompra INT PRIMARY KEY AUTO_INCREMENT,
+    idCliente INT NOT NULL,
+    montoFinal NUMERIC(10, 2) NOT NULL,
+    fechaCompra DATE NOT NULL DEFAULT CURRENT_DATE,
+    idPago INT UNIQUE,
+
+    FOREIGN KEY (idCliente) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idPago) REFERENCES Pagos(idPago)
+);
+
+-- Tabla intermedia entre Compras y Productos
+CREATE TABLE ComprasProductos (
+    idCompra INT NOT NULL,
+    idProducto INT NOT NULL,
+    precioCompra NUMERIC(10, 2) NOT NULL,
+
+    PRIMARY KEY (idCompra, idProducto),
+    FOREIGN KEY (idCompra) REFERENCES Compras(idCompra),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
+);
+
+CREATE TABLE Solicitudes (
+    idSolicitud INT PRIMARY KEY AUTO_INCREMENT,
+    idSolicitante INT NOT NULL,
+    idReclutador INT,
+    estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE' CHECK (estado IN ('PENDIENTE', 'APROBADO', 'RECHAZADO', 'ACTIVO', 'INACTIVO')),
+    mensaje TEXT,
+
+    -- El producto o el usuario asociado a la solicitud.
+    idProductoAsociado INT,
+    idEmprendedorAsociado INT,
+
+    FOREIGN KEY (idSolicitante) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idReclutador) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idProductoAsociado) REFERENCES Productos(idProducto),
+    FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario)
 );

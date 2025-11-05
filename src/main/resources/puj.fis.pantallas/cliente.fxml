@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="960.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ClienteController">
+
+    <VBox alignment="TOP_CENTER" spacing="36" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20;
+            -fx-padding: 32 48 40 48; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
+            AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="40">
+
+        <HBox alignment="CENTER_LEFT" prefHeight="100" spacing="20">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <VBox spacing="6">
+                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenid@, Cliente!" />
+                    <Label style="-fx-font-size:13px; -fx-text-fill: #7A8BA3;" text="Accede a las secciones principales desde aquí" />
+                </VBox>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER_RIGHT" spacing="14">
+                <Button fx:id="btnCatalogo" onAction="#onVerProductos" prefHeight="36" style="-fx-background-color: transparent; -fx-text-fill: #2E3A59; -fx-font-weight: 600;" text="Productos" />
+                <Button fx:id="btnMisProductos" onAction="#onVerMisProductos" prefHeight="36" style="-fx-background-color: transparent; -fx-text-fill: #2E3A59; -fx-font-weight: 600;" text="Mis Productos" />
+                <Button fx:id="btnCarrito" onAction="#onVerCarrito" style="-fx-background-color: #F4F6FA; -fx-background-radius: 10; -fx-cursor: hand;" text="🛒" />
+                <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" style="-fx-background-color: #E63946; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 14;" text="Cerrar sesión" />
+            </HBox>
+        </HBox>
+
+        <Separator prefWidth="720" style="-fx-opacity: 0.3;" />
+
+        <VBox alignment="CENTER" prefHeight="400" spacing="24">
+            <ImageView fx:id="welcomeIllustration" fitHeight="180" fitWidth="236.0" preserveRatio="true" smooth="true">
+                <image> <Image url="@../img/Emkauri_logo.png" /> </image>
+            </ImageView>
+
+            <Label style="-fx-font-size:20px; -fx-text-fill: #2E3A59; -fx-font-weight:600;" text="Tu espacio para explorar productos y servicios" />
+            <Label style="-fx-font-size:14px; -fx-text-fill: #7A8BA3;" text="Usa los botones de arriba o selecciona una opción abajo" />
+
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="btnIrCatalogo" onAction="#onVerProductos" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
+                        -fx-background-radius: 8; -fx-padding: 10 22; -fx-cursor: hand;" text="Ir a Productos" />
+                <Button fx:id="btnIrMisProductos" onAction="#onVerMisProductos" style="-fx-background-color: transparent; -fx-border-color: #C9D7F2; -fx-border-radius: 8; -fx-text-fill: #2E3A59;
+                        -fx-font-weight: bold; -fx-padding: 10 22; -fx-cursor: hand;" text="Mis Productos" />
+            </HBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <HBox alignment="CENTER">
+            <Label style="-fx-font-size: 12px; -fx-text-fill: #7A7A7A;" text="© 2025 Emkauri — Todos los derechos reservados" />
+        </HBox>
+    </VBox>
+</AnchorPane>

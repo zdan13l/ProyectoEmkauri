@@ -2,61 +2,38 @@ package modelo;
 
 import java.util.List;
 
-public class Curso {
-    private int idCurso;
-    private double precio;
-    private String nombre;
-    private String descripcion;
-    private String estado;
-    private Categoria categoria;
-    private Emprendedor emprendedor;
-    private List<Calificacion> calificaciones;
+// Modelo que representa un curso, que es un tipo de producto.
+public class Curso extends Producto {
+    private List<Material> materiales;
+    private int duracionCurso;
+    private String nivelDificultad;
+    private String certificacion;
 
-    public Curso(int idCurso, double precio, String nombre, String descripcion, String estado, Categoria categoria, Emprendedor emprendedor, List<Calificacion> calificaciones) {
-        this.idCurso = idCurso;
-        this.precio = precio;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.estado = estado;
-        this.categoria = categoria;
-        this.emprendedor = emprendedor;
-        this.calificaciones = calificaciones;
+    public Curso() {
+        super();
+        this.materiales = null;
+        this.duracionCurso = 0;
+        this.nivelDificultad = "";
+        this.certificacion = "";
     }
 
-    public int getIdCurso() {
-        return idCurso;
+    public Curso(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria, List<Material> materiales, int duracionHoras, String nivelDificultad, String certificacion) {
+        super(idProducto, titulo, descripcion, precio, emprendedor, categoria);
+        this.materiales = materiales;
+        this.duracionCurso = duracionHoras;
+        this.nivelDificultad = nivelDificultad;
+        this.certificacion = certificacion;
     }
 
-    public double getPrecio() {
-        return precio;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public Emprendedor getEmprendedor() {
-        return emprendedor;
-    }
-
-    public List<Calificacion> getCalificaciones() {
-        return calificaciones;
-    }
+    public List<Material> getMateriales() { return materiales; }
+    public void setMateriales(List<Material> materiales) { this.materiales = materiales; }
+    public int getDuracionCurso() { return duracionCurso; }
+    public void setDuracionCurso(int duracionCurso) { this.duracionCurso = duracionCurso; }
+    public String getNivelDificultad() { return nivelDificultad; }
+    public void setNivelDificultad(String nivelDificultad) { this.nivelDificultad = nivelDificultad; }
+    public String getCertificacion() { return certificacion; }
+    public void setCertificacion(String certificacion) { this.certificacion = certificacion; }
 
     @Override
-    public String toString() {
-        return "Curso";
-    }
+    public String toString() { return "Curso"; }
 }

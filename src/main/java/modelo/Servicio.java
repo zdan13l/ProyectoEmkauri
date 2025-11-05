@@ -1,54 +1,33 @@
 package modelo;
 
-public class Servicio {
-    private int idServicio;
-    private double precio;
-    private String nombre;
-    private String descripcion;
-    private String estado;
-    private Categoria categoria;
-    private Emprendedor emprendedor;
+// Modelo que representa un servicio, que es un tipo de producto.
+public class Servicio extends Producto {
+    private int duracionServicio;
+    private String ubicacion;
+    private String modalidad;
 
-    public Servicio(int idServicio, double precio, String nombre, String descripcion, String estado, Categoria categoria, Emprendedor emprendedor) {
-        this.idServicio = idServicio;
-        this.precio = precio;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.estado = estado;
-        this.categoria = categoria;
-        this.emprendedor = emprendedor;
+    public Servicio() {
+        super();
+        this.duracionServicio = 0;
+        this.ubicacion = "";
+        this.modalidad = "";
     }
 
-    public int getIdServicio() {
-        return idServicio;
+    public Servicio(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria, int duracionServicio, String ubicacion, String modalidad) {
+        super(idProducto, titulo, descripcion, precio, emprendedor, categoria);
+        this.duracionServicio = duracionServicio;
+        this.ubicacion = ubicacion;
+        this.modalidad = modalidad;
     }
 
-    public double getPrecio() {
-        return precio;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public Emprendedor getEmprendedor() {
-        return emprendedor;
-    }
+    public int getDuracionServicio() { return duracionServicio; }
+    public void setDuracionServicio(int duracion) { this.duracionServicio = duracion; }
+    public String getUbicacion() { return ubicacion; }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+    public String getModalidad() { return modalidad; }
+    public void setModalidad(String modalidad) { this.modalidad = modalidad; }
 
     @Override
-    public String toString() {
-        return "Servicio";
-    }
+    public String toString() { return "Servicio"; }
+
 }
