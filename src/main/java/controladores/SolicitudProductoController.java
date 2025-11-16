@@ -62,19 +62,22 @@ public class SolicitudProductoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Tipo de producto predeterminado (si viene de otra pantalla).
     private String tipoPredeterminado;
 
     // Constructor con inyección de dependencias.
-    public SolicitudProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public SolicitudProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                        ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicialización del formulario.
@@ -119,14 +122,14 @@ public class SolicitudProductoController {
     public void onEnviarSolicitud(ActionEvent event) {
         Usuario usuarioActual = SesionActual.getUsuarioActual();
         if (usuarioActual == null) {
-            mostrarAlerta("Error", "Debes iniciar sesión antes de enviar una solicitud.");
+            gestorPantallas.mostrarAlerta("Error", "Debes iniciar sesión antes de enviar una solicitud.");
             return;
         }
 
         // Validar campos obligatorios.
         if (txtTitulo.getText().isEmpty() || txtDescripcion.getText().isEmpty() ||
                 txtPrecio.getText().isEmpty() || cmbCategoria.getValue() == null) {
-            mostrarAlerta("Campos vacíos", "Por favor completa todos los campos obligatorios.");
+            gestorPantallas.mostrarAlerta("Campos vacíos", "Por favor completa todos los campos obligatorios.");
             return;
         }
 
@@ -134,7 +137,7 @@ public class SolicitudProductoController {
             double precio = Double.parseDouble(txtPrecio.getText());
             Categoria categoria = servicioCa.buscarPorNombre(cmbCategoria.getValue());
             if (categoria == null) {
-                mostrarAlerta("Error", "La categoría seleccionada no existe en el sistema.");
+                gestorPantallas.mostrarAlerta("Error", "La categoría seleccionada no existe en el sistema.");
                 return;
             }
 
@@ -157,14 +160,14 @@ public class SolicitudProductoController {
                 nuevoProducto = new Servicio(0, txtTitulo.getText(), txtDescripcion.getText(), precio,
                         usuarioActual, categoria, duracion, ubicacion, modalidad);
             } else {
-                mostrarAlerta("Error", "Selecciona un tipo de producto (Curso o Servicio).");
+                gestorPantallas.mostrarAlerta("Error", "Selecciona un tipo de producto (Curso o Servicio).");
                 return;
             }
 
             // Guardar el producto antes de crear la solicitud
             boolean productoGuardado = servicioP.crearProducto(nuevoProducto);
             if (!productoGuardado || nuevoProducto.getIdProducto() == 0) {
-                mostrarAlerta("Error", "No se pudo registrar el producto asociado.");
+                gestorPantallas.mostrarAlerta("Error", "No se pudo registrar el producto asociado.");
                 return;
             }
 
@@ -179,14 +182,14 @@ public class SolicitudProductoController {
 
             servicioS.crearSolicitud(solicitud);
 
-            mostrarAlerta("Éxito", "Solicitud enviada correctamente. Espera aprobación.");
+            gestorPantallas.mostrarAlerta("Éxito", "Solicitud enviada correctamente. Espera aprobación.");
             limpiarFormulario();
             volverAlPanelEmprendedor();
 
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Verifica los valores numéricos (precio o duración).");
+            gestorPantallas.mostrarAlerta("Error", "Verifica los valores numéricos (precio o duración).");
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo enviar la solicitud: " + e.getMessage());
+            gestorPantallas.mostrarAlerta("Error", "No se pudo enviar la solicitud: " + e.getMessage());
         }
     }
 
@@ -211,28 +214,7 @@ public class SolicitudProductoController {
 
     // Navegar de vuelta al panel del emprendedor.
     private void volverAlPanelEmprendedor() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/emprendedor.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Panel Emprendedor");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al panel del emprendedor.");
-        }
-    }
-
-    // Mostrar alertas de información.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        gestorPantallas.irEmprendedor();
     }
 
     // Setter para tipo predeterminado.

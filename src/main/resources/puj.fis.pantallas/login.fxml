@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="controladores.LoginController"
-           style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController" stylesheets="@../css/styles.css">
 
-    <VBox alignment="CENTER" spacing="18" maxWidth="400"
-          style="-fx-background-color: white; -fx-background-radius: 16;
-                 -fx-padding: 36 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12,0,0,4);">
+    <children>
+        <VBox styleClass="fondo-celeste"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                alignment="CENTER">
 
-        <Label text="Bienvenido a Emkauri"
-               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" />
+            <VBox spacing="18" alignment="CENTER" maxWidth="420" styleClass="card-login">
+                <Label text="Bienvenido a Emkauri" styleClass="titulo"/>
+                <Label text="Inicia sesión para continuar" styleClass="subtitulo"/>
 
-        <Label text="Inicia sesión para continuar"
-               style="-fx-font-size: 14px; -fx-text-fill: #777777; -fx-padding: 0 0 6 0;" />
+                <TextField fx:id="txtUsuario" promptText="Correo electrónico" styleClass="campo"/>
+                <PasswordField fx:id="txtPassword" promptText="Contraseña" styleClass="campo"/>
 
-        <Separator prefWidth="260" style="-fx-opacity: 0.25;" />
-
-        <TextField fx:id="emailField" promptText="Correo electrónico"
-                   style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-border-radius: 8;
-                          -fx-background-color: #F9FAFB; -fx-padding: 10;" />
-
-        <PasswordField fx:id="passwordField" promptText="Contraseña"
-                       style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-border-radius: 8;
-                              -fx-background-color: #F9FAFB; -fx-padding: 10;" />
-
-        <Button text="Iniciar sesión" onAction="#onLoginClick"
-                style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
-                       -fx-background-radius: 10; -fx-padding: 10 24; -fx-cursor: hand;
-                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3,0,0,1);" />
-
-        <Button text="Registrarse" onAction="#onRegisterClick"
-                style="-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-weight: bold;
-                       -fx-border-color: #4A90E2; -fx-border-radius: 10;
-                       -fx-padding: 10 24; -fx-cursor: hand;" />
-    </VBox>
-</StackPane>
+                <Button text="Iniciar sesión" fx:id="btnIngresar" onAction="#onLoginClick" styleClass="btn-login"/>
+                <Button text="Registrarse" fx:id="btnRegistro" onAction="#onRegisterClick" styleClass="btn-register"/>
+            </VBox>
+        </VBox>
+    </children>
+</AnchorPane>

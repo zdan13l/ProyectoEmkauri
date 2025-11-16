@@ -25,6 +25,7 @@ public class SolicitudController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Tipo de solicitud a mostrar: "producto" o "emprendedor".
     private String tipoSolicitud;
@@ -35,14 +36,16 @@ public class SolicitudController {
     @FXML private Button btnCerrarSesion;
 
     // Constructor con inyección de dependencias.
-    public SolicitudController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public SolicitudController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Setter para definir el tipo de solicitud.
@@ -144,13 +147,13 @@ public class SolicitudController {
         try {
             boolean exito = servicioS.aprobarSolicitud(idSolicitud);
             if (exito) {
-                mostrarAlerta("Solicitud aprobada", "La solicitud fue aprobada correctamente.");
+                gestorPantallas.mostrarAlerta("Solicitud aprobada", "La solicitud fue aprobada correctamente.");
                 cargarSolicitudesPendientes();
             } else {
-                mostrarAlerta("No se pudo aprobar", "No se encontró la solicitud o ya fue procesada.");
+                gestorPantallas.mostrarAlerta("No se pudo aprobar", "No se encontró la solicitud o ya fue procesada.");
             }
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo aprobar la solicitud: " + e.getMessage());
+            gestorPantallas.mostrarAlerta("Error", "No se pudo aprobar la solicitud: " + e.getMessage());
         }
     }
 
@@ -159,50 +162,25 @@ public class SolicitudController {
         try {
             boolean exito = servicioS.rechazarSolicitud(idSolicitud);
             if (exito) {
-                mostrarAlerta(" Solicitud rechazada", "La solicitud fue rechazada correctamente.");
+                gestorPantallas.mostrarAlerta(" Solicitud rechazada", "La solicitud fue rechazada correctamente.");
                 cargarSolicitudesPendientes();
             } else {
-                mostrarAlerta(" No se pudo rechazar", "No se encontró la solicitud o ya fue procesada.");
+                gestorPantallas.mostrarAlerta(" No se pudo rechazar", "No se encontró la solicitud o ya fue procesada.");
             }
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo rechazar la solicitud: " + e.getMessage());
+            gestorPantallas.mostrarAlerta("Error", "No se pudo rechazar la solicitud: " + e.getMessage());
         }
     }
 
     // Volver al panel del reclutador.
     @FXML
     private void onVolver(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/reclutador.fxml", "Panel del Reclutador", btnVolver);
+        gestorPantallas.irReclutador();
     }
 
     // Cerrar sesión.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/login.fxml", "Inicio de sesión", btnCerrarSesion);
-    }
-
-    // Metodo genérico para cambiar de pantalla.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle(titulo);
-            stage.show();
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-        }
-    }
-
-    // Mostrar alertas de información.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        gestorPantallas.irLogin();
     }
 }

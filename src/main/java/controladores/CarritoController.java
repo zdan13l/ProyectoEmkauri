@@ -40,19 +40,22 @@ public class CarritoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Lista observable que contiene los productos del carrito.
     private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa la tabla y carga los productos del carrito.
@@ -110,7 +113,7 @@ public class CarritoController {
             productosCarrito.remove(seleccionado);
             actualizarTotal();
         } else {
-            mostrarAlerta("Error", "Selecciona un producto para eliminar.");
+            gestorPantallas.mostrarAlerta("Error", "Selecciona un producto para eliminar.");
         }
     }
 
@@ -118,7 +121,7 @@ public class CarritoController {
     @FXML
     public void handleVaciar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
-            mostrarAlerta("Aviso", "El carrito ya está vacío.");
+            gestorPantallas.mostrarAlerta("Aviso", "El carrito ya está vacío.");
             return;
         }
 
@@ -139,39 +142,17 @@ public class CarritoController {
     @FXML
     public void handlePagar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
-            mostrarAlerta("Carrito vacío", "No hay productos para procesar la compra.");
+            gestorPantallas.mostrarAlerta("Carrito vacío", "No hay productos para procesar la compra.");
             return;
         }
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/pago.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnPagar.getScene().getWindow();
-            stage.setTitle("Confirmar Pago");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de pago.");
-        }
+        gestorPantallas.irPago();
     }
 
     // Vuelve a la pantalla principal del cliente.
     @FXML
     public void handleVolver(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setTitle("Menú del Cliente");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver a la pantalla del cliente.");
-        }
+        gestorPantallas.irCliente();
     }
 
     // Actualiza la etiqueta del total del carrito.
@@ -184,12 +165,4 @@ public class CarritoController {
         return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum();
     }
 
-    // Muestra una alerta con título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
 }

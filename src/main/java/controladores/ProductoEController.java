@@ -37,19 +37,22 @@ public class ProductoEController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Lista observable para los productos del emprendedor.
     private final ObservableList<Producto> productos = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public ProductoEController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public ProductoEController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicialización del controlador.
@@ -83,7 +86,7 @@ public class ProductoEController {
     private void cargarProductosAsync() {
         Usuario actual = SesionActual.getUsuarioActual();
         if (actual == null) {
-            mostrarAlerta("Error de sesión", "No hay usuario autenticado.");
+            gestorPantallas.mostrarAlerta("Error de sesión", "No hay usuario autenticado.");
             return;
         }
 
@@ -99,7 +102,7 @@ public class ProductoEController {
         task.setOnSucceeded(e -> productos.setAll(task.getValue()));
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
-            mostrarAlerta("Error", "No se pudieron cargar los productos: " + (ex == null ? "error desconocido" : ex.getMessage()));
+            gestorPantallas.mostrarAlerta("Error", "No se pudieron cargar los productos: " + (ex == null ? "error desconocido" : ex.getMessage()));
             ex.printStackTrace();
         });
 
@@ -111,7 +114,7 @@ public class ProductoEController {
     private void handleAdministrar() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para administrarlo.");
+            gestorPantallas.mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para administrarlo.");
             return;
         }
         abrirPantallaAdministrar(seleccionado);
@@ -119,58 +122,12 @@ public class ProductoEController {
 
     // Abre la pantalla para administrar el producto seleccionado.
     private void abrirPantallaAdministrar(Producto producto) {
-        String rutaFXML = producto.getCategoria().getNombre().equalsIgnoreCase("SERVICIO")
-                ? "/puj.fis.pantallas/administrarCurso.fxml"
-                : "/puj.fis.pantallas/administrarServicio.fxml";
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-            Scene scene = new Scene(loader.load());
-
-            AdminProductoController controller = loader.getController();
-            controller.setProducto(producto);
-
-            Stage stage = (Stage) btnAdministrar.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Administrar " + producto.getTitulo());
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de administración.");
-        }
+        gestorPantallas.irAdminCurso();
     }
 
     // Maneja la acción de volver al menú del emprendedor.
     @FXML
     private void handleVolver() {
-        cambiarPantalla("/puj.fis.pantallas/emprendedor.fxml", "Menú del Emprendedor", btnVolver);
-    }
-
-    // Muestra una alerta con el tipo, título, encabezado y mensaje especificados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
-    }
-
-    // Cambia a la pantalla especificada por el path del FXML, con el título dado, usando el botón como referencia para obtener la ventana actual.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-        }
+        gestorPantallas.irEmprendedor();
     }
 }

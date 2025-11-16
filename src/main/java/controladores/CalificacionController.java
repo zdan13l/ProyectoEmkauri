@@ -49,6 +49,7 @@ public class CalificacionController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal; // servicio nuevo
+    private final GestorPantallas gestorPantallas;
 
     // Listas observables
     private final ObservableList<Calificacion> listaObservable = FXCollections.observableArrayList();
@@ -56,16 +57,16 @@ public class CalificacionController {
     private Label mensajeTablaVacia;
 
     // Constructor
-    public CalificacionController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP,
-                                  ISCategoria servicioCa, ISPago servicioPa,
-                                  ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public CalificacionController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                  ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicialización
@@ -106,7 +107,7 @@ public class CalificacionController {
         Usuario actual = SesionActual.getUsuarioActual();
 
         if (actual == null) {
-            mostrarAlerta("Error", "No hay sesión activa.");
+            gestorPantallas.mostrarAlerta("Error", "No hay sesión activa.");
             return;
         }
 
@@ -125,7 +126,7 @@ public class CalificacionController {
         };
 
         task.setOnSucceeded(evt -> comboElemento.setItems(FXCollections.observableArrayList(task.getValue())));
-        task.setOnFailed(evt -> mostrarAlerta("Error", "No se pudieron cargar los elementos."));
+        task.setOnFailed(evt -> gestorPantallas.mostrarAlerta("Error", "No se pudieron cargar los elementos."));
         new Thread(task).start();
     }
 
@@ -136,7 +137,7 @@ public class CalificacionController {
     private void onBuscar(ActionEvent event) {
         Producto seleccionado = comboElemento.getValue();
         if (seleccionado == null) {
-            mostrarAlerta("Atención", "Seleccione un elemento para ver sus calificaciones.");
+            gestorPantallas.mostrarAlerta("Atención", "Seleccione un elemento para ver sus calificaciones.");
             return;
         }
 
@@ -153,7 +154,7 @@ public class CalificacionController {
             actualizarPromedio(calificaciones);
         });
 
-        task.setOnFailed(evt -> mostrarAlerta("Error", "Error al cargar las calificaciones."));
+        task.setOnFailed(evt -> gestorPantallas.mostrarAlerta("Error", "Error al cargar las calificaciones."));
         new Thread(task).start();
     }
 
@@ -174,19 +175,7 @@ public class CalificacionController {
      */
     @FXML
     private void onVolver(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/emprendedor.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Panel del Emprendedor");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al panel del emprendedor.");
-        }
+        gestorPantallas.irEmprendedor();
     }
 
     /**
@@ -194,29 +183,6 @@ public class CalificacionController {
      */
     @FXML
     private void onVerMisProductos(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/productosE.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-
-            Stage stage = (Stage) btnMisProductos.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Mis Productos");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla de productos.");
-        }
-    }
-
-    /**
-     * Muestra un mensaje de alerta simple.
-     */
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
+        gestorPantallas.irProductosEmprendedor();
     }
 }

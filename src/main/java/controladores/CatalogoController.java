@@ -40,19 +40,22 @@ public class CatalogoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Lista completa de productos.
     private List<Producto> listaProductos = new ArrayList<>();
 
     // Constructor que recibe los servicios necesarios.
-    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                              ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa el controlador: configura tabla, categorías y productos.
@@ -155,7 +158,7 @@ public class CatalogoController {
         Producto seleccionado = resultadosTable.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Error", "Seleccione un producto antes de agregar al carrito.");
+            gestorPantallas.mostrarAlerta("Error", "Seleccione un producto antes de agregar al carrito.");
             return;
         }
 
@@ -165,43 +168,12 @@ public class CatalogoController {
     // Vuelve a la pantalla del cliente.
     @FXML
     private void onVolverClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/cliente.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) busquedaField.getScene().getWindow();
-            stage.setTitle("Menú del Cliente");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver a la pantalla del cliente.");
-        }
+        gestorPantallas.irCliente();
     }
 
     // Abre la pantalla del carrito de compras.
     @FXML
     private void onVerCarrito() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/carrito.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) busquedaField.getScene().getWindow();
-            stage.setTitle("Carrito de Compras");
-            stage.setScene(scene);
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir el carrito.");
-        }
-    }
-
-    // Muestra una alerta con título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        gestorPantallas.irCarrito();
     }
 }

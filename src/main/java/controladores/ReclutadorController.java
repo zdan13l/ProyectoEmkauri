@@ -33,16 +33,19 @@ public class ReclutadorController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Constructor que recibe los servicios necesarios.
-    public ReclutadorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public ReclutadorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa la pantalla con los datos del usuario actual.
@@ -62,71 +65,30 @@ public class ReclutadorController {
     // Maneja el evento de clic en el botón de solicitudes de productos.
     @FXML
     private void onSolicitudesProducto(ActionEvent event) {
-        abrirPantallaSolicitudes("/puj.fis.pantallas/solicitudP.fxml", "producto", "Solicitudes de Productos", btnSolicitudesProducto);
+        gestorPantallas.irSolicitudProducto();
     }
 
     // Maneja el evento de clic en el botón de solicitudes de emprendedores.
     @FXML
     private void onSolicitudesEmprendedor(ActionEvent event) {
-        abrirPantallaSolicitudes("/puj.fis.pantallas/solicitudE.fxml", "emprendedor", "Solicitudes de Emprendedores", btnSolicitudesEmprendedor);
+        gestorPantallas.irSolicitudEmprendedor();
     }
 
     // Abre la pantalla de solicitudes según el tipo especificado.
     private void abrirPantallaSolicitudes(String fxmlPath, String tipo, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-
-            Scene scene = new Scene(loader.load());
-            SolicitudController controller = loader.getController();
-            controller.setTipoSolicitud(tipo);
-            controller.cargarSolicitudesPendientes();
-
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-            stage.show();
-        } catch (IOException e) {
-            mostrarAlerta("No se pudo abrir la pantalla de " + titulo.toLowerCase() + ".");
-        }
+        // Lógica para abrir la pantalla de solicitudes. (PENDIENTE)
     }
 
     // Maneja el evento de clic en el botón de cerrar sesión.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
         SesionActual.cerrarSesion();
-        cambiarPantalla("/puj.fis.pantallas/login.fxml", "Inicio de Sesión", btnCerrarSesion);
+        gestorPantallas.irLogin();
     }
 
     // Maneja el evento de clic en el botón de categorías.
     @FXML
     private void onCategorias(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/categoria.fxml", "Gestión Categorías", btnCategorias);
-    }
-
-    // Cambia a otra pantalla especificada por el path del FXML, título y botón que origina el cambio.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle(titulo);
-            stage.show();
-        } catch (IOException e) {
-            mostrarAlerta("No se pudo abrir la pantalla: " + titulo);
-        }
-    }
-
-    // Muestra una alerta con el tipo, título, encabezado y mensaje especificados.
-    private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        gestorPantallas.irCategoria();
     }
 }

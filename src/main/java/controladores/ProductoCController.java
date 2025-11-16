@@ -38,19 +38,22 @@ public class ProductoCController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Lista observable para los productos del cliente.
     private final ObservableList<Producto> productosCliente = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public ProductoCController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public ProductoCController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicialización del controlador.
@@ -84,7 +87,7 @@ public class ProductoCController {
     private void cargarProductosCompradosAsync() {
         Usuario actual = SesionActual.getUsuarioActual();
         if (actual == null) {
-            mostrarAlerta("Error de sesión", "No hay un usuario autenticado en la sesión.");
+            gestorPantallas.mostrarAlerta("Error de sesión", "No hay un usuario autenticado en la sesión.");
             return;
         }
 
@@ -100,7 +103,7 @@ public class ProductoCController {
         task.setOnSucceeded(e -> productosCliente.setAll(task.getValue()));
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
-            mostrarAlerta("Error", "No se pudieron cargar los productos comprados: " + (ex == null ? "error desconocido" : ex.getMessage()));
+            gestorPantallas.mostrarAlerta("Error", "No se pudieron cargar los productos comprados: " + (ex == null ? "error desconocido" : ex.getMessage()));
         });
 
         new Thread(task).start();
@@ -111,17 +114,16 @@ public class ProductoCController {
     private void onVerDetalle() {
         Producto seleccionado = tablaProductosCliente.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para ver su detalle.");
+            gestorPantallas.mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para ver su detalle.");
             return;
         }
-
-        cambiarPantalla("/puj.fis.pantallas/detalleProducto.fxml", "Detalle de " + seleccionado.getTitulo(), btnVerDetalle);
+        // Pasar el producto seleccionado a la pantalla de detalle. (PENDIENTE)
     }
 
     // Maneja la acción de calificar los productos.
     @FXML
     private void onCalificaciones() {
-        cambiarPantalla("/puj.fis.pantallas/calificar.fxml", "Calificaciones de Productos", btnCalificaciones);
+        gestorPantallas.irCalificar();
     }
 
     // Maneja la acción de volver al menú del cliente.
@@ -133,37 +135,11 @@ public class ProductoCController {
     // Maneja la acción de volver al menú del cliente desde el header.
     @FXML
     private void onVolverHeader() {
-        cambiarPantalla("/puj.fis.pantallas/cliente.fxml", "Menú del Cliente", btnVolverHeader);
+        gestorPantallas.irCliente();
     }
 
     // Cambia a la pantalla del menú del cliente.
     private void irAMenuCliente() {
-        cambiarPantalla("/puj.fis.pantallas/cliente.fxml", "Menú del Cliente", btnVolver);
-    }
-
-    // Muestra una alerta con el tipo, título, encabezado y mensaje especificados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
-    }
-
-    // Cambia a otra pantalla especificada por el path del FXML, título y botón que origina el cambio.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-        }
+        gestorPantallas.irCliente();
     }
 }

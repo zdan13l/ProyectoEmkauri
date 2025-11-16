@@ -35,16 +35,20 @@ public class EmprendedorController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    // Gestor de pantallas para la navegación.
+    private final GestorPantallas gestorPantallas;
 
     // Constructor que recibe los servicios necesarios.
-    public EmprendedorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public EmprendedorController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                    ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa la pantalla mostrando el nombre del usuario.
@@ -61,7 +65,7 @@ public class EmprendedorController {
     // Ver mis productos.
     @FXML
     public void onVerMisProductos(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/productosE.fxml", "Mis Productos");
+        gestorPantallas.irProductosEmprendedor();
     }
 
     // Crear un nuevo curso.
@@ -78,79 +82,18 @@ public class EmprendedorController {
 
     // Abre el formulario de solicitud de producto según el tipo.
     private void abrirSolicitud(String tipo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/solicitudProducto.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            SolicitudProductoController controller = loader.getController();
-
-            // Configurar tipo predeterminado en el formulario.
-            controller.setTipoPredeterminado(tipo);
-            controller.configurarTipo();
-
-            Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Crear Nuevo " + (tipo.equals("curso") ? "Curso" : "Servicio"));
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir el formulario de solicitud.");
-        }
+        gestorPantallas.irSolicitudProducto();
     }
 
     // Ver calificaciones.
     @FXML
     public void onVerCalificaciones(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/calificaciones.fxml", "Mis Calificaciones");
+        gestorPantallas.irCalificaciones();
     }
 
     // Cerrar sesión y volver a la pantalla de login.
     @FXML
     private void onCerrarSesion(ActionEvent event) {
-        try {
-            SesionActual.cerrarSesion();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Inicio de Sesión");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo cerrar sesión correctamente.");
-        }
-    }
-
-    // Metodo genérico para cambiar de pantalla.
-    private void cambiarPantalla(String rutaFXML, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Stage stage = (Stage) lblBienvenidaTop.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle(titulo);
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-            // Debug
-            e.printStackTrace();
-        }
-    }
-
-    // Muestra una alerta con título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        gestorPantallas.irLogin();
     }
 }

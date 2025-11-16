@@ -31,15 +31,18 @@ public class AdminProductoController {
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
     private final ObservableList<Material> materiales = FXCollections.observableArrayList();
+    private final GestorPantallas gestorPantallas;
 
-    public AdminProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public AdminProductoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                    ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     @FXML
@@ -64,7 +67,7 @@ public class AdminProductoController {
     @FXML
     private void onGuardar() {
         if (productoSeleccionado == null) {
-            mostrarAlerta("Error", "No hay producto cargado.");
+            gestorPantallas.mostrarAlerta("Error", "No hay producto cargado.");
             return;
         }
 
@@ -77,15 +80,15 @@ public class AdminProductoController {
             // Ejemplo: actualización usando servicioP
             servicioP.actualizarProducto(productoSeleccionado);
 
-            mostrarAlerta("Guardado", "Cambios guardados correctamente.");
+            gestorPantallas.mostrarAlerta("Guardado", "Cambios guardados correctamente.");
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo guardar: " + e.getMessage());
+            gestorPantallas.mostrarAlerta("Error", "No se pudo guardar: " + e.getMessage());
         }
     }
 
     @FXML
     private void onVolver() {
-        cambiarPantalla("/puj.fis.pantallas/productosE.fxml", "Mis Productos", btnVolver);
+        gestorPantallas.irProductosEmprendedor();
     }
 
     @FXML
@@ -106,30 +109,5 @@ public class AdminProductoController {
         if (tablaMateriales == null) return;
         Material seleccionado = tablaMateriales.getSelectionModel().getSelectedItem();
         if (seleccionado != null) materiales.remove(seleccionado);
-    }
-
-    private void mostrarAlerta(String titulo, String msg) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle(titulo);
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
-    }
-
-    // Cambia a la pantalla especificada por el path del FXML, con el título dado, usando el botón como referencia para obtener la ventana actual.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-        }
     }
 }

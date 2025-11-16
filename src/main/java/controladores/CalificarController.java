@@ -39,18 +39,19 @@ public class CalificarController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal; // servicio de calificaciones
+    private final GestorPantallas gestorPantallas;
 
     // CONSTRUCTOR
-    public CalificarController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP,
-                               ISCategoria servicioCa, ISPago servicioPa,
-                               ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public CalificarController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicialización
@@ -73,11 +74,11 @@ public class CalificarController {
         Usuario cliente = SesionActual.getUsuarioActual();
 
         if (cliente == null) {
-            mostrarAlerta("Error", "No hay usuario en sesión.");
+            gestorPantallas.mostrarAlerta("Error", "No hay usuario en sesión.");
             return;
         }
         if (tipo == null) {
-            mostrarAlerta("Atención", "Selecciona un tipo (Curso o Servicio).");
+            gestorPantallas.mostrarAlerta("Atención", "Selecciona un tipo (Curso o Servicio).");
             return;
         }
 
@@ -102,12 +103,12 @@ public class CalificarController {
         task.setOnSucceeded(evt -> {
             List<Producto> productos = task.getValue();
             if (productos.isEmpty()) {
-                mostrarAlerta("Información", "No tienes " + tipo.toLowerCase() + " disponibles para calificar.");
+                gestorPantallas.mostrarAlerta("Información", "No tienes " + tipo.toLowerCase() + " disponibles para calificar.");
             }
             comboElemento.setItems(FXCollections.observableArrayList(productos));
         });
 
-        task.setOnFailed(evt -> mostrarAlerta("Error", "Error al cargar los elementos disponibles."));
+        task.setOnFailed(evt -> gestorPantallas.mostrarAlerta("Error", "Error al cargar los elementos disponibles."));
         new Thread(task).start();
     }
 
@@ -122,15 +123,15 @@ public class CalificarController {
         String comentario = txtComentario.getText().trim();
 
         if (cliente == null) {
-            mostrarAlerta("Error", "Debe iniciar sesión para calificar.");
+            gestorPantallas.mostrarAlerta("Error", "Debe iniciar sesión para calificar.");
             return;
         }
         if (seleccionado == null) {
-            mostrarAlerta("Validación", "Seleccione un elemento para calificar.");
+            gestorPantallas.mostrarAlerta("Validación", "Seleccione un elemento para calificar.");
             return;
         }
         if (puntaje < 1 || puntaje > 5) {
-            mostrarAlerta("Validación", "El puntaje debe estar entre 1 y 5.");
+            gestorPantallas.mostrarAlerta("Validación", "El puntaje debe estar entre 1 y 5.");
             return;
         }
 
@@ -149,14 +150,14 @@ public class CalificarController {
 
         task.setOnSucceeded(evt -> {
             if (task.getValue()) {
-                mostrarAlerta("Éxito", "Calificación enviada correctamente.");
+                gestorPantallas.mostrarAlerta("Éxito", "Calificación enviada correctamente.");
                 limpiarCampos();
             } else {
-                mostrarAlerta("Error", "No se pudo guardar la calificación (es posible que ya exista una previa).");
+                gestorPantallas.mostrarAlerta("Error", "No se pudo guardar la calificación (es posible que ya exista una previa).");
             }
         });
 
-        task.setOnFailed(evt -> mostrarAlerta("Error", "Error al enviar calificación: " + task.getException().getMessage()));
+        task.setOnFailed(evt -> gestorPantallas.mostrarAlerta("Error", "Error al enviar calificación: " + task.getException().getMessage()));
         new Thread(task).start();
     }
 
@@ -165,19 +166,7 @@ public class CalificarController {
      */
     @FXML
     private void onVolver(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/productosC.fxml"));
-            Controlador factory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(factory::createController);
-
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Catálogo");
-            stage.show();
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al catálogo: " + e.getMessage());
-        }
+        gestorPantallas.irProductosCliente();
     }
 
     /**
@@ -188,16 +177,5 @@ public class CalificarController {
         comboElemento.getItems().clear();
         txtComentario.clear();
         sliderPuntaje.setValue(3);
-    }
-
-    /**
-     * Muestra un mensaje de alerta.
-     */
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
     }
 }

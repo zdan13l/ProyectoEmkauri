@@ -36,15 +36,18 @@ public class RegistroController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
-    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
@@ -72,7 +75,7 @@ public class RegistroController {
                     passwordField.getText().isEmpty() ||
                     (!clienteRadio.isSelected() && !emprendedorRadio.isSelected())) {
 
-                mostrarAlerta("Campos incompletos", "Por favor completa todos los campos antes de registrarte.");
+                gestorPantallas.mostrarAlerta("Campos incompletos", "Por favor completa todos los campos antes de registrarte.");
                 return;
             }
 
@@ -90,29 +93,22 @@ public class RegistroController {
                     msg = "Usuario registrado correctamente. Ya puedes iniciar sesión.";
                 }
 
-                mostrarAlerta("Registro exitoso", msg);
+                gestorPantallas.mostrarAlerta("Registro exitoso", msg);
                 limpiarCampos();
                 onVolverClick(new ActionEvent());
             } else {
-                mostrarAlerta("Error al registrar", "No se pudo registrar el usuario. Verifica los datos.");
+                gestorPantallas.mostrarAlerta("Error al registrar", "No se pudo registrar el usuario. Verifica los datos.");
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error inesperado", e.getMessage());
+            gestorPantallas.mostrarAlerta("Error inesperado", e.getMessage());
         }
     }
 
     // Maneja el evento de clic en el botón de volver al login.
     @FXML
     public void onVolverClick(ActionEvent actionEvent) {
-        try {
-            Stage stage = (Stage) nombreField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/puj.fis.pantallas/login.fxml"));
-            loader.setControllerFactory(param -> new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal).createController(param));
-            stage.setScene(new Scene(loader.load()));
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo volver al inicio de sesión.");
-        }
+        gestorPantallas.irLogin();
     }
 
     // Limpia todos los campos del formulario.
@@ -150,14 +146,5 @@ public class RegistroController {
         usuario.setDatosPersonales(datos);
         usuario.setRol(rol);
         return usuario;
-    }
-
-    // Muestra una alerta con el título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }

@@ -31,16 +31,19 @@ public class PagoController {
     private final ISPago servicioPa;
     private final ISSolicitud servicioS;
     private final ISCalificacion servicioCal;
+    private final GestorPantallas gestorPantallas;
 
     // Constructor con inyección de dependencias.
-    public PagoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa, ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal) {
-        this.servicioU = servicioU;
+    public PagoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
+                            ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioCo = servicioCo;
+        this.servicioU = servicioU;
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
         this.servicioPa = servicioPa;
         this.servicioS = servicioS;
         this.servicioCal = servicioCal;
+        this.gestorPantallas = gestorPantallas;
     }
 
     // Campos de la pantalla de pago.
@@ -81,7 +84,7 @@ public class PagoController {
     // Maneja la acción de cancelar el pago.
     @FXML
     public void handleCancelar(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/carrito.fxml", "Carrito de Compras", btnCancelar);
+        gestorPantallas.irCarrito();
     }
 
     // Maneja la acción de confirmar el pago.
@@ -92,7 +95,7 @@ public class PagoController {
         if (txtTitular.getText().isEmpty() || txtNumeroTarjeta.getText().isEmpty()
                 || txtMes.getText().isEmpty() || txtAnio.getText().isEmpty()
                 || txtCVV.getText().isEmpty() || txtCorreo.getText().isEmpty()) {
-            mostrarAlerta("Campos incompletos", "Por favor completa todos los datos del pago.");
+            gestorPantallas.mostrarAlerta("Campos incompletos", "Por favor completa todos los datos del pago.");
             return;
         }
 
@@ -107,7 +110,7 @@ public class PagoController {
 
         SesionActual.setPagoActual(pagoActual);
 
-        cambiarPantalla("/puj.fis.pantallas/comprobante.fxml", "Pago Exitoso", btnConfirmarPago);
+        gestorPantallas.irComprobante();
     }
 
     // Inicializa los datos del comprobante.
@@ -132,7 +135,7 @@ public class PagoController {
     @FXML
     public void handleGuardar(ActionEvent event) {
         if (pagoActual == null) {
-            mostrarAlerta("Error", "No hay un pago registrado para guardar.");
+            gestorPantallas.mostrarAlerta("Error", "No hay un pago registrado para guardar.");
             return;
         }
 
@@ -149,48 +152,22 @@ public class PagoController {
             Path destino = carpeta.resolve("comprobante_" + pagoActual.getCodigo() + ".json");
             Files.writeString(destino, json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-            mostrarAlerta("Guardado exitoso", "Comprobante guardado correctamente en:\n" + destino.toAbsolutePath());
+            gestorPantallas.mostrarAlerta("Guardado exitoso", "Comprobante guardado correctamente en:\n" + destino.toAbsolutePath());
 
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo guardar el comprobante:\n" + e.getMessage());
+            gestorPantallas.mostrarAlerta("Error", "No se pudo guardar el comprobante:\n" + e.getMessage());
         }
     }
 
     // Maneja la acción de volver al inicio.
     @FXML
     public void handleVolverInicio(ActionEvent event) {
-        cambiarPantalla("/puj.fis.pantallas/cliente.fxml", "Menú Principal", btnVolverInicio);
+        gestorPantallas.irCliente();
         SesionActual.vaciarCarrito();
-    }
-
-    // Muestra una alerta con el título y mensaje proporcionados.
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 
     // Escapa caracteres especiales en una cadena para JSON.
     private String escape(String s) {
         return s == null ? "" : s.replace("\\", "\\\\").replace("\"", "\\\"");
-    }
-
-    // Cambia la pantalla actual a la especificada por el path FXML.
-    private void cambiarPantalla(String fxmlPath, String titulo, Button boton) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Controlador controladorFactory = new Controlador(servicioU, servicioCo, servicioP, servicioCa, servicioPa, servicioS, servicioCal);
-            loader.setControllerFactory(controladorFactory::createController);
-
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) boton.getScene().getWindow();
-            stage.setTitle(titulo);
-            stage.setScene(scene);
-
-        } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la pantalla: " + titulo);
-        }
     }
 }
