@@ -32,13 +32,12 @@ public class ConexionDB {
         } else {
             // Base persistente en archivo.
             return DriverManager.getConnection(
-                    "jdbc:h2:./emkauriDB;AUTO_SERVER=TRUE;CREATE_IF_NOT_EXISTS=TRUE",
+                    "jdbc:h2:./emkauriDB;AUTO_SERVER=TRUE",
                     "sa",
                     ""
             );
         }
     }
-
 
     // Ejecuta el script DDL para crear las tablas.
     public static void initSchema(Connection conn) {
@@ -71,7 +70,6 @@ public class ConexionDB {
             } else {
                 System.out.println(" - Servidor TCP ya está corriendo en: " + tcpServer.getURL());
             }
-
             // WebConsole — usa puerto aleatorio libre.
             if (webServer == null || !webServer.isRunning(true)) {
                 webServer = Server.createWebServer("-webAllowOthers", "-webPort", "0").start();
@@ -82,18 +80,6 @@ public class ConexionDB {
             }
         } catch (SQLException e) {
             System.err.println(" - Error iniciando los servidores H2: " + e.getMessage());
-        }
-    }
-
-    // Detiene ambos servidores.
-    public static void stopServers() {
-        if (tcpServer != null) {
-            tcpServer.stop();
-            System.out.println(" - Servidor H2 TCP detenido.");
-        }
-        if (webServer != null) {
-            webServer.stop();
-            System.out.println(" - Consola H2 detenida.");
         }
     }
 

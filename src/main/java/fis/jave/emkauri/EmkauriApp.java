@@ -25,18 +25,23 @@ public class EmkauriApp extends Application {
     // Método principal.
     public static void main(String[] args) throws Exception {
         // Modo pruebas por defecto.
-        ConexionDB.setModoPruebas(true);
+        ConexionDB.setModoPruebas(false);
 
         // Iniciar el servidor TCP y Web si estamos en modo pruebas.
         if (ConexionDB.modoPruebas) {
             ConexionDB.startTcpAndWebServer();
-        }
 
-        // Conectar y cargar los scripts.
-        try (Connection conexion = ConexionDB.getConnection()) {
-            ConexionDB.initSchema(conexion);
-            ConexionDB.loadTestData(conexion);
-            System.out.println("DB de PRUEBAS creada en memoria con datos iniciales.");
+            // Conectar y cargar los scripts.
+            try (Connection conexion = ConexionDB.getConnection()) {
+                ConexionDB.initSchema(conexion);
+                ConexionDB.loadTestData(conexion);
+                System.out.println("DB de PRUEBAS creada en memoria con datos iniciales.");
+            }
+        } else {
+            // Modo persistente en archivo.
+            try (Connection conexion = ConexionDB.getConnection()) {
+                System.out.println("Conectado a la base de datos persistente en archivo.");
+            }
         }
 
         // Lanzar la aplicación JavaFX.
