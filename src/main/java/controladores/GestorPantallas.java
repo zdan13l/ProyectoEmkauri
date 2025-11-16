@@ -1,9 +1,13 @@
 package controladores;
 
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,13 +15,14 @@ import java.util.Map;
 public class GestorPantallas {
     // Referencia al Stage principal y a la fábrica de controladores.
     private final Stage stage;
-    private final FabricaControladores fabrica;
+    private final FabricaController fabrica;
 
-    // Mapa de rutas de pantallas por clave.
+    // Mapa de rutas y títulos de pantallas por clave.
     private final Map<String, String> pantallas = new HashMap<>();
+    private final Map<String, String> titulos = new HashMap<>();
 
     // Constructor que recibe el Stage principal y la fábrica de controladores.
-    public GestorPantallas(Stage stage, FabricaControladores fabrica) {
+    public GestorPantallas(Stage stage, FabricaController fabrica) {
         this.stage = stage;
         this.fabrica = fabrica;
 
@@ -41,6 +46,27 @@ public class GestorPantallas {
         pantallas.put("solicitudEmprendedor", "/puj.fis.pantallas/solicitudE.fxml");
         pantallas.put("solicitudProducto", "/puj.fis.pantallas/solicitudP.fxml");
         pantallas.put("solicitudes", "/puj.fis.pantallas/solicitudProducto.fxml");
+
+        // Títulos de las pantallas.
+        titulos.put("adminCurso", "Administración de Cursos - Emkauri");
+        titulos.put("adminServicio", "Administración de Servicios - Emkauri");
+        titulos.put("calificaciones", "Listado de Calificaciones - Emkauri");
+        titulos.put("calificar", "Calificar Producto - Emkauri");
+        titulos.put("carrito", "Carrito de Compras - Emkauri");
+        titulos.put("catalogo", "Catálogo de Productos - Emkauri");
+        titulos.put("categoria", "Categorías de Productos - Emkauri");
+        titulos.put("cliente", "Panel Cliente - Emkauri");
+        titulos.put("comprobante", "Comprobante de Compra - Emkauri");
+        titulos.put("emprendedor", "Panel Emprendedor - Emkauri");
+        titulos.put("login", "Login - Emkauri");
+        titulos.put("pago", "Realizar Pago - Emkauri");
+        titulos.put("productosCliente", "Productos del Cliente - Emkauri");
+        titulos.put("productosEmprendedor", "Productos del Emprendedor - Emkauri");
+        titulos.put("reclutador", "Panel Reclutador - Emkauri");
+        titulos.put("registro", "Registro de Usuario - Emkauri");
+        titulos.put("solicitudEmprendedor", "Solicitudes Emprendedores - Emkauri");
+        titulos.put("solicitudProducto", "Solicitudes Productos - Emkauri");
+        titulos.put("solicitudes", "Solicitudes Pendientes - Emkauri");
     }
 
     // Cambiar la pantalla actual a la indicada por la clave.
@@ -48,27 +74,105 @@ public class GestorPantallas {
         try {
             String ruta = pantallas.get(clavePantalla);
 
-            if (ruta == null)
-                throw new RuntimeException("Pantalla no registrada: " + clavePantalla);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
-
             // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(fabrica::createController);
 
             // Cargar la nueva escena.
             Scene scene = new Scene(loader.load());
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            stage.setTitle(titulo);
+            stage.setMaximized(true);
+            aplicarTransicion((Pane) scene.getRoot());
             stage.setScene(scene);
 
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("Error al cargar pantalla: " + clavePantalla, e);
         }
     }
 
-    // Mostrar una alerta informativa al usuario.
-    public void mostrarAlerta(String titulo, String mensaje) {
+    // Abrir la pantalla de solicitudes de producto con el tipo seleccionado.
+    public void abrirSolicitudes(String clavePantalla, String tipoProducto) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+
+            Pane root = loader.load();
+
+            // Obtener el controlador de JavaFX.
+            SolicitudProductoController controller = loader.getController();
+            controller.seleccionarTipo(tipoProducto);
+
+            Scene scene = new Scene(root);
+            stage.setTitle(titulos.get("solicitudes"));
+            stage.setMaximized(true);
+            aplicarTransicion(root);
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            mostrarError("Error", "No se pudo abrir la solicitud de producto.");
+        }
+    }
+
+    // Abrir la pantalla de solicitudes de producto con el tipo seleccionado.
+    private void abrirGestionSolicitudes(String clavePantalla, String tipoProducto) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+
+            Pane root = loader.load();
+
+            // Obtener el controlador real que JavaFX creó
+            SolicitudController controller = loader.getController();
+            controller.setTipoSolicitud(tipoProducto);
+            controller.cargarSolicitudesPendientes();
+
+            Scene scene = new Scene(root);
+            stage.setTitle(titulos.get("solicitudes"));
+            stage.setMaximized(true);
+            aplicarTransicion(root);
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            mostrarError("Error", "No se pudo abrir la solicitud de producto.");
+        }
+    }
+
+    // Aplicar una transición de desvanecimiento al cambiar de pantalla.
+    private void aplicarTransicion(Pane root) {
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(600), root);
+        root.setOpacity(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+    }
+
+    // Mostrar una alerta de confirmación al usuario.
+    public boolean mostrarConfirmacion(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        return alert.showAndWait().filter(response -> response == javafx.scene.control.ButtonType.OK).isPresent();
+    }
+
+    // Mostrar una alerta de éxito al usuario.
+    public void mostrarExito(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    // Mostrar una alerta de advertencia al usuario.
+    public void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
@@ -101,7 +205,7 @@ public class GestorPantallas {
     public void irProductosEmprendedor() { cambiarPantalla("productosEmprendedor"); }
     public void irReclutador()   { cambiarPantalla("reclutador"); }
     public void irRegistro() { cambiarPantalla("registro"); }
-    public void irSolicitudEmprendedor() { cambiarPantalla("solicitudEmprendedor"); }
-    public void irSolicitudProducto() { cambiarPantalla("solicitudProducto"); }
-    public void irSolicitudes() { cambiarPantalla("solicitudes"); }
+    public void irSolicitudEmprendedor(String tipo) { abrirGestionSolicitudes("solicitudEmprendedor", tipo); }
+    public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes("solicitudProducto", tipo); }
+    public void irSolicitudes(String tipo) { abrirSolicitudes("solicitudes", tipo); }
 }

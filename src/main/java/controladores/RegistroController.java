@@ -2,22 +2,17 @@ package controladores;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import modelo.Datos;
 import modelo.Rol;
 import modelo.Usuario;
-import servicio.*;
+import servicio.ISUsuario;
 
-import java.io.IOException;
-
-// Controlador para la pantalla de registro de usuarios.
+// Controlador para gestionar el registro de usuarios.
 public class RegistroController {
 
-    // Campos vinculados a los elementos de la interfaz.
+    // Elementos de la interfaz gráfica.
     @FXML private VBox emprendedorBox;
     @FXML private TextField telefonoField;
     @FXML private TextField emailField;
@@ -28,38 +23,26 @@ public class RegistroController {
     @FXML private TextField nombreField;
     @FXML private TextField apellidoField;
 
-    // Servicio para manejar la lógica.
+    // Servicios para la lógica y gestor de navegación.
     private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
-    private final ISProducto servicioP;
-    private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
-    private final ISCalificacion servicioCal;
     private final GestorPantallas gestorPantallas;
 
-    public RegistroController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
-                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
-        this.servicioCo = servicioCo;
+    // Constructor que recibe los servicios necesarios.
+    public RegistroController(ISUsuario servicioU, GestorPantallas gestorPantallas) {
         this.servicioU = servicioU;
-        this.servicioP = servicioP;
-        this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
-        this.servicioCal = servicioCal;
         this.gestorPantallas = gestorPantallas;
     }
 
     // Inicializa la interfaz, configurando la visibilidad del campo de mensaje.
     @FXML
     public void initialize() {
-        // Muestra / oculta el campo del mensaje según el rol elegido.
-        clienteRadio.setOnAction(e -> {
+        // Muestra - oculta el campo del mensaje según el rol elegido.
+        clienteRadio.setOnAction(evento -> {
             emprendedorBox.setVisible(false);
             emprendedorBox.setManaged(false);
         });
 
-        emprendedorRadio.setOnAction(e -> {
+        emprendedorRadio.setOnAction(evento -> {
             emprendedorBox.setVisible(true);
             emprendedorBox.setManaged(true);
         });
@@ -70,13 +53,40 @@ public class RegistroController {
     public void onRegistrarClick() {
         try {
             // Validar campos obligatorios.
-            if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty() ||
-                    telefonoField.getText().isEmpty() || emailField.getText().isEmpty() ||
-                    passwordField.getText().isEmpty() ||
-                    (!clienteRadio.isSelected() && !emprendedorRadio.isSelected())) {
-
+            if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty() || telefonoField.getText().isEmpty() || emailField.getText().isEmpty() ||
+                    passwordField.getText().isEmpty() || (!clienteRadio.isSelected() && !emprendedorRadio.isSelected())) {
                 gestorPantallas.mostrarAlerta("Campos incompletos", "Por favor completa todos los campos antes de registrarte.");
                 return;
+            }
+
+            // Validar formato de nombre y apellido.
+            String regexTexto = "^[a-zA-ZÀ-ÿ\\\\s]+$";
+            if (!nombreField.getText().matches(regexTexto) || !apellidoField.getText().matches(regexTexto)) {
+                gestorPantallas.mostrarAlerta("Formato inválido", "El nombre y apellido solo deben contener letras y espacios.");
+                return;
+            }
+
+            // Validar formato de teléfono.
+            String regexTelefono = "^?[0-9]{7,15}$";
+            if (!telefonoField.getText().matches(regexTelefono)) {
+                gestorPantallas.mostrarAlerta("Formato inválido", "El número de teléfono debe contener solo dígitos y tener entre 7 y 10 caracteres.");
+                return;
+            }
+
+            // Validar formato de correo electrónico.
+            String regexCorreo = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
+            if (!emailField.getText().matches(regexCorreo)) {
+                gestorPantallas.mostrarAlerta("Formato inválido", "Asegúrese de ingresar un correo electrónico válido.");
+                return;
+            }
+
+            // Evaluar la fortaleza de la contraseña.
+            String fortaleza = evaluarContrasena(passwordField.getText());
+            if(fortaleza.equals("Muy débil") || fortaleza.equals("Débil")) {
+                boolean seguir = gestorPantallas.mostrarConfirmacion("Contraseña débil", "Tu contraseña es " + fortaleza + ". ¿Deseas continuar con esta contraseña?");
+                if (!seguir) {
+                    return;
+                }
             }
 
             // Crear objeto Usuario desde los campos del formulario.
@@ -86,22 +96,22 @@ public class RegistroController {
             boolean registrado = servicioU.registrarUsuario(usuario, mensajeField.getText());
 
             if (registrado) {
-                String msg;
+                String mensaje;
                 if (emprendedorRadio.isSelected()) {
-                    msg = "Tu registro como emprendedor ha sido enviado. " + "Tu cuenta quedará pendiente hasta que un reclutador apruebe tu solicitud.";
+                    mensaje = "Tu registro como emprendedor ha sido enviado. Tu cuenta quedará pendiente hasta que un reclutador apruebe tu solicitud.";
                 } else {
-                    msg = "Usuario registrado correctamente. Ya puedes iniciar sesión.";
+                    mensaje = "Usuario registrado correctamente. Ya puedes iniciar sesión.";
                 }
 
-                gestorPantallas.mostrarAlerta("Registro exitoso", msg);
+                gestorPantallas.mostrarExito("Registro exitoso", mensaje);
                 limpiarCampos();
                 onVolverClick(new ActionEvent());
             } else {
-                gestorPantallas.mostrarAlerta("Error al registrar", "No se pudo registrar el usuario. Verifica los datos.");
+                gestorPantallas.mostrarError("Error al registrar", "No se pudo registrar el usuario. Verifica los datos.");
             }
 
         } catch (Exception e) {
-            gestorPantallas.mostrarAlerta("Error inesperado", e.getMessage());
+            gestorPantallas.mostrarError("Error inesperado", e.getMessage());
         }
     }
 
@@ -139,12 +149,32 @@ public class RegistroController {
             rol.setNombre("Emprendedor");
         }
 
-        // Crear objeto Usuario
+        // Crear objeto Usuario.
         Usuario usuario = new Usuario();
         usuario.setCorreo(emailField.getText());
         usuario.setContrasena(passwordField.getText());
         usuario.setDatosPersonales(datos);
         usuario.setRol(rol);
+
         return usuario;
+    }
+
+    // Evaluar la fortaleza de la contraseña ingresada.
+    private String evaluarContrasena(String contrasena) {
+        int puntuacion = 0;
+
+        if (contrasena.length() >= 7) { puntuacion++; }
+        if (contrasena.matches(".*[A-Z].*")) { puntuacion++; }
+        if (contrasena.matches(".*[a-z].*")) { puntuacion++; }
+        if (contrasena.matches(".*\\d.*")) { puntuacion++; }
+        if (contrasena.matches(".*[!@#$%^&*()-+=].*")) { puntuacion++; }
+
+        return switch (puntuacion) {
+            case 5 -> "Muy fuerte";
+            case 4 -> "Fuerte";
+            case 3 -> "Moderada";
+            case 2 -> "Débil";
+            default -> "Muy débil";
+        };
     }
 }

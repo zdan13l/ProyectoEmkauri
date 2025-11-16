@@ -222,11 +222,20 @@ public class SolicitudProductoController {
         this.tipoPredeterminado = tipo;
     }
 
-    // Configurar el tipo de producto seleccionado al iniciar.
-    public void configurarTipo() {
-        if ("curso".equalsIgnoreCase(tipoPredeterminado)) {
+    // Configurar el tipo de producto al inicializar.
+    private void configurarTipo() {
+        if (tipoPredeterminado != null) {
+            seleccionarTipo(tipoPredeterminado);
+            rbCurso.setDisable(true);
+            rbServicio.setDisable(true);
+        }
+    }
+
+    // Seleccionar el tipo de producto (curso/servicio) en la pantalla de solicitudes.
+    public void seleccionarTipo(String tipo) {
+        if (tipo.equalsIgnoreCase("curso")) {
             rbCurso.setSelected(true);
-        } else if ("servicio".equalsIgnoreCase(tipoPredeterminado)) {
+        } else if (tipo.equalsIgnoreCase("servicio")) {
             rbServicio.setSelected(true);
         }
     }

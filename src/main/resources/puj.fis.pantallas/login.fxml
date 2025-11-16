@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController" stylesheets="@../css/styles.css">
-
+<!-- ARCHIVO FXML PARA LA PANTALLA DE LOGIN -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController" stylesheets="@../css/loginRegister.css">
     <children>
         <VBox styleClass="fondo-celeste"
                 AnchorPane.topAnchor="0"

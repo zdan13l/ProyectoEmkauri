@@ -5,23 +5,19 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import modelo.Categoria;
 import modelo.Producto;
 import servicio.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Controlador para manejar la lógica de la pantalla del catálogo de productos.
+// Controlador para gestionar el catálogo de productos.
 public class CatalogoController {
 
-    // Campos vinculados a los elementos de la interfaz.
+    // Elementos de la interfaz gráfica.
     @FXML private TextField busquedaField;
     @FXML private Button btnCarrito;
     @FXML private ComboBox<String> categoriaFilter;
@@ -32,29 +28,18 @@ public class CatalogoController {
     @FXML private TableColumn<Producto, String> categoriaColumn;
     @FXML private TableColumn<Producto, Double> precioColumn;
 
-    // Servicios para manejar la lógica.
-    private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
+    // Servicios para la lógica y gestor de navegación.
     private final ISProducto servicioP;
     private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
-    private final ISCalificacion servicioCal;
     private final GestorPantallas gestorPantallas;
 
     // Lista completa de productos.
     private List<Producto> listaProductos = new ArrayList<>();
 
     // Constructor que recibe los servicios necesarios.
-    public CatalogoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
-                              ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
-        this.servicioCo = servicioCo;
-        this.servicioU = servicioU;
+    public CatalogoController(ISProducto servicioP, ISCategoria servicioCa, GestorPantallas gestorPantallas) {
         this.servicioP = servicioP;
         this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
-        this.servicioCal = servicioCal;
         this.gestorPantallas = gestorPantallas;
     }
 
@@ -74,8 +59,7 @@ public class CatalogoController {
 
         categoriaColumn.setCellValueFactory(cellData ->
                 Bindings.createObjectBinding(() -> {
-                    if (cellData.getValue().getCategoria() != null)
-                        return cellData.getValue().getCategoria().getNombre();
+                    if (cellData.getValue().getCategoria() != null) { return cellData.getValue().getCategoria().getNombre(); }
                     return "";
                 })
         );
@@ -83,9 +67,9 @@ public class CatalogoController {
         tipoColumn.setCellValueFactory(cellData ->
                 Bindings.createObjectBinding(() -> {
                     Producto p = cellData.getValue();
-                    if (p == null) return "";
-                    if (p.getClass().getSimpleName().equals("Curso")) return "CURSO";
-                    if (p.getClass().getSimpleName().equals("Servicio")) return "SERVICIO";
+                    if (p == null) { return ""; }
+                    if (p.getClass().getSimpleName().equals("Curso")) { return "CURSO"; }
+                    if (p.getClass().getSimpleName().equals("Servicio")) { return "SERVICIO"; }
                     return "DESCONOCIDO";
                 })
         );
@@ -108,12 +92,10 @@ public class CatalogoController {
                     .collect(Collectors.toList());
 
             nombres.add(0, "Todos");
-
             categoriaFilter.setItems(FXCollections.observableArrayList(nombres));
             categoriaFilter.getSelectionModel().select("Todos");
         } catch (Exception e) {
-            categoriaFilter.setItems(FXCollections.observableArrayList("Todos", "Programación", "Diseño", "Marketing"));
-            categoriaFilter.getSelectionModel().select("Todos");
+            gestorPantallas.mostrarError("Error", "No se pudieron cargar las categorías.");
         }
     }
 
@@ -137,18 +119,11 @@ public class CatalogoController {
 
         List<Producto> filtrados = listaProductos.stream()
                 .filter(p -> {
-                    boolean coincideTexto = texto.isEmpty() ||
-                            p.getTitulo().toLowerCase().contains(texto) ||
-                            p.getDescripcion().toLowerCase().contains(texto);
-
-                    boolean coincideCategoria = categoriaSeleccionada.equals("Todos") ||
-                            (p.getCategoria() != null &&
-                                    p.getCategoria().getNombre().equalsIgnoreCase(categoriaSeleccionada));
-
+                    boolean coincideTexto = texto.isEmpty() || p.getTitulo().toLowerCase().contains(texto) || p.getDescripcion().toLowerCase().contains(texto);
+                    boolean coincideCategoria = categoriaSeleccionada.equals("Todos") || (p.getCategoria() != null && p.getCategoria().getNombre().equalsIgnoreCase(categoriaSeleccionada));
                     return coincideTexto && coincideCategoria;
                 })
                 .collect(Collectors.toList());
-
         mostrarProductos(filtrados);
     }
 
@@ -156,24 +131,19 @@ public class CatalogoController {
     @FXML
     private void onAgregarCarritoClick() {
         Producto seleccionado = resultadosTable.getSelectionModel().getSelectedItem();
-
         if (seleccionado == null) {
-            gestorPantallas.mostrarAlerta("Error", "Seleccione un producto antes de agregar al carrito.");
+            gestorPantallas.mostrarError("Error", "Seleccione un producto antes de agregar al carrito.");
             return;
         }
-
+        gestorPantallas.mostrarExito("Producto agregado", "El producto ha sido agregado al carrito.");
         SesionActual.agregarProductoAlCarrito(seleccionado);
-    }
-
-    // Vuelve a la pantalla del cliente.
-    @FXML
-    private void onVolverClick() {
-        gestorPantallas.irCliente();
     }
 
     // Abre la pantalla del carrito de compras.
     @FXML
-    private void onVerCarrito() {
-        gestorPantallas.irCarrito();
-    }
+    private void onVerCarrito() { gestorPantallas.irCarrito(); }
+
+    // Vuelve a la pantalla del cliente.
+    @FXML
+    private void onVolverClick() { gestorPantallas.irCliente(); }
 }

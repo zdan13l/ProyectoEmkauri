@@ -1,10 +1,8 @@
-/* FONDO CELESTE */
 .fondo-celeste {
     -fx-background-color: linear-gradient(to bottom, #cce7ff, #b5dbff);
     -fx-padding: 40;
 }
 
-/* TARJETA */
 .card-login {
     -fx-background-color: #ffffff;
     -fx-padding: 35 40;
@@ -12,7 +10,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.25, 0, 3);
 }
 
-/* TITULOS */
 .titulo {
     -fx-font-size: 26px;
     -fx-font-weight: bold;
@@ -24,7 +21,6 @@
     -fx-text-fill: #4f5b66;
 }
 
-/* CAMPOS */
 .campo {
     -fx-pref-width: 260;
     -fx-padding: 12;
@@ -42,7 +38,6 @@
     -fx-border-color: #4d90fe;
 }
 
-/* BOToN INICIAR SESIÓN */
 .btn-login {
     -fx-cursor: hand;
     -fx-background-color: #4d90fe;
@@ -57,7 +52,6 @@
     -fx-background-color: #6aa6ff;
 }
 
-/* BOTON REGISTRARSE */
 .btn-register {
     -fx-cursor: hand;
     -fx-background-color: transparent;

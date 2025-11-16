@@ -4,61 +4,44 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="960.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ReclutadorController">
-
-    <VBox alignment="TOP_CENTER" spacing="36" style="-fx-background-color: white; -fx-background-radius: 20;
-                -fx-border-radius: 20; -fx-padding: 32 48 40 48;-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
-          AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="40">
+<!-- ARCHIVO FXML PARA LA PANTALLA DEL RECLUTADOR -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.ReclutadorController" stylesheets="@../css/interfaz.css" styleClass="root-pane">
+    <VBox alignment="TOP_CENTER" spacing="36" styleClass="content-card"
+            AnchorPane.bottomAnchor="40"
+            AnchorPane.leftAnchor="80"
+            AnchorPane.rightAnchor="80"
+            AnchorPane.topAnchor="40">
 
         <HBox alignment="CENTER_LEFT" prefHeight="100" spacing="20">
-            <HBox alignment="CENTER_LEFT" spacing="16">
-                <VBox spacing="6">
-                    <Label fx:id="lblBienvenidaTop" style="-fx-font-size:20px; -fx-font-weight:700; -fx-text-fill: #2E3A59;" text="¡Bienvenid@, Reclutador!" />
-                    <Label style="-fx-font-size:13px; -fx-text-fill: #7A8BA3;" text="Administra las solicitudes de productos y emprendedores" />
-                </VBox>
-            </HBox>
-
+            <VBox spacing="6">
+                <Label fx:id="lblBienvenidaTop" styleClass="title" text="¡Bienvenid@, Reclutador!" />
+                <Label styleClass="subtitle" text="Administra las solicitudes de productos y emprendedores" />
+            </VBox>
             <Region HBox.hgrow="ALWAYS" />
-
-            <HBox alignment="CENTER_RIGHT" spacing="14">
-                <Button fx:id="btnSolicitudesProducto" onAction="#onSolicitudesProducto" prefHeight="36" style="-fx-background-color: transparent;
-                            -fx-text-fill: #2E3A59; -fx-font-weight: 600;" text="Producto" />
-
-                <Button fx:id="btnSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" prefHeight="36" style="-fx-background-color: transparent;
-                            -fx-background-radius: 10; -fx-cursor: hand;" text="Emprendedor" />
-
-                <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" style="-fx-background-color: #E63946;
-                            -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 14;" text="Cerrar sesión" />
+            <HBox spacing="14">
+                <Button fx:id="btnSolicitudesProducto" onAction="#onSolicitudesProducto" styleClass="nav-button" text="Producto" />
+                <Button fx:id="btnSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" styleClass="nav-button" text="Emprendedor" />
+                <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" styleClass="logout-button" text="Cerrar sesión" />
             </HBox>
         </HBox>
 
-        <Separator prefWidth="720" style="-fx-opacity: 0.3;" />
-
-        <VBox alignment="CENTER" prefHeight="400" spacing="24">
-            <ImageView fx:id="logoEmkauri" fitHeight="180" fitWidth="236.0" preserveRatio="true" smooth="true">
+        <Separator prefWidth="720" styleClass="separator" />
+        <VBox alignment="CENTER" spacing="24">
+            <ImageView fx:id="logoEmkauri" fitHeight="180" fitWidth="236" preserveRatio="true" smooth="true">
                 <image> <Image url="@../img/Emkauri_logo.png" /> </image>
             </ImageView>
 
-            <Label style="-fx-font-size:20px; -fx-text-fill:#2E3A59; -fx-font-weight:600;" text="Revisa y gestiona las solicitudes pendientes" />
-            <Label style="-fx-font-size:14px; -fx-text-fill:#7A8BA3;" text="Selecciona el tipo de solicitud que deseas analizar" />
+            <Label styleClass="section-title" text="Revisa y gestiona las solicitudes pendientes" />
+            <Label styleClass="section-subtitle" text="Selecciona el tipo de solicitud que deseas analizar" />
 
             <HBox alignment="CENTER" spacing="20">
-                <Button fx:id="btnIrSolicitudesProducto" onAction="#onSolicitudesProducto" style="-fx-background-color:#4A90E2; -fx-text-fill:white;
-                            -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Producto" />
-
-                <Button fx:id="btnCategorias" onAction="#onCategorias" style="-fx-background-color:#FFD166; -fx-text-fill:#2E3A59;
-                            -fx-font-weight:bold; -fx-background-radius:8; -fx-padding:10 22; -fx-cursor:hand;" text="Gestionar Categorías" />
-
-                <Button fx:id="btnIrSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" style="-fx-background-color:transparent; -fx-border-color:#C9D7F2;
-                            -fx-border-radius:8; -fx-text-fill:#2E3A59; -fx-font-weight:bold; -fx-padding:10 22; -fx-cursor:hand;" text="Solicitudes de Emprendedor" />
+                <Button fx:id="btnIrSolicitudesProducto" onAction="#onSolicitudesProducto" styleClass="primary-button" text="Solicitudes de Producto" />
+                <Button fx:id="btnCategorias" onAction="#onCategorias" styleClass="secondary-button" text="Gestionar Categorías" />
+                <Button fx:id="btnIrSolicitudesEmprendedor" onAction="#onSolicitudesEmprendedor" styleClass="primary-button" text="Solicitudes de Emprendedor" />
             </HBox>
         </VBox>
 
         <Region VBox.vgrow="ALWAYS" />
-
-        <HBox alignment="CENTER">
-            <Label style="-fx-font-size:12px; -fx-text-fill:#7A7A7A;" text="© 2025 Emkauri — Todos los derechos reservados" />
-        </HBox>
+        <HBox alignment="CENTER"> <Label styleClass="footer-text" text="© 2025 Emkauri — Todos los derechos reservados" /></HBox>
     </VBox>
 </AnchorPane>

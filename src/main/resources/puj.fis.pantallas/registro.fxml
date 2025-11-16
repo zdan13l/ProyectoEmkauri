@@ -1,80 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.RegistroController"
-            prefWidth="960.0" prefHeight="569.0"
-            style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);">
-
+<!-- ARCHIVO FXML PARA LA PANTALLA DE REGISTRO -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.RegistroController" stylesheets="@../css/loginRegister.css" styleClass="fondo-celeste">
     <children>
-        <VBox alignment="CENTER" spacing="15.0" maxWidth="420.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="270.0"
-              AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="60.0"
-              style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 35;">
+        <VBox alignment="CENTER" spacing="15.0" maxWidth="420.0"
+                AnchorPane.leftAnchor="270.0"
+                AnchorPane.rightAnchor="270.0"
+                AnchorPane.topAnchor="60.0"
+                AnchorPane.bottomAnchor="60.0"
+                styleClass="card-login">
 
-            <effect>
-                <DropShadow color="#00000055" radius="12"/>
-            </effect>
+            <Label text="Crea tu cuenta" styleClass="titulo"/>
+            <Label text="Regístrate para unirte a Emkauri" styleClass="subtitulo"/>
 
-            <!-- Título -->
-            <Label text="Crea tu cuenta"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+            <TextField fx:id="nombreField" promptText="Nombre" styleClass="campo"/>
+            <TextField fx:id="apellidoField" promptText="Apellido" styleClass="campo"/>
+            <TextField fx:id="telefonoField" promptText="Teléfono" styleClass="campo"/>
+            <TextField fx:id="emailField" promptText="Correo electrónico" styleClass="campo"/>
+            <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="campo"/>
 
-            <Label text="Regístrate para unirte a Emkauri"
-                   style="-fx-font-size: 13px; -fx-text-fill: #777777;"/>
-
-            <!-- Campos de registro -->
-            <TextField fx:id="nombreField" promptText="Nombre"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                              -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
-
-            <TextField fx:id="apellidoField" promptText="Apellido"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                              -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
-
-            <TextField fx:id="telefonoField" promptText="Teléfono"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                              -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
-
-            <TextField fx:id="emailField" promptText="Correo electrónico"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                              -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
-
-            <PasswordField fx:id="passwordField" promptText="Contraseña"
-                           style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                                  -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
-
-            <!-- Tipo de cuenta -->
-            <Label text="Tipo de cuenta:"
-                   style="-fx-font-size: 13px; -fx-text-fill: #555555;"/>
+            <Label text="Tipo de cuenta:" styleClass="subtitulo"/>
 
             <HBox alignment="CENTER" spacing="12">
-                <RadioButton fx:id="clienteRadio" text="Cliente" toggleGroup="$tipoUsuarioGroup"
-                             style="-fx-font-size: 13px; -fx-text-fill: #4A90E2;"/>
-                <RadioButton fx:id="emprendedorRadio" text="Emprendedor" toggleGroup="$tipoUsuarioGroup"
-                             style="-fx-font-size: 13px; -fx-text-fill: #4A90E2;"/>
+                <RadioButton fx:id="clienteRadio" text="Cliente" toggleGroup="$tipoUsuarioGroup"/>
+                <RadioButton fx:id="emprendedorRadio" text="Emprendedor" toggleGroup="$tipoUsuarioGroup"/>
             </HBox>
 
-            <!-- Mensaje adicional solo para emprendedores -->
-            <VBox fx:id="emprendedorBox" spacing="8" visible="false" managed="false"
-                  style="-fx-padding: 8 0 0 0;">
-                <TextArea fx:id="mensajeField"
-                          promptText="Mensaje para el reclutador o descripción breve"
-                          prefRowCount="3"
-                          style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;
-                                 -fx-background-color: #f9f9f9; -fx-padding: 8;"/>
+            <VBox fx:id="emprendedorBox" spacing="8" visible="false" managed="false">
+                <TextArea fx:id="mensajeField" promptText="Mensaje para el reclutador o descripción breve" prefRowCount="3" styleClass="campo"/>
             </VBox>
 
-            <!-- Botones -->
-            <Button text="Registrarse" onAction="#onRegistrarClick"
-                    style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;
-                           -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;"/>
-
-            <Button text="Volver al inicio de sesión" onAction="#onVolverClick"
-                    style="-fx-background-color: transparent; -fx-text-fill: #4A90E2; -fx-font-weight: bold;
-                           -fx-border-color: #4A90E2; -fx-border-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;"/>
+            <Button text="Registrarse" onAction="#onRegistrarClick" styleClass="btn-login"/>
+            <Button text="Volver al inicio de sesión" onAction="#onVolverClick" styleClass="btn-register"/>
         </VBox>
     </children>
 </AnchorPane>

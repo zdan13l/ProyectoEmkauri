@@ -5,61 +5,35 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import modelo.Categoria;
 import servicio.*;
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
-// Controlador para manejar la pantalla de gestión de categorías (CRUD).
+// Controlador para gestionar las categorías de productos.
 public class CategoriaController {
 
-    // Campos vinculados a los elementos de la interfaz.
-    @FXML
-    private TextField txtNombre;
-    @FXML
-    private TextField txtDescripcion;
-    @FXML
-    private TextField txtBuscar;
-    @FXML
-    private TableView<Categoria> tablaCategorias;
-    @FXML
-    private TableColumn<Categoria, Integer> colId;
-    @FXML
-    private TableColumn<Categoria, String> colNombre;
-    @FXML
-    private TableColumn<Categoria, String> colDescripcion;
-    @FXML
-    private Button btnVolver;
+    // Elementos de la interfaz gráfica.
+    @FXML private TextField txtNombre;
+    @FXML private TextField txtDescripcion;
+    @FXML private TextField txtBuscar;
+    @FXML private TableView<Categoria> tablaCategorias;
+    @FXML private TableColumn<Categoria, Integer> colId;
+    @FXML private TableColumn<Categoria, String> colNombre;
+    @FXML private TableColumn<Categoria, String> colDescripcion;
+    @FXML private Button btnVolver;
 
-    // Servicios para manejar la lógica de negocio.
-    private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
-    private final ISProducto servicioP;
+    // Servicios para la lógica y gestor de navegación.
     private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
-    private final ISCalificacion servicioCal;
     private final GestorPantallas gestorPantallas;
 
     // Lista observable de categorías para la tabla.
     private final ObservableList<Categoria> listaObservable = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public CategoriaController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
-                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
-        this.servicioCo = servicioCo;
-        this.servicioU = servicioU;
-        this.servicioP = servicioP;
+    public CategoriaController(ISCategoria servicioCa, GestorPantallas gestorPantallas) {
         this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
-        this.servicioCal = servicioCal;
         this.gestorPantallas = gestorPantallas;
     }
 
@@ -70,7 +44,6 @@ public class CategoriaController {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         tablaCategorias.setItems(listaObservable);
-
         cargarListaAsync();
 
         tablaCategorias.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, nueva) -> {
@@ -79,8 +52,7 @@ public class CategoriaController {
                 txtDescripcion.setText(nueva.getDescripcion());
             }
         });
-
-        btnVolver.disableProperty().set(false); // siempre activo
+        btnVolver.disableProperty().set(false);
     }
 
     // Agrega una nueva categoría.
@@ -90,13 +62,17 @@ public class CategoriaController {
         String descripcion = txtDescripcion.getText().trim();
 
         if (nombre.isEmpty()) {
-            gestorPantallas.mostrarAlerta("Validación", "El nombre no puede estar vacío.");
+            gestorPantallas.mostrarError("Validación", "El nombre no puede estar vacío.");
             return;
         }
 
         Categoria nueva = new Categoria();
         nueva.setNombre(nombre);
-        nueva.setDescripcion(descripcion.isEmpty() ? "Sin descripción" : descripcion);
+        if (descripcion.isEmpty()) {
+            nueva.setDescripcion("Sin descripción");
+        } else {
+            nueva.setDescripcion(descripcion);
+        }
 
         Task<Boolean> task = new Task<>() {
             @Override
@@ -107,15 +83,15 @@ public class CategoriaController {
 
         task.setOnSucceeded(evt -> {
             if (task.getValue()) {
-                gestorPantallas.mostrarAlerta("Éxito", "Categoría creada correctamente.");
+                gestorPantallas.mostrarExito("Éxito", "Categoría creada correctamente.");
                 limpiarCampos();
                 cargarListaAsync();
             } else {
-                gestorPantallas.mostrarAlerta("Error", "No se pudo crear la categoría.");
+                gestorPantallas.mostrarError("Error", "No se pudo crear la categoría.");
             }
         });
 
-        task.setOnFailed(evt -> gestorPantallas.mostrarAlerta("Error", "Error al crear la categoría: " + task.getException().getMessage()));
+        task.setOnFailed(evt -> gestorPantallas.mostrarError("Error", "Error al crear la categoría: " + task.getException().getMessage()));
         new Thread(task).start();
     }
 
@@ -150,7 +126,7 @@ public class CategoriaController {
 
         task.setOnSucceeded(evt -> {
             if (task.getValue()) {
-                gestorPantallas.mostrarAlerta("Éxito", "Categoría actualizada correctamente.");
+                gestorPantallas.mostrarExito("Éxito", "Categoría actualizada correctamente.");
                 limpiarCampos();
                 cargarListaAsync();
             } else {
@@ -170,33 +146,25 @@ public class CategoriaController {
             gestorPantallas.mostrarAlerta("Atención", "Seleccione una categoría para eliminar.");
             return;
         }
+        // Usar confirmación del gestor de pantallas
+        boolean confirmado = gestorPantallas.mostrarConfirmacion("Confirmar eliminación", "¿Eliminar la categoría '" + seleccion.getNombre() + "'?");
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar eliminación");
-        confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar la categoría '" + seleccion.getNombre() + "'?");
-        Optional<ButtonType> res = confirm.showAndWait();
+        if (!confirmado) { return; }
+        Task<Boolean> task = new Task<>() {
+            @Override
+            protected Boolean call() { return servicioCa.eliminarCategoria(seleccion.getIdCategoria()); }
+        };
 
-        if (res.isPresent() && res.get() == ButtonType.OK) {
-            Task<Boolean> task = new Task<>() {
-                @Override
-                protected Boolean call() {
-                    return servicioCa.eliminarCategoria(seleccion.getIdCategoria());
-                }
-            };
-
-            task.setOnSucceeded(evt -> {
-                if (task.getValue()) {
-                    gestorPantallas.mostrarAlerta("Éxito", "Categoría eliminada correctamente.");
-                    limpiarCampos();
-                    cargarListaAsync();
-                } else {
-                    gestorPantallas.mostrarAlerta("Error", "No se pudo eliminar la categoría.");
-                }
-            });
-
-            new Thread(task).start();
-        }
+        task.setOnSucceeded(evt -> {
+            if (task.getValue()) {
+                gestorPantallas.mostrarExito("Éxito", "Categoría eliminada correctamente.");
+                limpiarCampos();
+                cargarListaAsync();
+            } else {
+                gestorPantallas.mostrarAlerta("Error", "No se pudo eliminar la categoría, verifique que no tenga productos asociados.");
+            }
+        });
+        new Thread(task).start();
     }
 
     // Busca categorías por nombre.
@@ -204,6 +172,7 @@ public class CategoriaController {
     private void handleBuscar() {
         String nombre = txtBuscar.getText().trim();
         if (nombre.isEmpty()) {
+            gestorPantallas.mostrarAlerta("Atención", "Ingrese un nombre para buscar.");
             cargarListaAsync();
             return;
         }
@@ -214,33 +183,25 @@ public class CategoriaController {
                 return servicioCa.buscarPorNombre(nombre);
             }
         };
-
         task.setOnSucceeded(evt -> {
             Categoria c = task.getValue();
             listaObservable.clear();
             if (c != null) listaObservable.add(c);
         });
-
         new Thread(task).start();
     }
 
     // Recarga la lista de categorías.
     @FXML
-    private void handleListar() {
-        cargarListaAsync();
-    }
+    private void handleListar() { cargarListaAsync(); }
 
     // Limpia los campos de texto y la selección de la tabla.
     @FXML
-    private void handleLimpiar() {
-        limpiarCampos();
-    }
+    private void handleLimpiar() { limpiarCampos();}
 
     // Vuelve a la pantalla del reclutador.
     @FXML
-    private void onVolver(ActionEvent event) {
-        gestorPantallas.irReclutador();
-    }
+    private void onVolver(ActionEvent event) { gestorPantallas.irReclutador(); }
 
     // Carga la lista de categorías de manera asíncrona.
     private void cargarListaAsync() {

@@ -1,6 +1,6 @@
 package fis.jave.emkauri;
 
-import controladores.FabricaControladores;
+import controladores.FabricaController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import repositorio.*;
@@ -13,7 +13,7 @@ public class EmkauriApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Crear la fábrica de controladores.
-        FabricaControladores fabrica = new FabricaControladores(stage);
+        FabricaController fabrica = new FabricaController(stage);
 
         // Ir a la pantalla de login.
         fabrica.getGestorPantallas().irLogin();
@@ -22,10 +22,10 @@ public class EmkauriApp extends Application {
         stage.show();
     }
 
-    // Método principal.
+    // Inicio de la aplicación.
     public static void main(String[] args) throws Exception {
         // Modo pruebas por defecto.
-        ConexionDB.setModoPruebas(false);
+        ConexionDB.setModoPruebas(true);
 
         // Iniciar el servidor TCP y Web si estamos en modo pruebas.
         if (ConexionDB.modoPruebas) {
