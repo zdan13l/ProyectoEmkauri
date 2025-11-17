@@ -5,19 +5,42 @@ import repositorio.IRCalificacion;
 
 import java.util.List;
 
+import java.util.Collections;
+
 // Servicio que implementa la lógica de negocio para las calificaciones.
-public class SCalificacion implements ISCalificacion{
+public class SCalificacion implements ISCalificacion {
     private final IRCalificacion repoC;
 
     // Constructor con inyección de dependencia del repositorio.
-    public SCalificacion(IRCalificacion repoC) { this.repoC = repoC; }
+    public SCalificacion(IRCalificacion repoC) {
+        this.repoC = repoC;
+    }
 
     // Crea una nueva calificación.
-    public boolean crearCalificacion(modelo.Calificacion calificacion) { return repoC.guardar(calificacion); }
+    public boolean crearCalificacion(Calificacion calificacion) {
+        if (calificacion == null ||
+                calificacion.getCliente() == null ||
+                calificacion.getProducto() == null ||
+                calificacion.getPuntaje() < 1 ||
+                calificacion.getPuntaje() > 5) {
+            return false;
+        }
+        return repoC.guardar(calificacion);
+    }
 
     // Obtiene calificaciones por ID de producto.
-    public List<Calificacion> listarPorProducto(int idProducto) { return repoC.obtenerPorProducto(idProducto); }
+    public List<Calificacion> listarPorProducto(int idProducto) {
+        if (idProducto <= 0) {
+            return Collections.emptyList();
+        }
+        return repoC.obtenerPorProducto(idProducto);
+    }
 
     // Obtiene calificaciones por ID de cliente.
-    public List<modelo.Calificacion> listarPorCliente(int idCliente) { return repoC.obtenerPorCliente(idCliente); }
+    public List<Calificacion> listarPorCliente(int idCliente) {
+        if (idCliente <= 0) {
+            return Collections.emptyList();
+        }
+        return repoC.obtenerPorCliente(idCliente);
+    }
 }

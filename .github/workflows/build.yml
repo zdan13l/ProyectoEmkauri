@@ -17,12 +17,16 @@ jobs:
       - name: Descargar del repositorio
         uses: actions/checkout@v4
 
-      # Instalar java
+      # Instalar Java LTS compatible con Maven/JavaFX
       - name: Instalar Java
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
-          distribution: 'adopt'
+          distribution: temurin
+          java-version: '21'
+
+      # Preparar entorno gráfico headless para JavaFX
+      - name: Instalar dependencias de entorno gráfico
+        run: sudo apt-get update && sudo apt-get install -y xvfb
 
       # Compilar y empaquetar
       - name: Compilar y empaquetar
@@ -30,7 +34,7 @@ jobs:
 
       # Ejecutar pruebas automatizadas (JUnit)
       - name: Ejecutar pruebas
-        run: mvn --batch-mode test
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' mvn --batch-mode test
 
       # Generar un reporte de pruebas
       - name: Reporte de pruebas
