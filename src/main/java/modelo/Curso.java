@@ -17,8 +17,8 @@ public class Curso extends Producto {
         this.certificacion = "";
     }
 
-    public Curso(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria, List<Material> materiales, int duracionHoras, String nivelDificultad, String certificacion) {
-        super(idProducto, titulo, descripcion, precio, emprendedor, categoria);
+    public Curso(int idProducto, String titulo, String descripcion, String estado, double precio, Usuario emprendedor, Categoria categoria, List<Material> materiales, int duracionHoras, String nivelDificultad, String certificacion) {
+        super(idProducto, titulo, descripcion, estado, precio, emprendedor, categoria);
         this.materiales = materiales;
         this.duracionCurso = duracionHoras;
         this.nivelDificultad = nivelDificultad;

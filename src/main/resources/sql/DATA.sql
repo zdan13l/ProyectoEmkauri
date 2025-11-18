@@ -63,7 +63,7 @@ INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES
 -- 7. PAGOS
 INSERT INTO Pagos (monto, metodo, fecha) VALUES
 (120000, 'Tarjeta', CURRENT_DATE),
-(300000, 'Efectivo', CURRENT_DATE);
+(300000, 'Tarjeta', CURRENT_DATE);
 
 -- 8. COMPRAS
 INSERT INTO Compras (idCliente, montoFinal, idPago) VALUES

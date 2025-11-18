@@ -26,7 +26,6 @@
 
                 <Label styleClass="section-title" text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <TextField fx:id="txtNombre" promptText="Ingrese el nombre de la categoría" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
                 <Label styleClass="section-title" text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <TextField fx:id="txtDescripcion" promptText="Ingrese una breve descripción" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <Label styleClass="section-title" text="Búsqueda:" GridPane.columnIndex="0" GridPane.rowIndex="2" />

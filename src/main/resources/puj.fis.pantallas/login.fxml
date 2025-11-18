@@ -4,14 +4,13 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA LA PANTALLA DE LOGIN -->
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController" stylesheets="@../css/loginRegister.css">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.LoginController" stylesheets="@../css/interfaz.css">
     <children>
-        <VBox styleClass="fondo-celeste"
+        <VBox styleClass="fondo-celeste" alignment="CENTER"
                 AnchorPane.topAnchor="0"
                 AnchorPane.bottomAnchor="0"
                 AnchorPane.leftAnchor="0"
-                AnchorPane.rightAnchor="0"
-                alignment="CENTER">
+                AnchorPane.rightAnchor="0">
 
             <VBox spacing="18" alignment="CENTER" maxWidth="420" styleClass="card-login">
                 <Label text="Bienvenido a Emkauri" styleClass="titulo"/>
@@ -20,8 +19,10 @@
                 <TextField fx:id="txtUsuario" promptText="Correo electrónico" styleClass="campo"/>
                 <PasswordField fx:id="txtPassword" promptText="Contraseña" styleClass="campo"/>
 
-                <Button text="Iniciar sesión" fx:id="btnIngresar" onAction="#onLoginClick" styleClass="btn-login"/>
-                <Button text="Registrarse" fx:id="btnRegistro" onAction="#onRegisterClick" styleClass="btn-register"/>
+                <HBox alignment="CENTER" spacing="14">
+                    <Button text="Iniciar sesión" fx:id="btnIngresar" onAction="#onLoginClick" styleClass="btn-login"/>
+                    <Button text="Registrarse" fx:id="btnRegistro" onAction="#onRegisterClick" styleClass="btn-register"/>
+                </HBox>
             </VBox>
         </VBox>
     </children>

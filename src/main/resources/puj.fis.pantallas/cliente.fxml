@@ -6,7 +6,11 @@
 
 <!-- ARCHIVO FXML PARA LA PANTALLA DEL CLIENTE -->
 <AnchorPane styleClass="root-pane" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ClienteController">
-    <VBox alignment="TOP_CENTER" spacing="36" styleClass="content-card" AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80" AnchorPane.topAnchor="40">
+    <VBox alignment="TOP_CENTER" spacing="36" styleClass="content-card"
+            AnchorPane.bottomAnchor="40"
+            AnchorPane.leftAnchor="80"
+            AnchorPane.rightAnchor="80"
+            AnchorPane.topAnchor="40">
 
         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
             <VBox spacing="4">

@@ -7,6 +7,7 @@ import java.util.List;
 public interface ISCategoria {
     boolean crearCategoria(Categoria categoria);
     Categoria buscarPorNombre(String nombre);
+    List<Categoria> buscarPorNombreParcial(String nombre);
     boolean actualizarCategoria(Categoria categoria);
     List<Categoria> listarCategorias();
     boolean eliminarCategoria(int id);

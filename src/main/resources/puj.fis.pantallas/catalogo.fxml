@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA EL CATÁLOGO DE PRODUCTOS -->
-
 <StackPane styleClass="fondo-celeste" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="controladores.CatalogoController">
     <VBox alignment="CENTER" maxWidth="900" spacing="20" styleClass="content-card">
         <HBox alignment="CENTER_LEFT" prefWidth="100" spacing="10">
@@ -27,6 +26,7 @@
                 <TableColumn fx:id="categoriaColumn" prefWidth="190.0" text="Categoría" />
                 <TableColumn fx:id="precioColumn" prefWidth="137.0" text="Precio" />
             </columns>
+
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>

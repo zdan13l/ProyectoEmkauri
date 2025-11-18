@@ -11,23 +11,25 @@ public class FabricaController {
 
     // Servicios necesarios para los controladores.
     private final ISCalificacion servicioCalificacion;
-    private final ISUsuario servicioUsuario;
-    private final ISCompra servicioCompra;
-    private final ISProducto servicioProducto;
     private final ISCategoria servicioCategoria;
+    private final ISCompra servicioCompra;
+    private final ISMaterial servicioMaterial;
     private final ISPago servicioPago;
+    private final ISProducto servicioProducto;
     private final ISSolicitud servicioSolicitud;
+    private final ISUsuario servicioUsuario;
 
     // Constructor con inyección de dependencias.
     public FabricaController(Stage stage) {
         // Inyección de dependencias.
-        this.servicioUsuario = new SUsuario(new RUsuario());
-        this.servicioCompra = new SCompra(new RCompra());
-        this.servicioProducto = new SProducto(new RProducto());
-        this.servicioCategoria = new SCategoria(new RCategoria());
-        this.servicioPago = new SPago(new RPago());
-        this.servicioSolicitud = new SSolicitud(new RSolicitud());
         this.servicioCalificacion = new SCalificacion(new RCalificacion());
+        this.servicioCategoria = new SCategoria(new RCategoria());
+        this.servicioCompra = new SCompra(new RCompra());
+        this.servicioMaterial = new SMaterial(new RMaterial());
+        this.servicioPago = new SPago(new RPago());
+        this.servicioProducto = new SProducto(new RProducto());
+        this.servicioSolicitud = new SSolicitud(new RSolicitud());
+        this.servicioUsuario = new SUsuario(new RUsuario());
 
         // Gestor de pantallas con acceso a fábrica.
         this.gestorPantallas = new GestorPantallas(stage, this);
@@ -52,34 +54,29 @@ public class FabricaController {
 
         if (tipo == ClienteController.class) { return new ClienteController(servicioUsuario, gestorPantallas); }
 
-        if (tipo == CarritoController.class)
-            return new CarritoController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == CarritoController.class) { return new CarritoController(gestorPantallas); }
 
         if (tipo == CatalogoController.class) { return new CatalogoController(servicioProducto, servicioCategoria, gestorPantallas); }
 
-        if (tipo == PagoController.class)
-            return new PagoController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == PagoController.class) { return new PagoController(servicioPago, servicioCompra, gestorPantallas); }
 
         if (tipo == EmprendedorController.class) { return new EmprendedorController(servicioUsuario, gestorPantallas); }
 
-        if (tipo == SolicitudProductoController.class)
-            return new SolicitudProductoController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == SolicitudProductoController.class) { return new SolicitudProductoController(servicioProducto, servicioCategoria, servicioSolicitud, gestorPantallas); }
 
         if (tipo == ReclutadorController.class) { return new ReclutadorController(servicioUsuario, gestorPantallas); }
 
-        if (tipo == SolicitudController.class)
-            return new SolicitudController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == SolicitudController.class) { return new SolicitudController(servicioSolicitud, gestorPantallas); }
 
         if (tipo == CategoriaController.class) { return new CategoriaController(servicioCategoria, gestorPantallas); }
 
-        if (tipo == ProductoEController.class)
-            return new ProductoEController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == ProductoEController.class) { return new ProductoEController(servicioProducto, gestorPantallas); }
 
-        if (tipo == ProductoCController.class)
-            return new ProductoCController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+        if (tipo == ProductoCController.class) { return new ProductoCController(servicioProducto, gestorPantallas); }
 
         if (tipo == AdminProductoController.class)
             return new AdminProductoController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
+
 
         throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName());
     }

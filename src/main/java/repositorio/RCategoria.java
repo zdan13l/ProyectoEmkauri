@@ -22,13 +22,10 @@ public class RCategoria implements IRCategoria {
             return false;
         }
     }
-
     // Buscar una categoría por su nombre.
-    public Categoria buscarPorNombre(String nombre) {
+    public Categoria buscarNombre(String nombre) {
         String sql = "SELECT * FROM Categorias WHERE nombre = ?";
-        Categoria categoria = null;
-
-        try (Connection conn = ConexionDB.getConnection()) {
+        Categoria categoria = null; try (Connection conn = ConexionDB.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, nombre);
             try (ResultSet rs = ps.executeQuery()) {
@@ -44,6 +41,30 @@ public class RCategoria implements IRCategoria {
             System.err.println("Error al buscar categoría por nombre: " + e.getMessage());
         }
         return categoria;
+    }
+
+    // Buscar una categoría por su nombre parcial.
+    public List<Categoria> buscarNombreParcial(String nombre) {
+        String sql = "SELECT * FROM Categorias WHERE nombre LIKE ?";
+        List<Categoria> categorias = new ArrayList<>();
+        try (Connection conn = ConexionDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + nombre + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Categoria categoria = new Categoria(
+                            rs.getInt("idCategoria"),
+                            rs.getString("nombre"),
+                            rs.getString("descripcion")
+                    );
+                    categorias.add(categoria);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar categoría por nombre: " + e.getMessage());
+        }
+        return categorias;
     }
 
     // Actualizar una categoría existente en la base de datos.

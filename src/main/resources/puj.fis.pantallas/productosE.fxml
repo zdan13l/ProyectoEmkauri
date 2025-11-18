@@ -3,57 +3,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="controladores.ProductoEController"
-            prefWidth="960.0" prefHeight="600.0"
-            style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';">
-
+<!-- ARCHIVO FXML PARA LA PANTALLA DE PRODUCTOS OFRECIDOS POR EL EMPRENDEDOR -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.ProductoEController" stylesheets="@../css/interfaz.css" styleClass="fondo-celeste">
     <children>
         <VBox alignment="TOP_CENTER" spacing="20"
-              AnchorPane.topAnchor="30" AnchorPane.bottomAnchor="30"
-              AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40">
+                AnchorPane.topAnchor="30"
+                AnchorPane.bottomAnchor="30"
+                AnchorPane.leftAnchor="40"
+                AnchorPane.rightAnchor="40">
 
-            <!-- Encabezado -->
-            <HBox alignment="CENTER_LEFT" spacing="10"
-                  style="-fx-background-color: white; -fx-background-radius: 15;
-                         -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);">
-                <Label text="📦 Mis Productos"
-                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnVolver" onAction="#handleVolver"
-                        text="Volver"
-                        style="-fx-background-color: transparent; -fx-border-color: #4A90E2; -fx-text-fill: #4A90E2;
-                               -fx-font-weight: bold; -fx-border-radius: 8; -fx-padding: 6 18; -fx-cursor: hand;" />
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="content-card">
+                <Label text="📦 Mis Productos" styleClass="title-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnVolver" onAction="#handleVolver" text="Volver" styleClass="btn-secondary"/>
             </HBox>
 
-            <!-- Contenedor principal -->
-            <VBox spacing="16"
-                  style="-fx-background-color: white; -fx-background-radius: 15;
-                         -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,3);">
+            <VBox spacing="16" styleClass="content-card">
 
-                <!-- Encabezado secundario -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Cursos y servicios publicados"
-                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button fx:id="btnAdministrar" onAction="#handleAdministrar"
-                            text="Administrar Producto"
-                            style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold;
-                                   -fx-background-radius: 8; -fx-padding: 6 14; -fx-cursor: hand;" />
+                    <Label text="Cursos y servicios publicados" styleClass="section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnAdministrar" onAction="#handleAdministrar" text="Administrar Producto" styleClass="green-button"/>
                 </HBox>
 
-                <!-- Tabla de productos -->
-                <TableView fx:id="tablaProductos"
-                           prefHeight="420.0" prefWidth="820.0"
-                           style="-fx-background-radius: 10; -fx-border-radius: 10;
-                                  -fx-border-color: #ccc; -fx-border-width: 1;">
+                <TableView fx:id="tablaProductos" prefHeight="420" prefWidth="820" styleClass="styled-table">
                     <columns>
-                        <TableColumn fx:id="colTitulo" prefWidth="200" text="Título" />
-                        <TableColumn fx:id="colTipo" prefWidth="120" text="Tipo" />
-                        <TableColumn fx:id="colCategoria" prefWidth="160" text="Categoría" />
-                        <TableColumn fx:id="colPrecio" prefWidth="140" text="Precio" />
-                        <TableColumn fx:id="colEstado" prefWidth="140" text="Estado" />
+                        <TableColumn fx:id="colTitulo" prefWidth="200" text="Título"/>
+                        <TableColumn fx:id="colTipo" prefWidth="120" text="Tipo"/>
+                        <TableColumn fx:id="colCategoria" prefWidth="160" text="Categoría"/>
+                        <TableColumn fx:id="colPrecio" prefWidth="140" text="Precio"/>
+                        <TableColumn fx:id="colEstado" prefWidth="140" text="Estado"/>
                     </columns>
                 </TableView>
             </VBox>

@@ -177,17 +177,28 @@ public class CategoriaController {
             return;
         }
 
-        Task<Categoria> task = new Task<>() {
+        Task<List<Categoria>> task = new Task<>() {
             @Override
-            protected Categoria call() {
-                return servicioCa.buscarPorNombre(nombre);
+            protected List<Categoria> call() {
+                return servicioCa.buscarPorNombreParcial(nombre);
             }
         };
+
         task.setOnSucceeded(evt -> {
-            Categoria c = task.getValue();
+            List<Categoria> resultados = task.getValue();
             listaObservable.clear();
-            if (c != null) listaObservable.add(c);
+
+            if (resultados != null && !resultados.isEmpty()) {
+                listaObservable.addAll(resultados);
+            } else {
+                gestorPantallas.mostrarAlerta("Sin resultados", "No se encontraron categorías.");
+            }
         });
+
+        task.setOnFailed(evt ->
+                gestorPantallas.mostrarError("Error", "Error al buscar: " + task.getException().getMessage())
+        );
+
         new Thread(task).start();
     }
 

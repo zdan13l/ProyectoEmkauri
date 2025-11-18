@@ -24,6 +24,11 @@ public class SSolicitud implements ISSolicitud {
         return repoS.listarPendientesTipo(tipo);
     }
 
+    // Lista todas las solicitudes de un tipo específico.
+    public List<Solicitud> listarSolicitudes(String tipo) {
+        return repoS.listarSolicitudes(tipo);
+    }
+
     // Obtiene una solicitud por su ID.
     public boolean aprobarSolicitud(int idSolicitud) {
         return repoS.aprobar(idSolicitud);
@@ -32,6 +37,11 @@ public class SSolicitud implements ISSolicitud {
     // Rechaza una solicitud por su ID.
     public boolean rechazarSolicitud(int idSolicitud) {
         return repoS.rechazar(idSolicitud);
+    }
+
+    // Marca una solicitud como pendiente nuevamente.
+    public void marcarPendiente(int idSolicitud) {
+        repoS.marcarPendiente(idSolicitud);
     }
 }
 

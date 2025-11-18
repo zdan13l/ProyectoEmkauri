@@ -19,7 +19,6 @@
                     <Label fx:id="lblBienvenidaTop" text="¡Bienvenid@, Emprendedor!" styleClass="title"/>
                     <Label text="Gestiona y crea tus productos, cursos o servicios desde aquí" styleClass="subtitle"/>
                 </VBox>
-
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <HBox spacing="14" alignment="CENTER_RIGHT">
@@ -44,7 +43,6 @@
                     <Button fx:id="btnIrCrearServicio" text="Crear Servicio" onAction="#onCrearServicio" styleClass="secondary-button"/>
                 </HBox>
             </VBox>
-
             <Region VBox.vgrow="ALWAYS"/>
 
             <HBox alignment="CENTER"> <Label text="© 2025 Emkauri — Todos los derechos reservados" styleClass="footer-text"/></HBox>

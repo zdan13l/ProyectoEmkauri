@@ -3,46 +3,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="569" prefWidth="960" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ProductoCController">
+<!-- ARCHIVO FXML PARA LA PANTALLA DE PRODUCTOS ADQUIRIDOS POR EL CLIENTE -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.ProductoCController" stylesheets="@../css/interfaz.css" styleClass="root-pane">
+    <VBox alignment="TOP_CENTER" spacing="20" styleClass="content-card"
+            AnchorPane.topAnchor="40"
+            AnchorPane.bottomAnchor="40"
+            AnchorPane.leftAnchor="40"
+            AnchorPane.rightAnchor="40">
 
-    <VBox alignment="TOP_CENTER" spacing="18" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 22 26 20 26; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
-            AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40" AnchorPane.topAnchor="40">
-
-        <HBox alignment="CENTER_LEFT" prefHeight="56" spacing="10" style="-fx-padding: 6 4 6 4;">
-            <Label style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="📦 Mis Productos" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnVolverHeader" onAction="#onVolverHeader" style="-fx-background-color: transparent; -fx-border-color: #4A90E2; -fx-border-width: 2; -fx-border-radius: 8;
-                -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-padding: 6 12;" text="Volver" />
+        <HBox alignment="CENTER_LEFT" spacing="14" styleClass="section-header">
+            <Label text="📦 Mis Productos" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" styleClass="btn-secondary"/>
         </HBox>
 
-        <Separator style="-fx-opacity: 0.12;" />
-
-        <VBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 4 0 4 0;">
-            <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Tus cursos y servicios adquiridos" />
-            <Label style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;" text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o dirigete a 'Calificar Productos'." />
+        <VBox alignment="CENTER_LEFT" spacing="6">
+            <Label text="Tus cursos y servicios adquiridos" styleClass="section-title"/>
+            <Label text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o dirigete a 'Calificar Productos'." styleClass="subtitle-label"/>
         </VBox>
 
-        <TableView fx:id="tablaProductosCliente" prefHeight="360" prefWidth="820" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #e6eef9; -fx-border-width: 1;">
+        <TableView fx:id="tablaProductosCliente" prefHeight="360" styleClass="styled-table">
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
+
             <columns>
-                <TableColumn fx:id="colCategoria" prefWidth="100" text="Categoría" />
-                <TableColumn fx:id="colNombre" prefWidth="200" text="Nombre" />
-                <TableColumn fx:id="colDescripcion" prefWidth="250" text="Descripción" />
-                <TableColumn fx:id="colEmprendedor" prefWidth="180" text="Emprendedor" />
+                <TableColumn fx:id="colCategoria" text="Categoría"/>
+                <TableColumn fx:id="colNombre" text="Nombre"/>
+                <TableColumn fx:id="colDescripcion" text="Descripción"/>
+                <TableColumn fx:id="colEmprendedor" text="Emprendedor"/>
             </columns>
         </TableView>
 
-        <HBox alignment="CENTER_LEFT" prefHeight="60" spacing="12" style="-fx-padding: 8 0 0 0;">
-            <Button fx:id="btnVerDetalle" onAction="#onVerDetalle" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 18;" text="Ver Detalle" />
-            <Button fx:id="btnCalificaciones" onAction="#onCalificaciones" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 18;" text="Calificar Productos" />
-            <Region HBox.hgrow="ALWAYS" />
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="bottom-buttons">
+            <Button fx:id="btnVerDetalle" text="Ver Detalle" onAction="#onVerDetalle" styleClass="green-button"/>
+            <Button fx:id="btnCalificaciones" text="Calificar Productos" onAction="#onCalificaciones" styleClass="yellow-button"/>
+            <Region HBox.hgrow="ALWAYS"/>
         </HBox>
 
-        <HBox alignment="CENTER" style="-fx-padding: 6 0 0 0;">
-            <Label style="-fx-font-size: 12px; -fx-text-fill: #7A7A7A;" text="© 2025 Emkauri — Todos los derechos reservados" />
-        </HBox>
+        <HBox alignment="CENTER"> <Label text="© 2025 Emkauri — Todos los derechos reservados" styleClass="footer-text"/> </HBox>
     </VBox>
 </AnchorPane>

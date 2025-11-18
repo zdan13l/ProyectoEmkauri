@@ -17,8 +17,11 @@ public class SCategoria implements ISCategoria {
     // Crea una nueva categoría.
     public boolean crearCategoria(Categoria categoria) { return repoC.agregar(categoria); }
 
-    // Obtiene una categoría por su ID.
-    public Categoria buscarPorNombre(String nombre) { return repoC.buscarPorNombre(nombre); }
+    // Obtiene una categoría por su nombre exacto.
+    public Categoria buscarPorNombre(String nombre) { return repoC.buscarNombre(nombre); }
+
+    // Obtiene una categoría por su nombre parcial.
+    public List<Categoria> buscarPorNombreParcial(String nombre) { return repoC.buscarNombreParcial(nombre); }
 
     // Actualiza una categoría existente.
     public boolean actualizarCategoria(Categoria categoria) { return repoC.actualizar(categoria); }

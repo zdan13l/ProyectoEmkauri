@@ -1,8 +1,6 @@
 package repositorio;
 
-import modelo.Solicitud;
-import modelo.Usuario;
-import modelo.Producto;
+import modelo.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +79,31 @@ public class RSolicitud implements IRSolicitud {
         return solicitudes;
     }
 
+    // Listar todas las solicitudes de un tipo específico sin incluir las pendientes.
+    public List<Solicitud> listarSolicitudes(String tipo) {
+        List<Solicitud> solicitudes = new ArrayList<>();
+        String sql = "SELECT * FROM Solicitudes WHERE estado != 'PENDIENTE'";
+
+        if (tipo.equalsIgnoreCase("PRODUCTO")) {
+            sql += " AND idProductoAsociado IS NOT NULL AND idEmprendedorAsociado IS NOT NULL";
+        } else if (tipo.equalsIgnoreCase("EMPRENDEDOR")) {
+            sql += " AND idProductoAsociado IS NULL AND idEmprendedorAsociado IS NOT NULL";
+        }
+
+        try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Solicitud solicitud = mapearSolicitud(rs);
+                solicitudes.add(solicitud);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar las solicitudes: " + e.getMessage());
+        }
+
+        return solicitudes;
+    }
+
     // Aprobar una solicitud por su ID.
     public boolean aprobar(int idSolicitud) {
         actualizarEstado(idSolicitud, "APROBADO");
@@ -117,37 +140,128 @@ public class RSolicitud implements IRSolicitud {
         solicitud.setEstado(rs.getString("estado"));
         solicitud.setMensaje(rs.getString("mensaje"));
 
-        // Crear y asignar solicitante.
-        Usuario solicitante = new Usuario();
-        solicitante.setIdUsuario(rs.getInt("idSolicitante"));
-        solicitud.setSolicitante(solicitante);
+        // ----------- SOLICITANTE -----------
+        int idSolicitante = rs.getInt("idSolicitante");
+        solicitud.setSolicitante(cargarUsuario(idSolicitante));
 
-        // Crear y asignar reclutador.
+        // ----------- RECLUTADOR ------------
         int idReclutador = rs.getInt("idReclutador");
         if (!rs.wasNull()) {
-            Usuario reclutador = new Usuario();
-            reclutador.setIdUsuario(idReclutador);
-            solicitud.setReclutador(reclutador);
+            solicitud.setReclutador(cargarUsuario(idReclutador));
         }
 
-        // Producto asociado.
-        int idProducto = rs.getInt("idProductoAsociado");
-        if (!rs.wasNull()) {
-            Producto producto = new Producto();
-            producto.setIdProducto(idProducto);
-            solicitud.setProductoAsociado(producto);
-        }
-
-        // Emprendedor asociado.
+        // ----------- EMPRENDEDOR ----------
         int idEmprendedor = rs.getInt("idEmprendedorAsociado");
         if (!rs.wasNull()) {
-            Usuario emprendedor = new Usuario();
-            emprendedor.setIdUsuario(idEmprendedor);
-            solicitud.setEmprendedor(emprendedor);
+            solicitud.setEmprendedor(cargarUsuario(idEmprendedor));
+        }
+
+        // ----------- PRODUCTO --------------
+        int idProducto = rs.getInt("idProductoAsociado");
+        if (!rs.wasNull()) {
+            solicitud.setProductoAsociado(cargarProducto(idProducto));
         }
 
         return solicitud;
     }
+
+    private Usuario cargarUsuario(int idUsuario) {
+        String sql = "SELECT u.*, d.nombre, d.apellido, d.telefono, r.nombre AS rolNombre " +
+                "FROM Usuarios u " +
+                "JOIN DatosPersonales d ON u.idDatos = d.idDatos " +
+                "JOIN Roles r ON u.idRol = r.idRol " +
+                "WHERE u.idUsuario = ?";
+
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Usuario u = new Usuario();
+                u.setIdUsuario(idUsuario);
+                u.setCorreo(rs.getString("correo"));
+
+                Datos dp = new Datos();
+                dp.setNombre(rs.getString("nombre"));
+                dp.setApellido(rs.getString("apellido"));
+                dp.setTelefono(rs.getString("telefono"));
+                u.setDatosPersonales(dp);
+
+                modelo.Rol rol = new modelo.Rol();
+                rol.setNombre(rs.getString("rolNombre"));
+                u.setRol(rol);
+
+                return u;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error cargando usuario: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+
+    private Producto cargarProducto(int idProducto) {
+        String sql = "SELECT p.*, c.nombre AS categoriaNombre " +
+                "FROM Productos p " +
+                "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                "WHERE p.idProducto = ?";
+
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idProducto);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                // Construir categoría
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNombre(rs.getString("categoriaNombre"));
+
+                String tipo = rs.getString("tipoProducto");
+
+                Producto p;
+
+                if ("CURSO".equalsIgnoreCase(tipo)) {
+                    Curso curso = new Curso();
+                    curso.setDuracionCurso(rs.getInt("duracionCurso"));
+                    curso.setNivelDificultad(rs.getString("nivelDificultad"));
+                    curso.setCertificacion(rs.getString("certificacion"));
+                    p = curso;
+
+                } else if ("SERVICIO".equalsIgnoreCase(tipo)) {
+                    Servicio s = new Servicio();
+                    s.setDuracionServicio(rs.getInt("duracionServicio"));
+                    s.setUbicacion(rs.getString("ubicacion"));
+                    s.setModalidad(rs.getString("modalidad"));
+                    p = s;
+
+                } else {
+                    p = new Producto(); // fallback
+                }
+
+                // Asignar los atributos base
+                p.setIdProducto(rs.getInt("idProducto"));
+                p.setTitulo(rs.getString("titulo"));
+                p.setDescripcion(rs.getString("descripcion"));
+                p.setPrecio(rs.getDouble("precio"));
+                p.setCategoria(categoria);
+
+                return p;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error cargando producto: " + e.getMessage());
+        }
+
+        return null;
+    }
+
 
     // Obtener un reclutador por defecto de la base de datos.
     public Integer obtenerReclutador(Connection conexion) {
@@ -162,5 +276,10 @@ public class RSolicitud implements IRSolicitud {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    // Marcar pendiente
+    public void marcarPendiente(int idSolicitud) {
+        actualizarEstado(idSolicitud, "PENDIENTE");
     }
 }

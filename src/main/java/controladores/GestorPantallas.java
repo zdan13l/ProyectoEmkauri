@@ -43,8 +43,7 @@ public class GestorPantallas {
         pantallas.put("productosEmprendedor", "/puj.fis.pantallas/productosE.fxml");
         pantallas.put("reclutador", "/puj.fis.pantallas/reclutador.fxml");
         pantallas.put("registro", "/puj.fis.pantallas/registro.fxml");
-        pantallas.put("solicitudEmprendedor", "/puj.fis.pantallas/solicitudE.fxml");
-        pantallas.put("solicitudProducto", "/puj.fis.pantallas/solicitudP.fxml");
+        pantallas.put("solicitud", "/puj.fis.pantallas/solicitudes.fxml");
         pantallas.put("solicitudes", "/puj.fis.pantallas/solicitudProducto.fxml");
 
         // Títulos de las pantallas.
@@ -64,8 +63,7 @@ public class GestorPantallas {
         titulos.put("productosEmprendedor", "Productos del Emprendedor - Emkauri");
         titulos.put("reclutador", "Panel Reclutador - Emkauri");
         titulos.put("registro", "Registro de Usuario - Emkauri");
-        titulos.put("solicitudEmprendedor", "Solicitudes Emprendedores - Emkauri");
-        titulos.put("solicitudProducto", "Solicitudes Productos - Emkauri");
+        titulos.put("solicitud", "Gestión de Solicitudes - Emkauri");
         titulos.put("solicitudes", "Solicitudes Pendientes - Emkauri");
     }
 
@@ -131,7 +129,7 @@ public class GestorPantallas {
             // Obtener el controlador real que JavaFX creó
             SolicitudController controller = loader.getController();
             controller.setTipoSolicitud(tipoProducto);
-            controller.cargarSolicitudesPendientes();
+            controller.cargarSolicitudes();
 
             Scene scene = new Scene(root);
             stage.setTitle(titulos.get("solicitudes"));
@@ -205,7 +203,7 @@ public class GestorPantallas {
     public void irProductosEmprendedor() { cambiarPantalla("productosEmprendedor"); }
     public void irReclutador()   { cambiarPantalla("reclutador"); }
     public void irRegistro() { cambiarPantalla("registro"); }
-    public void irSolicitudEmprendedor(String tipo) { abrirGestionSolicitudes("solicitudEmprendedor", tipo); }
-    public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes("solicitudProducto", tipo); }
+    public void irSolicitudEmprendedor(String tipo) { abrirGestionSolicitudes("solicitud", tipo); }
+    public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes("solicitud", tipo); }
     public void irSolicitudes(String tipo) { abrirSolicitudes("solicitudes", tipo); }
 }
