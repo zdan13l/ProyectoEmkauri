@@ -17,6 +17,7 @@ public class SCalificacion implements ISCalificacion {
     public boolean crearCalificacion(Calificacion calificacion) {
         if (calificacion == null ||
                 calificacion.getCliente() == null ||
+                calificacion.getCliente().getIdUsuario() <= 0 ||
                 calificacion.getProducto() == null ||
                 calificacion.getPuntaje() < 1 ||
                 calificacion.getPuntaje() > 5) {
@@ -24,6 +25,7 @@ public class SCalificacion implements ISCalificacion {
         }
         return repoC.guardar(calificacion);
     }
+
 
     // Obtiene calificaciones por ID de producto.
     public List<Calificacion> listarPorProducto(int idProducto) {
