@@ -38,8 +38,15 @@
         @Test
         void testCrearCalificacionExitosa() {
             Calificacion cal = new Calificacion();
-            cal.setCliente(new Usuario());
-            cal.setProducto(new Producto());
+
+            Usuario cliente = new Usuario();
+            cliente.setIdUsuario(1);
+            cal.setCliente(cliente);
+
+            Producto prod = new Producto();
+            prod.setIdProducto(1);
+            cal.setProducto(prod);
+
             cal.setPuntaje(5);
             cal.setComentario("Excelente servicio");
 
@@ -50,6 +57,7 @@
             assertTrue(resultado);
             verify(repoCal).guardar(cal);
         }
+
 
         @Test
         void testCrearCalificacionInvalidaSinCliente() {
