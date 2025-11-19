@@ -1,16 +1,15 @@
 package controladores;
 
-import javafx.animation.FadeTransition;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import javafx.animation.*;
+import javafx.fxml.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
+import javafx.util.*;
+import java.io.*;
+import java.util.*;
+import modelo.*;
 
 public class GestorPantallas {
     // Referencia al Stage principal y a la fábrica de controladores.
@@ -67,6 +66,27 @@ public class GestorPantallas {
         titulos.put("solicitudes", "Solicitudes Pendientes - Emkauri");
     }
 
+    // Métodos públicos para navegar a pantallas específicas.
+    public void irAdminCurso(Producto seleccionado) { abrirAdminProducto("adminCurso", seleccionado); }
+    public void irAdminServicio(Producto seleccionado) { abrirAdminProducto("adminServicio", seleccionado); }
+    public void irCalificaciones() { cambiarPantalla("calificaciones"); }
+    public void irCalificar() { cambiarPantalla("calificar"); }
+    public void irCarrito() { cambiarPantalla("carrito"); }
+    public void irCatalogo() { cambiarPantalla("catalogo"); }
+    public void irCategoria() { cambiarPantalla("categoria"); }
+    public void irCliente() { cambiarPantalla("cliente"); }
+    public void irComprobante() { cambiarPantalla("comprobante"); }
+    public void irEmprendedor() { cambiarPantalla("emprendedor"); }
+    public void irLogin() { cambiarPantalla("login"); }
+    public void irPago() { cambiarPantalla("pago"); }
+    public void irProductosCliente() { cambiarPantalla("productosCliente"); }
+    public void irProductosEmprendedor() { cambiarPantalla("productosEmprendedor"); }
+    public void irReclutador()   { cambiarPantalla("reclutador"); }
+    public void irRegistro() { cambiarPantalla("registro"); }
+    public void irSolicitudEmprendedor(String tipo) { abrirGestionSolicitudes(tipo); }
+    public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes(tipo); }
+    public void irSolicitudes(String tipo) { abrirSolicitudes("solicitudes", tipo); }
+
     // Cambiar la pantalla actual a la indicada por la clave.
     private void cambiarPantalla(String clavePantalla) {
         try {
@@ -97,15 +117,16 @@ public class GestorPantallas {
             // Inyectar controladores desde la fábrica.
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(fabrica::createController);
-
             Pane root = loader.load();
 
             // Obtener el controlador de JavaFX.
             SolicitudProductoController controller = loader.getController();
             controller.seleccionarTipo(tipoProducto);
 
+            // Cargar la nueva escena.
             Scene scene = new Scene(root);
-            stage.setTitle(titulos.get("solicitudes"));
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            stage.setTitle(titulo);
             stage.setMaximized(true);
             aplicarTransicion(root);
             stage.setScene(scene);
@@ -116,29 +137,57 @@ public class GestorPantallas {
     }
 
     // Abrir la pantalla de solicitudes de producto con el tipo seleccionado.
-    private void abrirGestionSolicitudes(String clavePantalla, String tipoProducto) {
+    private void abrirGestionSolicitudes(String tipoProducto) {
         try {
-            String ruta = pantallas.get(clavePantalla);
+            String ruta = pantallas.get("solicitud");
 
             // Inyectar controladores desde la fábrica.
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(fabrica::createController);
-
             Pane root = loader.load();
 
-            // Obtener el controlador real que JavaFX creó
+            // Obtener el controlador que JavaFX creó.
             SolicitudController controller = loader.getController();
             controller.setTipoSolicitud(tipoProducto);
             controller.cargarSolicitudes();
 
+            // Cargar la nueva escena.
             Scene scene = new Scene(root);
-            stage.setTitle(titulos.get("solicitudes"));
+            String titulo = titulos.getOrDefault("solicitud", "Emkauri");
+            stage.setTitle(titulo);
             stage.setMaximized(true);
             aplicarTransicion(root);
             stage.setScene(scene);
 
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la solicitud de producto.");
+        }
+    }
+
+    // Abrir pantalla de administración (curso o servicio) pasando un producto seleccionado.
+    public void abrirAdminProducto(String clavePantalla, Producto producto) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+            Pane root = loader.load();
+
+            // Obtener el controlador que JavaFX creó.
+            AdminProductoController controller = loader.getController();
+            controller.setProducto(producto);
+
+            // Cargar la nueva escena.
+            Scene scene = new Scene(root);
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            stage.setTitle(titulo);
+            stage.setMaximized(true);
+            aplicarTransicion(root);
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            mostrarError("Error", "No se pudo abrir la pantalla de administración.");
         }
     }
 
@@ -186,24 +235,64 @@ public class GestorPantallas {
         alert.showAndWait();
     }
 
-    // Métodos públicos para navegar a pantallas específicas.
-    public void irAdminCurso() { cambiarPantalla("adminCurso"); }
-    public void irAdminServicio() { cambiarPantalla("adminServicio"); }
-    public void irCalificaciones() { cambiarPantalla("calificaciones"); }
-    public void irCalificar() { cambiarPantalla("calificar"); }
-    public void irCarrito() { cambiarPantalla("carrito"); }
-    public void irCatalogo() { cambiarPantalla("catalogo"); }
-    public void irCategoria() { cambiarPantalla("categoria"); }
-    public void irCliente() { cambiarPantalla("cliente"); }
-    public void irComprobante() { cambiarPantalla("comprobante"); }
-    public void irEmprendedor() { cambiarPantalla("emprendedor"); }
-    public void irLogin() { cambiarPantalla("login"); }
-    public void irPago() { cambiarPantalla("pago"); }
-    public void irProductosCliente() { cambiarPantalla("productosCliente"); }
-    public void irProductosEmprendedor() { cambiarPantalla("productosEmprendedor"); }
-    public void irReclutador()   { cambiarPantalla("reclutador"); }
-    public void irRegistro() { cambiarPantalla("registro"); }
-    public void irSolicitudEmprendedor(String tipo) { abrirGestionSolicitudes("solicitud", tipo); }
-    public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes("solicitud", tipo); }
-    public void irSolicitudes(String tipo) { abrirSolicitudes("solicitudes", tipo); }
+    // Mostrar un diálogo para crear un nuevo material.
+    public Material mostrarDialogoMaterial() {
+        // Selección del tipo de material.
+        ChoiceDialog<String> tipoDialog = new ChoiceDialog<>("Archivo", "Archivo", "Vídeo", "URL", "Texto/Documento");
+        tipoDialog.setTitle("Tipo de Material");
+        tipoDialog.setHeaderText("Selecciona el tipo de material");
+        tipoDialog.setContentText("Tipo:");
+
+        String tipoSeleccionado = tipoDialog.showAndWait().orElse(null);
+        if (tipoSeleccionado == null) {
+            mostrarError("Error", "No se seleccionó ningún tipo de material.");
+            return null;
+        }
+
+        // Título del material.
+        TextInputDialog tituloDialog = new TextInputDialog();
+        tituloDialog.setTitle("Título del Material");
+        tituloDialog.setHeaderText(null);
+        tituloDialog.setContentText("Ingresa el título:");
+
+        String titulo = tituloDialog.showAndWait().orElse(null);
+        if (titulo == null || titulo.isBlank()) {
+            mostrarError("Error", "El título del material no puede estar vacío.");
+            return null;
+        }
+
+        // Archivo o vídeo (abrir selector de archivos).
+        String url;
+        if (tipoSeleccionado.equals("Archivo") || tipoSeleccionado.equals("Vídeo")) {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Seleccionar archivo");
+
+            File archivo = chooser.showOpenDialog(stage);
+            if (archivo == null) {
+                mostrarError("Error", "No se seleccionó ningún archivo.");
+                return null;
+            }
+
+            url = archivo.toURI().toString();
+        } else {
+            // URL o Texto/Documento (ingresar texto).
+            TextInputDialog urlDialog = new TextInputDialog();
+            urlDialog.setTitle("Información del Material");
+            urlDialog.setHeaderText(null);
+
+            if (tipoSeleccionado.equals("URL")) {
+                urlDialog.setContentText("Ingresa el enlace:");
+            } else {
+                urlDialog.setContentText("Ingresa la información:");
+            }
+
+            url = urlDialog.showAndWait().orElse(null);
+            if (url == null || url.isBlank()) {
+                mostrarError("Error", "La información del material no puede estar vacía.");
+                return null;
+            }
+        }
+
+        return new Material(0, titulo, tipoSeleccionado, url);
+    }
 }

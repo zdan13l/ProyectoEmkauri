@@ -3,55 +3,60 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="650.0" prefWidth="880.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.AdminProductoController">
+<!-- ARCHIVO FXML PARA LA PANTALLA DE ADMINISTRAR SERVICIO -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.AdminProductoController" styleClass="root-pane" stylesheets="@../css/interfaz.css">
+    <VBox alignment="TOP_CENTER" spacing="22" styleClass="content-card"
+            AnchorPane.topAnchor="40"
+            AnchorPane.bottomAnchor="30"
+            AnchorPane.leftAnchor="60"
+            AnchorPane.rightAnchor="60">
 
-    <VBox alignment="TOP_CENTER" spacing="22" style="-fx-background-color: white; -fx-background-radius: 16;                  -fx-padding: 30 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="60" AnchorPane.rightAnchor="60" AnchorPane.topAnchor="40">
-
-        <HBox alignment="CENTER_LEFT" spacing="12">
-            <Region HBox.hgrow="ALWAYS" />
-            <Label alignment="CENTER" prefHeight="28.0" prefWidth="576.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Administrar Servicio" textAlignment="CENTER" />
-            <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: #E94E77; -fx-text-fill: white; -fx-font-weight: bold;                            -fx-background-radius: 10; -fx-padding: 8 20; -fx-cursor: hand;" text="Volver" />
+        <HBox alignment="CENTER" spacing="12">
+            <Label text="Administrar Servicio" styleClass="title-label" />
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" styleClass="btn-danger" />
         </HBox>
+        <Separator styleClass="separator"/>
 
-        <Separator />
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="18" prefWidth="750">
+                    <VBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="Título" styleClass="section-title"/>
+                        <TextField fx:id="txtTitulo" promptText="Ej: Consultoría Financiera" styleClass="input-field"/>
+                    </VBox>
 
-        <VBox alignment="TOP_CENTER" prefWidth="750" spacing="18">
+                    <VBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="Descripción" styleClass="section-title"/>
+                        <TextArea fx:id="txtDescripcion" promptText="Describe brevemente el servicio..." wrapText="true" prefRowCount="3" styleClass="input-field"/>
+                    </VBox>
 
-            <VBox alignment="CENTER_LEFT" spacing="8">
-                <Label style="-fx-font-weight: bold;" text="Título" />
-                <TextField fx:id="txtTitulo" promptText="Ej: Consultoría Financiera" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
-            </VBox>
+                    <HBox spacing="18">
+                        <VBox alignment="CENTER_LEFT" spacing="6">
+                            <Label text="Precio (COP)" styleClass="section-title"/>
+                            <TextField fx:id="txtPrecio" promptText="Ej: 80000" styleClass="input-field"/>
+                        </VBox>
 
-            <VBox alignment="CENTER_LEFT" spacing="8">
-                <Label style="-fx-font-weight: bold;" text="Descripción" />
-                <TextArea fx:id="txtDescripcion" prefRowCount="3" promptText="Describe brevemente el servicio..." style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" wrapText="true" />
-            </VBox>
+                        <VBox alignment="CENTER_LEFT" spacing="6">
+                            <Label text="Duración (minutos)" styleClass="section-title"/>
+                            <TextField fx:id="txtDuracionServicio" promptText="Ej: 60" styleClass="input-field"/>
+                        </VBox>
+                    </HBox>
 
-            <HBox spacing="18">
-                <VBox alignment="CENTER_LEFT" spacing="6">
-                    <Label style="-fx-font-weight: bold;" text="Precio (COP)" />
-                    <TextField fx:id="txtPrecio" promptText="Ej: 80000" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Ubicación" styleClass="section-title"/>
+                        <TextField fx:id="txtUbicacion" promptText="Ej: En línea o Bogotá" styleClass="input-field"/>
+                    </VBox>
+
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Modalidad" styleClass="section-title"/>
+                        <TextField fx:id="txtModalidad" promptText="Presencial / Virtual" styleClass="input-field"/>
+                    </VBox>
+                    <Separator styleClass="separator"/>
+
+                    <Button fx:id="btnGuardar" text="Guardar Cambios" onAction="#onGuardar" styleClass="primary-button"/>
                 </VBox>
-
-                <VBox alignment="CENTER_LEFT" spacing="6">
-                    <Label style="-fx-font-weight: bold;" text="Duración (minutos)" />
-                    <TextField fx:id="txtDuracionServicio" promptText="Ej: 60" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
-                </VBox>
-            </HBox>
-
-            <VBox alignment="CENTER_LEFT" spacing="6">
-                <Label style="-fx-font-weight: bold;" text="Ubicación" />
-                <TextField fx:id="txtUbicacion" promptText="Ej: En línea o Bogotá" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
-            </VBox>
-
-            <VBox alignment="CENTER_LEFT" spacing="6">
-                <Label style="-fx-font-weight: bold;" text="Modalidad" />
-                <TextField fx:id="txtModalidad" promptText="Presencial / Virtual" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
-            </VBox>
-
-            <Separator style="-fx-opacity: 0.4;" />
-
-            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                            -fx-background-radius: 8; -fx-padding: 10 40; -fx-cursor: hand;" text="Guardar Cambios" />
-        </VBox>
+            </content>
+        </ScrollPane>
     </VBox>
 </AnchorPane>

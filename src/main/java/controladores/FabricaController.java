@@ -1,6 +1,6 @@
 package controladores;
 
-import javafx.stage.Stage;
+import javafx.stage.*;
 import repositorio.*;
 import servicio.*;
 
@@ -40,43 +40,29 @@ public class FabricaController {
         return gestorPantallas;
     }
 
-    // Metodo para crear controladores con los servicios inyectados.
+    // Permite crear controladores con los servicios inyectados.
     public Object createController(Class<?> tipo) {
+        if (tipo == AdminProductoController.class) { return new AdminProductoController(servicioProducto, servicioMaterial, gestorPantallas); }
+
         if (tipo == CalificacionController.class)
             return new CalificacionController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
 
         if (tipo == CalificarController.class)
             return new CalificarController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
 
-        if (tipo == LoginController.class) { return new LoginController(servicioUsuario, gestorPantallas); }
-
-        if (tipo == RegistroController.class) { return new RegistroController(servicioUsuario, gestorPantallas); }
-
-        if (tipo == ClienteController.class) { return new ClienteController(servicioUsuario, gestorPantallas); }
-
         if (tipo == CarritoController.class) { return new CarritoController(gestorPantallas); }
-
         if (tipo == CatalogoController.class) { return new CatalogoController(servicioProducto, servicioCategoria, gestorPantallas); }
-
-        if (tipo == PagoController.class) { return new PagoController(servicioPago, servicioCompra, gestorPantallas); }
-
-        if (tipo == EmprendedorController.class) { return new EmprendedorController(servicioUsuario, gestorPantallas); }
-
-        if (tipo == SolicitudProductoController.class) { return new SolicitudProductoController(servicioProducto, servicioCategoria, servicioSolicitud, gestorPantallas); }
-
-        if (tipo == ReclutadorController.class) { return new ReclutadorController(servicioUsuario, gestorPantallas); }
-
-        if (tipo == SolicitudController.class) { return new SolicitudController(servicioSolicitud, gestorPantallas); }
-
         if (tipo == CategoriaController.class) { return new CategoriaController(servicioCategoria, gestorPantallas); }
-
-        if (tipo == ProductoEController.class) { return new ProductoEController(servicioProducto, gestorPantallas); }
-
+        if (tipo == ClienteController.class) { return new ClienteController(servicioUsuario, gestorPantallas); }
+        if (tipo == EmprendedorController.class) { return new EmprendedorController(servicioUsuario, gestorPantallas); }
+        if (tipo == LoginController.class) { return new LoginController(servicioUsuario, gestorPantallas); }
+        if (tipo == PagoController.class) { return new PagoController(servicioPago, servicioCompra, gestorPantallas); }
         if (tipo == ProductoCController.class) { return new ProductoCController(servicioProducto, gestorPantallas); }
-
-        if (tipo == AdminProductoController.class)
-            return new AdminProductoController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
-
+        if (tipo == ProductoEController.class) { return new ProductoEController(servicioProducto, gestorPantallas); }
+        if (tipo == ReclutadorController.class) { return new ReclutadorController(servicioUsuario, gestorPantallas); }
+        if (tipo == RegistroController.class) { return new RegistroController(servicioUsuario, gestorPantallas); }
+        if (tipo == SolicitudController.class) { return new SolicitudController(servicioSolicitud, gestorPantallas); }
+        if (tipo == SolicitudProductoController.class) { return new SolicitudProductoController(servicioProducto, servicioCategoria, servicioSolicitud, gestorPantallas); }
 
         throw new IllegalArgumentException("Controlador no soportado: " + tipo.getName());
     }

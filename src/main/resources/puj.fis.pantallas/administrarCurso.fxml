@@ -3,78 +3,73 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="880.0" style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE); -fx-font-family: 'Segoe UI';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.AdminProductoController">
+<!-- ARCHIVO FXML PARA LA PANTALLA DE ADMINISTRAR CURSO -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.AdminProductoController" styleClass="fondo-celeste" stylesheets="@../css/interfaz.css">
+    <VBox alignment="TOP_CENTER" spacing="25" styleClass="content-card"
+            AnchorPane.topAnchor="40"
+            AnchorPane.bottomAnchor="30"
+            AnchorPane.leftAnchor="60"
+            AnchorPane.rightAnchor="60">
 
-    <VBox alignment="TOP_CENTER" spacing="22" style="-fx-background-color: white; -fx-background-radius: 16;                  -fx-padding: 30 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="60" AnchorPane.rightAnchor="60" AnchorPane.topAnchor="40">
-
-        <!-- HEADER -->
-        <HBox alignment="CENTER" spacing="12">
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="575.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Administrar Curso" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnVolver" onAction="#onVolver" style="-fx-background-color: #E94E77; -fx-text-fill: white; -fx-font-weight: bold;                            -fx-background-radius: 10; -fx-padding: 8 20; -fx-cursor: hand;" text="Volver" />
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label text="Administrar Curso" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" styleClass="btn-danger"/>
         </HBox>
+        <Separator styleClass="separator"/>
 
-        <Separator />
-
-        <!-- FORM -->
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" hbarPolicy="NEVER">
             <content>
-                <VBox alignment="TOP_CENTER" prefWidth="750" spacing="16">
-
-                    <!-- Información general -->
-                    <VBox alignment="CENTER_LEFT" spacing="8">
-                        <Label style="-fx-font-weight: bold;" text="Título" />
-                        <TextField fx:id="txtTitulo" promptText="Ej: Curso de Marketing Digital" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                <VBox alignment="TOP_CENTER" spacing="20" prefWidth="760">
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Título" styleClass="section-title"/>
+                        <TextField fx:id="txtTitulo" promptText="Ej: Curso de Marketing Digital" styleClass="input-field"/>
                     </VBox>
 
-                    <VBox alignment="CENTER_LEFT" spacing="8">
-                        <Label style="-fx-font-weight: bold;" text="Descripción" />
-                        <TextArea fx:id="txtDescripcion" prefRowCount="3" promptText="Describe brevemente el curso..." style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 8;" wrapText="true" />
+                    <VBox alignment="CENTER_LEFT" spacing="6">
+                        <Label text="Descripción" styleClass="section-title"/>
+                        <TextArea fx:id="txtDescripcion" prefRowCount="3" wrapText="true" promptText="Describe brevemente el curso..." styleClass="input-field"/>
                     </VBox>
 
                     <HBox spacing="18">
                         <VBox alignment="CENTER_LEFT" spacing="6">
-                            <Label style="-fx-font-weight: bold;" text="Precio (COP)" />
-                            <TextField fx:id="txtPrecio" promptText="Ej: 49999" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                            <Label text="Precio (COP)" styleClass="section-title"/>
+                            <TextField fx:id="txtPrecio" promptText="Ej: 49999" styleClass="input-field"/>
                         </VBox>
 
                         <VBox alignment="CENTER_LEFT" spacing="6">
-                            <Label style="-fx-font-weight: bold;" text="Duración (horas)" />
-                            <TextField fx:id="txtDuracionCurso" promptText="Ej: 20" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                            <Label text="Duración (horas)" styleClass="section-title"/>
+                            <TextField fx:id="txtDuracionCurso" promptText="Ej: 20" styleClass="input-field"/>
                         </VBox>
 
                         <VBox alignment="CENTER_LEFT" spacing="6">
-                            <Label style="-fx-font-weight: bold;" text="Nivel de dificultad" />
-                            <TextField fx:id="txtNivel" promptText="Ej: Intermedio" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                            <Label text="Nivel de dificultad" styleClass="section-title"/>
+                            <TextField fx:id="txtNivel" promptText="Ej: Intermedio" styleClass="input-field"/>
                         </VBox>
                     </HBox>
 
                     <VBox alignment="CENTER_LEFT" spacing="6">
-                        <Label style="-fx-font-weight: bold;" text="Certificación" />
-                        <TextField fx:id="txtCertificacion" promptText="Ej: Certificado de finalización" style="-fx-background-radius: 8; -fx-border-color: #C9D7F2; -fx-padding: 6;" />
+                        <Label text="Certificación" styleClass="section-title"/>
+                        <TextField fx:id="txtCertificacion" promptText="Ej: Certificado de finalización" styleClass="input-field"/>
                     </VBox>
+                    <Separator styleClass="separator"/>
 
-                    <Separator style="-fx-opacity: 0.4;" />
-
-                    <!-- Sección materiales -->
-                    <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text="Materiales del Curso" />
-
-                    <TableView fx:id="tablaMateriales" prefHeight="180" style="-fx-border-color: #C9D7F2; -fx-border-radius: 8; -fx-background-radius: 8;">
+                    <Label text="Materiales del Curso" styleClass="section-title"/>
+                    <TableView fx:id="tablaMateriales" prefHeight="190" styleClass="styled-table">
                         <columns>
-                            <TableColumn fx:id="colTituloMat" prefWidth="220" text="Título" />
-                            <TableColumn fx:id="colTipoMat" prefWidth="140" text="Tipo" />
-                            <TableColumn fx:id="colUrlMat" prefWidth="320" text="URL / Archivo" />
+                            <TableColumn fx:id="colTituloMat" text="Título" prefWidth="200"/>
+                            <TableColumn fx:id="colTipoMat" text="Tipo" prefWidth="160"/>
+                            <TableColumn fx:id="colUrlMat" text="URL / Archivo" prefWidth="350"/>
                         </columns>
                     </TableView>
 
-                    <HBox alignment="CENTER_RIGHT" spacing="10">
-                        <Button fx:id="btnAgregarMaterial" onAction="#onAgregarMaterial" style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-weight: bold;                                        -fx-background-radius: 8; -fx-padding: 8 20;" text="Agregar Material" />
-                        <Button fx:id="btnEliminarMaterial" onAction="#onEliminarMaterial" style="-fx-background-color: #E94E77; -fx-text-fill: white; -fx-font-weight: bold;                                        -fx-background-radius: 8; -fx-padding: 8 20;" text="Eliminar Seleccionado" />
+                    <HBox spacing="12" alignment="CENTER">
+                        <Button fx:id="btnAgregarMaterial" text="Agregar Material" onAction="#onAgregarMaterial" styleClass="green-button"/>
+                        <Button fx:id="btnEliminarMaterial" text="Eliminar Seleccionado" onAction="#onEliminarMaterial" styleClass="btn-danger"/>
                     </HBox>
+                    <Separator styleClass="separator"/>
 
-                    <Separator style="-fx-opacity: 0.4;" />
-
-                    <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;                                    -fx-background-radius: 8; -fx-padding: 10 40; -fx-cursor: hand;" text="Guardar Cambios" />
+                    <Button fx:id="btnGuardar" text="Guardar Cambios" onAction="#onGuardar" styleClass="primary-button"/>
                 </VBox>
             </content>
         </ScrollPane>

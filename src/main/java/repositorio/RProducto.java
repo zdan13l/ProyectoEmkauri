@@ -2,8 +2,7 @@ package repositorio;
 
 import modelo.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RProducto implements IRProducto {
 
@@ -14,7 +13,6 @@ public class RProducto implements IRProducto {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             ps.setString(1, producto.getTitulo());
             ps.setString(2, producto.getDescripcion());
             ps.setDouble(3, producto.getPrecio());
@@ -41,7 +39,6 @@ public class RProducto implements IRProducto {
             } else {
                 throw new SQLException("Tipo de producto desconocido");
             }
-
             int filasAfectadas = ps.executeUpdate();
 
             // Recuperar el ID generado automáticamente.
@@ -51,9 +48,7 @@ public class RProducto implements IRProducto {
                     producto.setIdProducto(idGenerado);
                 }
             }
-
             return filasAfectadas > 0;
-
         } catch (SQLException e) {
             System.err.println("Error al crear producto: " + e.getMessage());
             return false;
@@ -61,7 +56,6 @@ public class RProducto implements IRProducto {
     }
 
     // Listar todos los productos aprobados.
-    @Override
     public List<Producto> listarTodos() {
         List<Producto> productos = new ArrayList<>();
 
@@ -108,10 +102,8 @@ public class RProducto implements IRProducto {
                     "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                     "WHERE co.idCliente = ?";
 
-
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, idCliente);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Producto p = mapearProducto(rs);
@@ -120,13 +112,11 @@ public class RProducto implements IRProducto {
             }
         } catch (SQLException e) {
             System.err.println("Error al listar productos comprados: " + e.getMessage());
-            e.printStackTrace();
         }
-
         return productos;
     }
 
-
+    // Listar productos por un emprendedor específico.
     public List<Producto> listarPorEmprendedor(int idEmprendedor) {
         List<Producto> productos = new ArrayList<>();
 
@@ -144,7 +134,6 @@ public class RProducto implements IRProducto {
                 "WHERE p.idEmprendedor = ?";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
-
             ps.setInt(1, idEmprendedor);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -182,23 +171,20 @@ public class RProducto implements IRProducto {
             String tipo = rs.getString("tipoProducto");
             Producto producto;
 
+            // Crear instancia específica según el tipo.
             if ("CURSO".equalsIgnoreCase(tipo)) {
                 Curso curso = new Curso();
                 curso.setDuracionCurso(rs.getInt("duracionCurso"));
                 curso.setNivelDificultad(rs.getString("nivelDificultad"));
                 curso.setCertificacion(rs.getString("certificacion"));
                 producto = curso;
-
             } else if ("SERVICIO".equalsIgnoreCase(tipo)) {
                 Servicio servicio = new Servicio();
                 servicio.setDuracionServicio(rs.getInt("duracionServicio"));
                 servicio.setUbicacion(rs.getString("ubicacion"));
                 servicio.setModalidad(rs.getString("modalidad"));
                 producto = servicio;
-
-            } else {
-                producto = new Producto();
-            }
+            } else { producto = new Producto(); }
 
             // Campos comunes.
             producto.setIdProducto(rs.getInt("idProducto"));
@@ -210,7 +196,6 @@ public class RProducto implements IRProducto {
             producto.setCategoria(categoria);
 
             return producto;
-
         } catch (SQLException e) {
             System.err.println(" Error al mapear producto: " + e.getMessage());
             return null;
@@ -233,16 +218,13 @@ public class RProducto implements IRProducto {
                         "WHERE p.idProducto = ?";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
-
             ps.setInt(1, idProducto);
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) return mapearProducto(rs);
+            if (rs.next()) { return mapearProducto(rs); }
 
         } catch (SQLException e) {
             System.err.println(" Error al buscar producto: " + e.getMessage());
         }
-
         return null;
     }
 
@@ -263,7 +245,6 @@ public class RProducto implements IRProducto {
                         "WHERE LOWER(p.titulo) LIKE ?";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
-
             ps.setString(1, "%" + titulo.toLowerCase() + "%");
             ResultSet rs = ps.executeQuery();
 
@@ -271,24 +252,47 @@ public class RProducto implements IRProducto {
                 Producto p = mapearProducto(rs);
                 if (p != null) productos.add(p);
             }
-
         } catch (SQLException e) {
             System.err.println(" Error al buscar por título: " + e.getMessage());
         }
-
         return productos;
     }
 
     // Actualizar un producto existente en la base de datos.
     public boolean actualizar(Producto producto) {
-        String sql = "UPDATE Productos SET titulo = ?, descripcion = ?, precio = ?, idCategoria = ? WHERE idProducto = ?";
-        try ( Connection conexion = ConexionDB.getConnection()) {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, producto.getTitulo());
-            ps.setString(2, producto.getDescripcion());
-            ps.setDouble(3, producto.getPrecio());
-            ps.setInt(4, producto.getCategoria().getIdCategoria());
-            ps.setInt(5, producto.getIdProducto());
+        String sqlCurso = "UPDATE Productos SET titulo = ?, descripcion = ?, precio = ?, idCategoria = ?, " +
+                "duracionCurso = ?, nivelDificultad = ?, certificacion = ? WHERE idProducto = ?";
+
+        String sqlServicio = "UPDATE Productos SET titulo = ?, descripcion = ?, precio = ?, idCategoria = ?, " +
+                "duracionServicio = ?, ubicacion = ?, modalidad = ? WHERE idProducto = ?";
+
+        try (Connection conexion = ConexionDB.getConnection()) {
+            PreparedStatement ps;
+
+            // Diferenciar entre curso y servicio.
+            if (producto instanceof Curso curso) {
+                ps = conexion.prepareStatement(sqlCurso);
+                ps.setString(1, curso.getTitulo());
+                ps.setString(2, curso.getDescripcion());
+                ps.setDouble(3, curso.getPrecio());
+                ps.setInt(4, curso.getCategoria().getIdCategoria());
+                ps.setInt(5, curso.getDuracionCurso());
+                ps.setString(6, curso.getNivelDificultad());
+                ps.setString(7, curso.getCertificacion());
+                ps.setInt(8, curso.getIdProducto());
+            } else if (producto instanceof Servicio servicio) {
+                ps = conexion.prepareStatement(sqlServicio);
+                ps.setString(1, servicio.getTitulo());
+                ps.setString(2, servicio.getDescripcion());
+                ps.setDouble(3, servicio.getPrecio());
+                ps.setInt(4, servicio.getCategoria().getIdCategoria());
+                ps.setInt(5, servicio.getDuracionServicio());
+                ps.setString(6, servicio.getUbicacion());
+                ps.setString(7, servicio.getModalidad());
+                ps.setInt(8, servicio.getIdProducto());
+            } else {
+                throw new SQLException("Tipo de producto desconocido para actualizar");
+            }
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println(" Error al actualizar producto: " + e.getMessage());

@@ -8,8 +8,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import modelo.Producto;
-import modelo.Usuario;
+import modelo.*;
 import servicio.*;
 import java.util.List;
 
@@ -87,18 +86,24 @@ public class ProductoEController {
     // Maneja la acción de administrar un producto seleccionado.
     @FXML
     private void handleAdministrar() {
+        // Abrir la pantalla de administración del producto seleccionado.
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             gestorPantallas.mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para administrarlo.");
             return;
         }
-        abrirPantallaAdministrar(seleccionado);
+
+        // Determinar la pantalla adecuada según el tipo de producto.
+        if (seleccionado instanceof  Curso) {
+            gestorPantallas.irAdminCurso(seleccionado);
+        } else if (seleccionado instanceof Servicio) {
+            gestorPantallas.irAdminServicio(seleccionado);
+        } else {
+            gestorPantallas.mostrarError("Error", "Tipo de producto no soportado para administración.");
+        }
     }
 
     // Maneja la acción de volver al menú del emprendedor.
     @FXML
     private void handleVolver() { gestorPantallas.irEmprendedor(); }
-
-    // Abre la pantalla para administrar el producto seleccionado.
-    private void abrirPantallaAdministrar(Producto producto) { gestorPantallas.irAdminCurso(); }
 }

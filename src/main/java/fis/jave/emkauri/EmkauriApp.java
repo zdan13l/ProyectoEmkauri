@@ -2,8 +2,8 @@ package fis.jave.emkauri;
 
 import controladores.FabricaController;
 import javafx.application.Application;
+import repositorio.ConexionDB;
 import javafx.stage.Stage;
-import repositorio.*;
 
 import java.sql.Connection;
 

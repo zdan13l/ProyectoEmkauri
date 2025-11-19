@@ -2,10 +2,7 @@ package servicio;
 
 import modelo.Calificacion;
 import repositorio.IRCalificacion;
-
-import java.util.List;
-
-import java.util.Collections;
+import java.util.*;
 
 // Servicio que implementa la lógica de negocio para las calificaciones.
 public class SCalificacion implements ISCalificacion {

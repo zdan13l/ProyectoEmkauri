@@ -20,7 +20,7 @@ public class ClienteController {
     @FXML private Button btnCerrarSesion;
     @FXML private ImageView welcomeIllustration;
 
-    // Elementos de la interfaz gráfica.
+    // Servicios para la lógica y gestor de navegación.
     private final ISUsuario servicioU;
     private final GestorPantallas gestorPantallas;
 

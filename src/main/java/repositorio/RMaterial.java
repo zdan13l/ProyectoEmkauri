@@ -1,10 +1,8 @@
 package repositorio;
 
 import modelo.Material;
-
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 // Repositorio para gestionar las operaciones CRUD de los materiales en la base de datos.
 public class RMaterial implements IRMaterial {
@@ -12,12 +10,19 @@ public class RMaterial implements IRMaterial {
     // Inserta un nuevo material asociado a un curso específico.
     public void insertar(Material material, int idCurso) throws SQLException {
         String sql = "INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES (?, ?, ?, ?)";
-        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionDB.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, material.getTitulo());
             ps.setString(2, material.getTipo());
             ps.setString(3, material.getUrl());
             ps.setInt(4, idCurso);
             ps.executeUpdate();
+
+            // Obtener el ID generado y asignarlo al material.
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                material.setIdMaterial(rs.getInt(1));
+            }
         }
     }
 
