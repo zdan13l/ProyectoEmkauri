@@ -13,8 +13,8 @@ public class Servicio extends Producto {
         this.modalidad = "";
     }
 
-    public Servicio(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria, int duracionServicio, String ubicacion, String modalidad) {
-        super(idProducto, titulo, descripcion, precio, emprendedor, categoria);
+    public Servicio(int idProducto, String titulo, String descripcion, String estado, double precio, Usuario emprendedor, Categoria categoria, int duracionServicio, String ubicacion, String modalidad) {
+        super(idProducto, titulo, descripcion, estado, precio, emprendedor, categoria);
         this.duracionServicio = duracionServicio;
         this.ubicacion = ubicacion;
         this.modalidad = modalidad;
@@ -29,5 +29,4 @@ public class Servicio extends Producto {
 
     @Override
     public String toString() { return "Servicio"; }
-
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- ARCHIVO FXML PARA LA PANTALLA DE SOLICITUDES DE PRODUCTOS Y EMPRENDEDORES -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.SolicitudController" stylesheets="@../css/interfaz.css" styleClass="root-pane">
+
+    <VBox spacing="28" styleClass="content-box" alignment="TOP_CENTER"
+            AnchorPane.topAnchor="0"
+            AnchorPane.bottomAnchor="0"
+            AnchorPane.leftAnchor="0"
+            AnchorPane.rightAnchor="0">
+
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="section-header">
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" styleClass="btn-secondary"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnCerrarSesion" text="Cerrar Sesión" onAction="#onCerrarSesion" styleClass="btn-danger"/>
+        </HBox>
+
+        <VBox alignment="CENTER" spacing="4">
+            <Label fx:id="lblTitulo" text="Solicitudes" styleClass="title-label"/>
+            <Label fx:id="lblSubtitulo" text="Gestiona las solicitudes recibidas." styleClass="subtitle-label"/>
+        </VBox>
+
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane-clear">
+            <VBox alignment="TOP_CENTER" spacing="35">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <StackPane styleClass="card-block">
+                    <VBox spacing="12">
+                        <Label text="📌 Solicitudes Pendientes" styleClass="section-title"/>
+                        <VBox fx:id="contenedorSolicitudesPendientes" spacing="20" styleClass="list-container"/>
+                    </VBox>
+                </StackPane>
+
+                <StackPane styleClass="card-block">
+                    <VBox spacing="12">
+                        <Label text="✔ Solicitudes Revisadas" styleClass="section-title"/>
+                        <VBox fx:id="contenedorSolicitudesRevisadas" spacing="20" styleClass="list-container"/>
+                    </VBox>
+                </StackPane>
+            </VBox>
+        </ScrollPane>
+        <HBox alignment="CENTER"> <Label text="© 2025 Emkauri — Todos los derechos reservados" styleClass="footer-label"/> </HBox>
+    </VBox>
+</AnchorPane>

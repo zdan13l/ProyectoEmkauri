@@ -6,21 +6,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import modelo.Producto;
 import modelo.Usuario;
-import servicio.*;
 
-import java.io.IOException;
-
-// Controlador para manejar la lógica de la pantalla del carrito de compras.
+// Controlador para gestionar el carrito de compras del cliente.
 public class CarritoController {
 
-    // Campos vinculados a los elementos de la interfaz.
+    // Elementos de la interfaz gráfica.
     @FXML private TableView<Producto> tablaCarrito;
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, Double> colPrecio;
@@ -33,28 +27,13 @@ public class CarritoController {
     @FXML private Button btnVolver;
 
     // Servicios para manejar la lógica.
-    private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
-    private final ISProducto servicioP;
-    private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
-    private final ISCalificacion servicioCal;
     private final GestorPantallas gestorPantallas;
 
     // Lista observable que contiene los productos del carrito.
     private final ObservableList<Producto> productosCarrito = FXCollections.observableArrayList();
 
     // Constructor que recibe los servicios necesarios.
-    public CarritoController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
-                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
-        this.servicioCo = servicioCo;
-        this.servicioU = servicioU;
-        this.servicioP = servicioP;
-        this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
-        this.servicioCal = servicioCal;
+    public CarritoController(GestorPantallas gestorPantallas) {
         this.gestorPantallas = gestorPantallas;
     }
 
@@ -71,17 +50,19 @@ public class CarritoController {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
 
-        // Emprendedor (correo o nombre)
+        // Emprendedor (nombre).
         colEmprendedor.setCellValueFactory(cellData ->
                 Bindings.createStringBinding(() -> {
-                    Usuario emp = cellData.getValue().getEmprendedor();
-                    if (emp == null) return "";
-                    return emp.getCorreo() != null ? emp.getCorreo() :
-                            (emp.getDatosPersonales().getNombre() != null ? emp.getDatosPersonales().getNombre() : "");
+                    Usuario emprendedor = cellData.getValue().getEmprendedor();
+                    if (emprendedor != null) {
+                        return emprendedor.getDatosPersonales().getNombre() + " " + emprendedor.getDatosPersonales().getApellido();
+                    } else {
+                        return "DESCONOCIDO";
+                    }
                 })
         );
 
-        // Tipo de producto (Curso o Servicio)
+        // Tipo de producto (Curso o Servicio).
         colTipo.setCellValueFactory(cellData ->
                 Bindings.createStringBinding(() -> {
                     String tipo = cellData.getValue().getClass().getSimpleName();
@@ -98,26 +79,24 @@ public class CarritoController {
         tablaCarrito.setItems(productosCarrito);
     }
 
-    // Agrega un producto al carrito y actualiza el total.
-    public void agregarProducto(Producto producto) {
-        productosCarrito.add(producto);
-        actualizarTotal();
-    }
-
     // Elimina el producto seleccionado del carrito.
     @FXML
     public void handleEliminar(ActionEvent actionEvent) {
         Producto seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
         if (seleccionado != null) {
+            // Confirmar eliminación.
+            boolean respuesta = gestorPantallas.mostrarConfirmacion("Eliminar producto", "¿Deseas eliminar el producto seleccionado del carrito?");
+            if (!respuesta) { return; }
+
             SesionActual.getCarrito().remove(seleccionado);
             productosCarrito.remove(seleccionado);
             actualizarTotal();
         } else {
-            gestorPantallas.mostrarAlerta("Error", "Selecciona un producto para eliminar.");
+            gestorPantallas.mostrarError("Error", "Selecciona un producto para eliminar.");
         }
     }
 
-    // Vacia todo el carrito despues de una confirmacion.
+    // Quita todos los productos del carrito.
     @FXML
     public void handleVaciar(ActionEvent actionEvent) {
         if (productosCarrito.isEmpty()) {
@@ -125,17 +104,13 @@ public class CarritoController {
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Deseas vaciar el carrito?", ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmación");
-        confirm.setHeaderText(null);
-
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                SesionActual.vaciarCarrito();
-                productosCarrito.clear();
-                actualizarTotal();
-            }
-        });
+        // Confirmar vaciado del carrito.
+        boolean respuesta = gestorPantallas.mostrarConfirmacion("Vaciar carrito", "¿Deseas vaciar el carrito?");
+        if (respuesta) {
+            SesionActual.vaciarCarrito();
+            productosCarrito.clear();
+            actualizarTotal();
+        }
     }
 
     // Procesa el pago y abre la pantalla de confirmación.
@@ -145,24 +120,17 @@ public class CarritoController {
             gestorPantallas.mostrarAlerta("Carrito vacío", "No hay productos para procesar la compra.");
             return;
         }
-
+        // Navega a la pantalla de pago.
         gestorPantallas.irPago();
     }
 
     // Vuelve a la pantalla principal del cliente.
     @FXML
-    public void handleVolver(ActionEvent actionEvent) {
-        gestorPantallas.irCliente();
-    }
+    public void handleVolver(ActionEvent actionEvent) { gestorPantallas.irCliente(); }
 
     // Actualiza la etiqueta del total del carrito.
-    private void actualizarTotal() {
-        lblTotal.setText(String.format("$%.2f", calcularTotal()));
-    }
+    private void actualizarTotal() { lblTotal.setText(String.format("$%.2f", calcularTotal())); }
 
     // Calcula el total sumando los precios de los productos en el carrito.
-    private double calcularTotal() {
-        return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum();
-    }
-
+    private double calcularTotal() { return productosCarrito.stream().mapToDouble(Producto::getPrecio).sum(); }
 }

@@ -66,12 +66,14 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                            " u.idUsuario, u.correo, " +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
-                            "p.duracionServicio, p.ubicacion, p.modalidad " +
+                            "p.duracionServicio, p.ubicacion, p.modalidad, " +
+                            "s.estado AS estadoSolicitud " +
                         "FROM Productos p " +
                         "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                        "JOIN DatosPersonales dp ON u.idDatos = dp.idDatos " +
                         "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
                         "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                         "WHERE s.estado = 'APROBADO'";
@@ -92,15 +94,18 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                            "u.idUsuario, u.correo, " +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
-                            "p.duracionServicio, p.ubicacion, p.modalidad " +
+                            "p.duracionServicio, p.ubicacion, p.modalidad, " +
+                            "s.estado AS estadoSolicitud " +
                     "FROM Productos p " +
                     "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                    "JOIN DatosPersonales dp ON u.idDatos = dp.idDatos " +
                     "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
                     "JOIN ComprasProductos cp ON p.idProducto = cp.idProducto " +
                     "JOIN Compras co ON cp.idCompra = co.idCompra " +
+                    "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                     "WHERE co.idCliente = ?";
 
 
@@ -126,12 +131,15 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                " u.idUsuario, u.correo, " +
-                " c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
-                " p.duracionCurso, p.nivelDificultad, p.certificacion, " +
-                " p.duracionServicio, p.ubicacion, p.modalidad " +
+                "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
+                "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
+                "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
+                "p.duracionServicio, p.ubicacion, p.modalidad, " +
+                "s.estado AS estadoSolicitud " +
                 "FROM Productos p " +
                 "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                "JOIN DatosPersonales dp ON u.idDatos = dp.idDatos " +
+                "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                 "LEFT JOIN Categorias c ON p.idCategoria = c.idCategoria " +
                 "WHERE p.idEmprendedor = ?";
 
@@ -153,10 +161,16 @@ public class RProducto implements IRProducto {
     // Mapear un ResultSet a un objeto Producto.
     public Producto mapearProducto(ResultSet rs) {
         try {
+            // Datos personales del emprendedor.
+            Datos datos = new Datos();
+            datos.setNombre(rs.getString("nombreEmp"));
+            datos.setApellido(rs.getString("apellidoEmp"));
+
             // Emprendedor.
             Usuario emprendedor = new Usuario();
             emprendedor.setIdUsuario(rs.getInt("idUsuario"));
             emprendedor.setCorreo(rs.getString("correo"));
+            emprendedor.setDatosPersonales(datos);
 
             // Categoría.
             Categoria categoria = new Categoria();
@@ -190,6 +204,7 @@ public class RProducto implements IRProducto {
             producto.setIdProducto(rs.getInt("idProducto"));
             producto.setTitulo(rs.getString("titulo"));
             producto.setDescripcion(rs.getString("descripcion"));
+            producto.setEstado(rs.getString("estadoSolicitud"));
             producto.setPrecio(rs.getDouble("precio"));
             producto.setEmprendedor(emprendedor);
             producto.setCategoria(categoria);
@@ -208,10 +223,13 @@ public class RProducto implements IRProducto {
                             "u.idUsuario, u.correo," +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria," +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion," +
-                            "p.duracionServicio, p.ubicacion, p.modalidad " +
+                            "p.duracionServicio, p.ubicacion, p.modalidad, " +
+                            "s.estado AS estadoSolicitud " +
                         "FROM Productos p " +
                         "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                        "JOIN DatosPersonales dp ON u.idDatos = dp.idDatos " +
                         "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                        "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                         "WHERE p.idProducto = ?";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -233,13 +251,15 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto," +
-                            "u.idUsuario, u.correo," +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria," +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion," +
-                            "p.duracionServicio, p.ubicacion, p.modalidad " +
+                            "p.duracionServicio, p.ubicacion, p.modalidad, " +
+                            "s.estado AS estadoSolicitud " +
                         "FROM Productos p " +
                         "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
                         "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
+                        "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                         "WHERE LOWER(p.titulo) LIKE ?";
 
         try (Connection conexion = ConexionDB.getConnection(); PreparedStatement ps = conexion.prepareStatement(sql)) {

@@ -78,7 +78,5 @@ public class LoginController {
 
     // Manejo del evento de clic en el botón de registro.
     @FXML
-    public void onRegisterClick(ActionEvent actionEvent) {
-        gestorPantallas.irRegistro();
-    }
+    public void onRegisterClick(ActionEvent actionEvent) { gestorPantallas.irRegistro(); }
 }

@@ -8,7 +8,9 @@ import java.util.List;
 public interface IRSolicitud {
     void guardar(Solicitud solicitud);
     List<Solicitud> listarPendientesTipo(String tipo);
+    List<Solicitud> listarSolicitudes(String tipo);
     boolean aprobar(int idSolicitud);
     boolean rechazar(int idSolicitud);
+    void marcarPendiente(int idSolicitud);
     Integer obtenerReclutador(Connection conexion);
 }

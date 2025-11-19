@@ -1,33 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PagoController">
+<!-- ARCHIVO FXML PARA LA PANTALLA DEL COMPROBANTE -->
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.PagoController" stylesheets="@../css/interfaz.css" styleClass="root-pane">
+    <VBox alignment="CENTER" maxWidth="600" spacing="24" styleClass="content-card">
+        <Label text="¡Pago Exitoso!" styleClass="title" />
+        <Label text="Tu transacción ha sido procesada correctamente." styleClass="subtitle" />
 
-    <VBox alignment="CENTER" maxWidth="600" spacing="24" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 40;">
-        <effect> <DropShadow color="#00000055" radius="10" /> </effect>
-
-        <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" text=" ¡Pago Exitoso!" />
-        <Label style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;" text="Tu transacción ha sido procesada correctamente." />
-
-        <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #F8FAFF; -fx-padding: 20; -fx-background-radius: 10;">
-            <Label fx:id="lblNombreCliente" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Nombre: Juan Pérez" />
-            <Label fx:id="lblCorreoCliente" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Correo: ejemplo@email.com" />
-            <Label fx:id="lblTotalPagado" style="-fx-font-size: 14px; -fx-text-fill: #4A90E2; -fx-font-weight: bold;" text="Total Pagado: $120.000" />
-            <Label fx:id="lblFecha" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Fecha: 13/10/2025" />
-            <Label fx:id="lblCodigoTransaccion" style="-fx-font-size: 14px; -fx-text-fill: #2E3A59; -fx-font-weight: bold;" text="Código de transacción: #TX-843912" />
+        <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #F8FAFF; -fx-padding: 20; -fx-background-radius: 12;">
+            <Label fx:id="lblNombreCliente"  text="Nombre: Juan Pérez" style="-fx-font-size: 14px; -fx-text-fill: #1f2d3d;" />
+            <Label fx:id="lblCorreoCliente" text="Correo: ejemplo@email.com" style="-fx-font-size: 14px; -fx-text-fill: #1f2d3d;" />
+            <Label fx:id="lblTotalPagado" text="Total Pagado: $120.000" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4d90fe;" />
+            <Label fx:id="lblFecha" text="Fecha: 13/10/2025" style="-fx-font-size: 14px; -fx-text-fill: #1f2d3d;" />
+            <Label fx:id="lblCodigoTransaccion" text="Código de transacción: #TX-843912" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" />
         </VBox>
-
-        <Label style="-fx-font-size: 12px; -fx-text-fill: #7A8BA3;" text="Recibirás un correo con el comprobante de esta compra." />
+        <Label text="Recibirás un correo con el comprobante de esta compra." styleClass="footer-text" />
 
         <HBox alignment="CENTER" spacing="20">
-            <Button fx:id="btnVolverInicio" onAction="#handleVolverInicio" style="-fx-background-color: #4A90E2; -fx-text-fill: white;
-            -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;" text="Volver al Inicio" />
-            <Button fx:id="btnGuardar" onAction="#handleGuardar" style="-fx-background-color: transparent; -fx-border-color: #4A90E2;
-            -fx-text-fill: #4A90E2; -fx-font-weight: bold; -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;" text="Guardar" />
+            <Button fx:id="btnVolverInicio" text="Volver al Inicio" onAction="#handleVolverInicio" styleClass="primary-button" />
+            <Button fx:id="btnGuardar" text="Guardar" onAction="#handleGuardar" styleClass="secondary-button" />
         </HBox>
     </VBox>
 </StackPane>

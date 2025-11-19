@@ -8,6 +8,7 @@ public class Producto {
     private int idProducto;
     private String titulo;
     private String descripcion;
+    private String estado;
     private double precio;
     Usuario emprendedor;
     Categoria categoria;
@@ -17,16 +18,18 @@ public class Producto {
         this.idProducto = 0;
         this.titulo = "";
         this.descripcion = "";
+        this.estado = "";
         this.precio = 0.0;
         this.emprendedor = new Usuario();
         this.categoria = new Categoria();
         this.calificaciones = new ArrayList<>();
     }
 
-    public Producto(int idProducto, String titulo, String descripcion, double precio, Usuario emprendedor, Categoria categoria) {
+    public Producto(int idProducto, String titulo, String descripcion, String estado, double precio, Usuario emprendedor, Categoria categoria) {
         this.idProducto = idProducto;
         this.titulo = titulo;
         this.descripcion = descripcion;
+        this.estado = estado;
         this.precio = precio;
         this.emprendedor = emprendedor;
         this.categoria = categoria;
@@ -39,6 +42,8 @@ public class Producto {
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
     public double getPrecio() { return precio; }
     public void setPrecio(double precio) { this.precio = precio; }
     public Usuario getEmprendedor() { return emprendedor; }

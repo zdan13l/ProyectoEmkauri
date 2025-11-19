@@ -60,7 +60,7 @@ public class RegistroController {
             }
 
             // Validar formato de nombre y apellido.
-            String regexTexto = "^[a-zA-ZÀ-ÿ\\\\s]+$";
+            String regexTexto = "^[a-zA-ZÀ-ÿ\\s]+$";
             if (!nombreField.getText().matches(regexTexto) || !apellidoField.getText().matches(regexTexto)) {
                 gestorPantallas.mostrarAlerta("Formato inválido", "El nombre y apellido solo deben contener letras y espacios.");
                 return;

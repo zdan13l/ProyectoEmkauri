@@ -1,8 +1,14 @@
 package servicio;
 
 import modelo.Material;
+import repositorio.IRMaterial;
 
 public class SMaterial implements ISMaterial{
+    private final IRMaterial repoM;
+
+    // Constructor con inyección de dependencia del repositorio.
+    public SMaterial(IRMaterial repoM) { this.repoM = repoM; }
+
     @Override
     public void insertar(Material material, int idCurso) throws Exception {
 

@@ -4,14 +4,13 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA LA PANTALLA DE REGISTRO -->
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.RegistroController" stylesheets="@../css/loginRegister.css" styleClass="fondo-celeste">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.RegistroController" stylesheets="@../css/interfaz.css" styleClass="fondo-celeste">
     <children>
-        <VBox alignment="CENTER" spacing="15.0" maxWidth="420.0"
+        <VBox styleClass="card-login" alignment="CENTER" spacing="15.0" maxWidth="420.0"
                 AnchorPane.leftAnchor="270.0"
                 AnchorPane.rightAnchor="270.0"
                 AnchorPane.topAnchor="60.0"
-                AnchorPane.bottomAnchor="60.0"
-                styleClass="card-login">
+                AnchorPane.bottomAnchor="60.0">
 
             <Label text="Crea tu cuenta" styleClass="titulo"/>
             <Label text="Regístrate para unirte a Emkauri" styleClass="subtitulo"/>
