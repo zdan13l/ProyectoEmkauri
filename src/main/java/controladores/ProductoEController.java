@@ -22,6 +22,7 @@ public class ProductoEController {
     @FXML private TableColumn<Producto, String> colCategoria;
     @FXML private TableColumn<Producto, Double> colPrecio;
     @FXML private TableColumn<Producto, String> colEstado;
+    @FXML private Button btnCalificaciones;
     @FXML private Button btnVolver;
     @FXML private Button btnAdministrar;
 
@@ -103,7 +104,11 @@ public class ProductoEController {
         }
     }
 
+    // Maneja la acción de ir a la pantalla de calificaciones.
+    @FXML
+    private void onCalificaciones() { gestorPantallas.irCalificaciones(); }
+
     // Maneja la acción de volver al menú del emprendedor.
     @FXML
-    private void handleVolver() { gestorPantallas.irEmprendedor(); }
+    private void onVolver() { gestorPantallas.irEmprendedor(); }
 }

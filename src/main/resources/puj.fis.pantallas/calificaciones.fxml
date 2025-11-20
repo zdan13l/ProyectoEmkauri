@@ -1,64 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<AnchorPane prefHeight="700.0" prefWidth="960.0"
-            style="-fx-background-color: linear-gradient(to bottom right, #4A90E2, #50C9CE);"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controladores.CalificacionController">
+<!-- ARCHIVO FXML PARA LA PANTALLA DE CALIFICACIONES DE PRODUCTOS -->
+<AnchorPane styleClass="fondo-celeste" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.CalificacionController">
+    <VBox alignment="TOP_CENTER" spacing="30" styleClass="content-card"
+            AnchorPane.bottomAnchor="50"
+            AnchorPane.leftAnchor="80"
+            AnchorPane.rightAnchor="80"
+            AnchorPane.topAnchor="50">
 
-    <VBox alignment="TOP_CENTER" spacing="24"
-          style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20;
-                 -fx-padding: 32 48 40 48; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);"
-          AnchorPane.topAnchor="40" AnchorPane.bottomAnchor="40"
-          AnchorPane.leftAnchor="80" AnchorPane.rightAnchor="80">
-
-        <!-- CABECERA -->
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <VBox spacing="6">
-                <Label style="-fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: #2E3A59;"
-                       text="¡Bienvenid@, Emprendedor!" />
-                <Label style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;"
-                       text="Consulta las calificaciones recibidas por tus productos, cursos o servicios" />
+            <VBox spacing="8">
+                <Label styleClass="title-label" text="¡Bienvenid@, Emprendedor!" />
+                <Label styleClass="subtitle-label" text="Consulta las calificaciones recibidas por tus productos, cursos o servicios." />
             </VBox>
-
             <Region HBox.hgrow="ALWAYS" />
 
             <HBox alignment="CENTER_RIGHT" spacing="14">
-                <Button fx:id="btnMisProductos"
-                        text="Mis Productos"
-                        onAction="#onVerMisProductos"
-                        style="-fx-background-color: transparent; -fx-text-fill: #2E3A59;
-                               -fx-font-weight: 600;" />
-
-                <Button fx:id="btnVolver"
-                        text="Volver"
-                        onAction="#onVolver"
-                        style="-fx-background-color: #E63946; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 14;" />
+                <Button fx:id="btnMisProductos" onAction="#onVerMisProductos" styleClass="nav-button" text="Mis Productos" />
+                <Button fx:id="btnVolver" onAction="#onVolver" styleClass="logout-button" text="Volver" />
             </HBox>
         </HBox>
+        <Separator prefWidth="720" styleClass="separator" />
 
-        <Separator prefWidth="720" style="-fx-opacity: 0.3;" />
+        <VBox alignment="TOP_CENTER" prefHeight="420" prefWidth="850" spacing="20">
+            <Label styleClass="title-label" text="Administrar Calificaciones" />
+            <Label styleClass="subtitle-label" text="Consulta las calificaciones recibidas por tus productos, cursos o servicios." />
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <VBox alignment="TOP_CENTER" spacing="20" prefHeight="400" prefWidth="800">
-
-            <Label text="Administrar Calificaciones"
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2E3A59;" />
-
-            <Label text="Consulta las calificaciones recibidas por tus productos, cursos o servicios"
-                   style="-fx-font-size: 13px; -fx-text-fill: #7A8BA3;" />
-
-            <!-- FILTROS -->
             <HBox alignment="CENTER" spacing="10">
-                <Label text="Filtrar por:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
-                <ComboBox fx:id="comboTipo" prefWidth="160" promptText="Seleccionar tipo">
+                <Label styleClass="subtitle-label" text="Filtrar por:" />
+                <ComboBox fx:id="comboTipo" prefHeight="56.0" prefWidth="180.0" promptText="Seleccionar tipo" styleClass="input-search">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Ambos" />
@@ -67,48 +42,33 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
-                <ComboBox fx:id="comboElemento" prefWidth="220" promptText="Selecciona un elemento" />
-                <Button fx:id="btnBuscar"
-                        text="Buscar"
-                        onAction="#onBuscar"
-                        style="-fx-background-color: #4A90E2; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
+
+                <ComboBox fx:id="comboElemento" prefHeight="56.0" prefWidth="270.0" promptText="Selecciona un elemento" styleClass="input-search" />
+                <Spinner fx:id="spinPuntaje" editable="false" prefHeight="56.0" prefWidth="90.0" styleClass="input-search" />
             </HBox>
 
-            <!-- TABLA -->
-            <TableView fx:id="tablaCalificaciones"
-                       prefWidth="800" prefHeight="380"
-                       style="-fx-border-color: #C9D7F2; -fx-border-radius: 10; -fx-background-radius: 10;">
+            <TableView fx:id="tablaCalificaciones" prefHeight="212.0" prefWidth="805.0" styleClass="styled-table">
                 <columns>
-                    <TableColumn fx:id="colProducto" text="Producto / Servicio" prefWidth="220" />
-                    <TableColumn fx:id="colCliente" text="Cliente" prefWidth="160" />
-                    <TableColumn fx:id="colPuntaje" text="Puntaje" prefWidth="100" />
-                    <TableColumn fx:id="colComentario" text="Comentario" prefWidth="250" />
-                    <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120" />
+                    <TableColumn fx:id="colProducto" prefWidth="180" text="Producto" />
+                    <TableColumn fx:id="colCliente" prefWidth="150" text="Cliente" />
+                    <TableColumn fx:id="colPuntaje" prefWidth="100" text="Puntaje" />
+                    <TableColumn fx:id="colComentario" prefWidth="250" text="Comentario" />
+                    <TableColumn fx:id="colFecha" prefWidth="120" text="Fecha" />
                 </columns>
             </TableView>
-
-            <!-- MENSAJE DE TABLA VACÍA -->
-            <Label fx:id="mensajeTablaVacia"
-                   text="No hay calificaciones registradas"
-                   style="-fx-font-size: 12px; -fx-text-fill: #7A8BA3;" />
-
-
+            <Label fx:id="mensajeTablaVacia" styleClass="subtitle-label" text="No hay calificaciones registradas" />
         </VBox>
 
-        <!-- PROMEDIO GENERAL -->
-        <HBox alignment="CENTER" spacing="8" style="-fx-padding: 10 0 0 0;">
-            <Label text="Promedio general:"
-                   style="-fx-font-size: 14px; -fx-text-fill: #2E3A59;" />
-            <Label fx:id="lblPromedioGeneral"
-                   text="0.0"
-                   style="-fx-font-size: 18px; -fx-text-fill: #4A90E2; -fx-font-weight: bold;" />
+        <HBox alignment="CENTER" spacing="14" style="-fx-padding: 12;">
+            <Button fx:id="btnBuscar" onAction="#onBuscar" styleClass="primary-button" text="Buscar" />
+            <Button fx:id="btnSoloComentarios" onAction="#onFiltrarSoloComentarios" styleClass="secondary-button" text="Solo comentarios" />
+            <Button fx:id="btnLimpiar" onAction="#onLimpiarFiltros" styleClass="gray-button" text="Limpiar filtros" />
         </HBox>
 
-        <!-- PIE DE PÁGINA -->
-        <HBox alignment="CENTER">
-            <Label style="-fx-font-size: 12px; -fx-text-fill: #7A7A7A;"
-                   text="© 2025 Emkauri — Todos los derechos reservados" />
+        <HBox alignment="CENTER" spacing="8" styleClass="total-box">
+            <Label styleClass="card-text" text="Promedio general:" />
+            <Label fx:id="lblPromedioGeneral" styleClass="total-value" text="0.0" />
         </HBox>
+        <HBox alignment="CENTER"> <Label styleClass="footer-text" text="© 2025 Emkauri — Todos los derechos reservados" /> </HBox>
     </VBox>
 </AnchorPane>

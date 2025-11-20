@@ -15,7 +15,8 @@
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="content-card">
                 <Label text="📦 Mis Productos" styleClass="title-label"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="btnVolver" onAction="#handleVolver" text="Volver" styleClass="btn-secondary"/>
+                <Button fx:id="btnCalificaciones" text="Calificaciones" onAction="#onCalificaciones" styleClass="nav-button"/>
+                <Button fx:id="btnVolver" onAction="#onVolver" text="Volver" styleClass="logout-button"/>
             </HBox>
 
             <VBox spacing="16" styleClass="content-card">

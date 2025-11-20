@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA LA PANTALLA DEL CLIENTE -->
-<AnchorPane styleClass="root-pane" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ClienteController">
+<AnchorPane styleClass="root-pane" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.ClienteController">
     <VBox alignment="TOP_CENTER" spacing="36" styleClass="content-card"
             AnchorPane.bottomAnchor="40"
             AnchorPane.leftAnchor="80"

@@ -1,7 +1,6 @@
 package repositorio;
 
 import modelo.*;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,19 +35,22 @@ public class RCalificacion implements IRCalificacion{
 
     /**
      * Obtiene todas las calificaciones asociadas a un producto específico.
+     * Ahora devuelve Calificacion con el objeto Producto completamente poblado.
      */
     public List<Calificacion> obtenerPorProducto(int idProducto) {
         List<Calificacion> lista = new ArrayList<>();
         String sql = """
-                SELECT c.idCalificacion, c.puntaje, c.comentario, c.fecha,
-                       u.idUsuario, u.correo,
-                       d.nombre, d.apellido, d.telefono
-                FROM Calificaciones c
-                INNER JOIN Usuarios u ON c.idCliente = u.idUsuario
-                INNER JOIN DatosPersonales d ON u.idDatos = d.idDatos
-                WHERE c.idProducto = ?
-                ORDER BY c.fecha DESC
-                """;
+            SELECT c.idCalificacion, c.puntaje, c.comentario, c.fecha,
+                   u.idUsuario, u.correo,
+                   d.nombre, d.apellido, d.telefono,
+                   p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto
+            FROM Calificaciones c
+            INNER JOIN Usuarios u ON c.idCliente = u.idUsuario
+            INNER JOIN DatosPersonales d ON u.idDatos = d.idDatos
+            LEFT JOIN Productos p ON c.idProducto = p.idProducto
+            WHERE c.idProducto = ?
+            ORDER BY c.fecha DESC
+            """;
 
         try (Connection conn = ConexionDB.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -56,6 +58,7 @@ public class RCalificacion implements IRCalificacion{
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    // Cliente
                     Usuario cliente = new Usuario();
                     cliente.setIdUsuario(rs.getInt("idUsuario"));
                     cliente.setCorreo(rs.getString("correo"));
@@ -65,12 +68,32 @@ public class RCalificacion implements IRCalificacion{
                             rs.getString("telefono")
                     ));
 
+                    // Producto (puede ser CURSO o SERVICIO; si no existe, dejamos null)
+                    Producto producto = null;
+                    int pid = rs.getInt("idProducto");
+                    if (!rs.wasNull()) {
+                        String tipoProd = rs.getString("tipoProducto");
+                        if ("CURSO".equalsIgnoreCase(tipoProd)) {
+                            producto = new Curso();
+                        } else if ("SERVICIO".equalsIgnoreCase(tipoProd)) {
+                            producto = new Servicio();
+                        } else {
+                            producto = new Producto();
+                        }
+                        producto.setIdProducto(pid);
+                        producto.setTitulo(rs.getString("titulo"));
+                        producto.setDescripcion(rs.getString("descripcion"));
+                        producto.setPrecio(rs.getDouble("precio"));
+                    }
+
+                    // Calificación
                     Calificacion c = new Calificacion();
                     c.setIdCalificacion(rs.getInt("idCalificacion"));
                     c.setPuntaje(rs.getInt("puntaje"));
                     c.setComentario(rs.getString("comentario"));
                     c.setFecha(rs.getDate("fecha"));
                     c.setCliente(cliente);
+                    c.setProducto(producto); // <-- ahora sí asignamos el producto
 
                     lista.add(c);
                 }

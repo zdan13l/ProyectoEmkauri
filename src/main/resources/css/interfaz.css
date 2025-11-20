@@ -95,6 +95,21 @@
     -fx-border-color: #4d90fe;
 }
 
+.input-search,
+.campo {
+    -fx-padding: 12;
+    -fx-font-size: 14px;
+    -fx-background-color: #f3f6fa;
+    -fx-background-radius: 10;
+    -fx-border-color: #d0d5dd;
+    -fx-border-radius: 10;
+}
+.input-search:focused,
+.campo:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4d90fe;
+}
+
 .nav-button {
     -fx-background-color: #eef2f6;
     -fx-text-fill: #1f2d3d;

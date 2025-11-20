@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA EL CATÁLOGO DE PRODUCTOS -->
-<StackPane styleClass="fondo-celeste" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="controladores.CatalogoController">
+<StackPane styleClass="fondo-celeste" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="controladores.CatalogoController">
     <VBox alignment="CENTER" maxWidth="900" spacing="20" styleClass="content-card">
         <HBox alignment="CENTER_LEFT" prefWidth="100" spacing="10">
             <Label styleClass="title" text="Catálogo de Productos" />
