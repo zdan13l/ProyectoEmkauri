@@ -32,24 +32,13 @@ public class CalificarController {
     @FXML private Button btnEnviar;
 
     // SERVICIOS
-    private final ISUsuario servicioU;
-    private final ISCompra servicioCo;
-    private final ISProducto servicioP;
-    private final ISCategoria servicioCa;
-    private final ISPago servicioPa;
-    private final ISSolicitud servicioS;
+    private final ISProducto servicioP;;
     private final ISCalificacion servicioCal; // servicio de calificaciones
     private final GestorPantallas gestorPantallas;
 
     // CONSTRUCTOR
-    public CalificarController(ISUsuario servicioU, ISCompra servicioCo, ISProducto servicioP, ISCategoria servicioCa,
-                                ISPago servicioPa, ISSolicitud servicioS, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
-        this.servicioCo = servicioCo;
-        this.servicioU = servicioU;
+    public CalificarController(ISProducto servicioP, ISCalificacion servicioCal, GestorPantallas gestorPantallas) {
         this.servicioP = servicioP;
-        this.servicioCa = servicioCa;
-        this.servicioPa = servicioPa;
-        this.servicioS = servicioS;
         this.servicioCal = servicioCal;
         this.gestorPantallas = gestorPantallas;
     }

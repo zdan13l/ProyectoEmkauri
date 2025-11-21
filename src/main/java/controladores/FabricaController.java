@@ -44,10 +44,7 @@ public class FabricaController {
     public Object createController(Class<?> tipo) {
         if (tipo == AdminProductoController.class) { return new AdminProductoController(servicioProducto, servicioMaterial, gestorPantallas); }
         if (tipo == CalificacionController.class) { return new CalificacionController(servicioProducto, servicioCalificacion, gestorPantallas); }
-
-        if (tipo == CalificarController.class)
-            return new CalificarController(servicioUsuario, servicioCompra, servicioProducto, servicioCategoria, servicioPago, servicioSolicitud, servicioCalificacion, gestorPantallas);
-
+        if (tipo == CalificarController.class) { return new CalificarController(servicioProducto, servicioCalificacion, gestorPantallas); }
         if (tipo == CarritoController.class) { return new CarritoController(gestorPantallas); }
         if (tipo == CatalogoController.class) { return new CatalogoController(servicioProducto, servicioCategoria, gestorPantallas); }
         if (tipo == CategoriaController.class) { return new CategoriaController(servicioCategoria, gestorPantallas); }
