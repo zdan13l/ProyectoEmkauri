@@ -199,7 +199,9 @@ public class CalificacionController {
     @FXML
     private void onFiltrarSoloComentarios(ActionEvent e) {
         List<Calificacion> filtrado = listaObservable.stream()
-                .filter(c -> c.getComentario() != null && !c.getComentario().isBlank())
+                .filter(c -> c.getComentario() != null
+                        && !c.getComentario().isBlank()
+                        && !c.getComentario().equalsIgnoreCase("Sin comentario"))
                 .collect(Collectors.toList());
 
         listaObservable.setAll(filtrado);

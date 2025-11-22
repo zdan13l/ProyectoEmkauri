@@ -107,7 +107,14 @@ public class ProductoCController {
 
     // Maneja la acción de calificar los productos.
     @FXML
-    private void onCalificaciones() { gestorPantallas.irCalificar(); }
+    private void onCalificaciones() {
+        Producto seleccionado = tablaProductosCliente.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            gestorPantallas.mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para calificarlo.");
+            return;
+        }
+        gestorPantallas.irCalificar(seleccionado);
+    }
 
     // Cambia a la pantalla del menú del cliente.
     @FXML

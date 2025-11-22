@@ -48,17 +48,6 @@ public class AdminProductoController {
         this.gestorPantallas = gestorPantallas;
     }
 
-    // Inicialización del controlador.
-    @FXML
-    public void initialize() {
-        if (tablaMateriales != null) {
-            colTituloMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitulo()));
-            colTipoMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTipo()));
-            colUrlMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getUrl()));
-            tablaMateriales.setItems(materiales);
-        }
-    }
-
     // Carga el producto en la interfaz para su edición.
     public void setProducto(Producto producto) throws Exception {
         this.productoSeleccionado = producto;
@@ -88,6 +77,17 @@ public class AdminProductoController {
             txtDuracionServicio.setText(String.valueOf(serv.getDuracionServicio()));
             txtUbicacion.setText(serv.getUbicacion());
             txtModalidad.setText(serv.getModalidad());
+        }
+    }
+
+    // Inicialización del controlador.
+    @FXML
+    public void initialize() {
+        if (tablaMateriales != null) {
+            colTituloMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitulo()));
+            colTipoMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTipo()));
+            colUrlMat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getUrl()));
+            tablaMateriales.setItems(materiales);
         }
     }
 

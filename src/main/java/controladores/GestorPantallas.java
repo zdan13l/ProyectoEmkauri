@@ -70,7 +70,7 @@ public class GestorPantallas {
     public void irAdminCurso(Producto seleccionado) { abrirAdminProducto("adminCurso", seleccionado); }
     public void irAdminServicio(Producto seleccionado) { abrirAdminProducto("adminServicio", seleccionado); }
     public void irCalificaciones() { cambiarPantalla("calificaciones"); }
-    public void irCalificar() { cambiarPantalla("calificar"); }
+    public void irCalificar(Producto seleccionado) { abrirCalificarProducto("calificar", seleccionado); }
     public void irCarrito() { cambiarPantalla("carrito"); }
     public void irCatalogo() { cambiarPantalla("catalogo"); }
     public void irCategoria() { cambiarPantalla("categoria"); }
@@ -103,7 +103,6 @@ public class GestorPantallas {
             stage.setMaximized(true);
             aplicarTransicion((Pane) scene.getRoot());
             stage.setScene(scene);
-
         } catch (IOException e) {
             throw new RuntimeException("Error al cargar pantalla: " + clavePantalla, e);
         }
@@ -130,7 +129,6 @@ public class GestorPantallas {
             stage.setMaximized(true);
             aplicarTransicion(root);
             stage.setScene(scene);
-
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la solicitud de producto.");
         }
@@ -158,7 +156,6 @@ public class GestorPantallas {
             stage.setMaximized(true);
             aplicarTransicion(root);
             stage.setScene(scene);
-
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la solicitud de producto.");
         }
@@ -185,9 +182,35 @@ public class GestorPantallas {
             stage.setMaximized(true);
             aplicarTransicion(root);
             stage.setScene(scene);
-
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la pantalla de administración.");
+        }
+    }
+
+    // Abrir pantalla de calificación pasando un producto seleccionado.
+    public void abrirCalificarProducto(String clavePantalla, Producto producto) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+            Pane root = loader.load();
+
+            // Obtener el controlador que JavaFX creó.
+            CalificarController controller = loader.getController();
+            controller.setProductoSeleccionado(producto);
+            controller.iniciarConProducto();
+
+            // Cargar la nueva escena.
+            Scene scene = new Scene(root);
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            stage.setTitle(titulo);
+            stage.setMaximized(true);
+            aplicarTransicion(root);
+            stage.setScene(scene);
+        } catch (Exception e) {
+            mostrarError("Error", "No se pudo abrir la pantalla de calificación.");
         }
     }
 
@@ -292,7 +315,6 @@ public class GestorPantallas {
                 return null;
             }
         }
-
         return new Material(0, titulo, tipoSeleccionado, url);
     }
 }

@@ -29,13 +29,12 @@
                 <ComboBox fx:id="comboTipo" prefWidth="160" promptText="Seleccionar tipo" styleClass="input-field">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Servicios" />
-                            <String fx:value="Cursos" />
+                            <String fx:value="Servicio" />
+                            <String fx:value="Curso" />
                         </FXCollections>
                     </items>
                 </ComboBox>
                 <ComboBox fx:id="comboElemento" prefWidth="280" promptText="Selecciona un elemento" styleClass="input-field" />
-                <Button fx:id="btnCargar" text="Cargar" onAction="#onCargar" styleClass="primary-button" />
             </HBox>
             <Separator prefWidth="600" styleClass="separator" />
             <VBox alignment="CENTER" spacing="14" prefWidth="600">

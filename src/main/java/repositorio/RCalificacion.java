@@ -1,12 +1,8 @@
 package repositorio;
 
 import modelo.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 // Repositorio para manejar operaciones CRUD de la entidad Calificacion.
 public class RCalificacion implements IRCalificacion{

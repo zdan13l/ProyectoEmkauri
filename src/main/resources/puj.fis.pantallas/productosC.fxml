@@ -18,8 +18,8 @@
         </HBox>
 
         <VBox alignment="CENTER_LEFT" spacing="6">
-            <Label text="Tus cursos y servicios adquiridos" styleClass="section-title"/>
-            <Label text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o dirigete a 'Calificar Productos'." styleClass="subtitle-label"/>
+            <Label text="Tus productos adquiridos" styleClass="section-title"/>
+            <Label text="Consulta los cursos o servicios que has comprado. Selecciona uno y pulsa 'Ver Detalle' o 'Calificar Producto'." styleClass="subtitle-label"/>
         </VBox>
 
         <TableView fx:id="tablaProductosCliente" prefHeight="360" styleClass="styled-table">
@@ -37,7 +37,7 @@
 
         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="bottom-buttons">
             <Button fx:id="btnVerDetalle" text="Ver Detalle" onAction="#onVerDetalle" styleClass="green-button"/>
-            <Button fx:id="btnCalificaciones" text="Calificar Productos" onAction="#onCalificaciones" styleClass="yellow-button"/>
+            <Button fx:id="btnCalificaciones" text="Calificar Producto" onAction="#onCalificaciones" styleClass="yellow-button"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
 
