@@ -131,3 +131,15 @@ CREATE TABLE Solicitudes (
     FOREIGN KEY (idProductoAsociado) REFERENCES Productos(idProducto),
     FOREIGN KEY (idEmprendedorAsociado) REFERENCES Usuarios(idUsuario)
 );
+
+CREATE TABLE ProgresoMateriales (
+    idProgreso INT PRIMARY KEY AUTO_INCREMENT,
+    idCliente INT NOT NULL,
+    idMaterial INT NOT NULL,
+    visto BOOLEAN NOT NULL DEFAULT FALSE,
+
+    FOREIGN KEY (idCliente) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idMaterial) REFERENCES Materiales(idMaterial),
+
+    UNIQUE (idCliente, idMaterial)
+);

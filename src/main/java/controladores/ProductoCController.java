@@ -8,6 +8,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import modelo.Curso;
 import modelo.Producto;
 import modelo.Usuario;
 import servicio.*;
@@ -102,7 +103,11 @@ public class ProductoCController {
             gestorPantallas.mostrarAlerta("Seleccione un producto", "Debe seleccionar un producto para ver su detalle.");
             return;
         }
-        // Pasar el producto seleccionado a la pantalla de detalle. (PENDIENTE)
+
+        // Si el producto es un curso -> abrir la pantalla específica del curso
+        if (seleccionado instanceof Curso) {
+            gestorPantallas.irAccederCurso(seleccionado);
+        }
     }
 
     // Maneja la acción de calificar los productos.

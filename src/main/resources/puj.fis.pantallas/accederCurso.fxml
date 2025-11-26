@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.AccederCursoController"
+            stylesheets="@../css/interfaz.css">
+
+    <children>
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <VBox alignment="CENTER"
+              spacing="20"
+              AnchorPane.topAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0"
+              styleClass="fondo-celeste">
+
+            <!-- CARD -->
+            <VBox maxWidth="650"
+                  spacing="20"
+                  alignment="TOP_CENTER"
+                  styleClass="content-card">
+
+                <!-- TITULO -->
+                <Label fx:id="lblTituloCurso"
+                       text="Título del Curso"
+                       styleClass="titulo"/>
+
+                <Label text="Materiales del curso"
+                       styleClass="section-subtitle"/>
+
+                <!-- LISTA DE MATERIALES -->
+                <ScrollPane fitToWidth="true"
+                            prefHeight="350"
+                            hbarPolicy="NEVER">
+
+                    <!-- ⚠️ CONTENIDO DIRECTO VÁLIDO -->
+                    <VBox fx:id="contenedorMateriales"
+                          style="-fx-background-color: transparent;">
+                    </VBox>
+
+                </ScrollPane>
+
+                <!-- PROGRESO -->
+                <VBox spacing="6"
+                      alignment="CENTER">
+                    <Label text="Progreso del curso"
+                           styleClass="section-title"/>
+
+                    <ProgressBar fx:id="barraProgreso"
+                                 prefWidth="100"
+                                 progress="0.0"/>
+
+                    <Label fx:id="lblProgreso"
+                           text="0% completado"
+                           styleClass="subtitulo"/>
+                </VBox>
+
+                <!-- BOTON -->
+                <HBox alignment="CENTER">
+                    <Button fx:id="btnCertificado"
+                            text="Obtener Certificado"
+                            styleClass="primary-button"
+                            disable="true"/>
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </children>
+
+</AnchorPane>

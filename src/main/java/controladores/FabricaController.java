@@ -16,6 +16,7 @@ public class FabricaController {
     private final ISMaterial servicioMaterial;
     private final ISPago servicioPago;
     private final ISProducto servicioProducto;
+    private final ISProgresoMaterial servicioProgreso;
     private final ISSolicitud servicioSolicitud;
     private final ISUsuario servicioUsuario;
 
@@ -28,6 +29,7 @@ public class FabricaController {
         this.servicioMaterial = new SMaterial(new RMaterial());
         this.servicioPago = new SPago(new RPago());
         this.servicioProducto = new SProducto(new RProducto());
+        this.servicioProgreso = new SProgresoMaterial(new RProgresoMaterial());
         this.servicioSolicitud = new SSolicitud(new RSolicitud());
         this.servicioUsuario = new SUsuario(new RUsuario());
 
@@ -42,6 +44,7 @@ public class FabricaController {
 
     // Permite crear controladores con los servicios inyectados.
     public Object createController(Class<?> tipo) {
+        if (tipo == AccederCursoController.class) { return new AccederCursoController(servicioMaterial, servicioProgreso, gestorPantallas); }
         if (tipo == AdminProductoController.class) { return new AdminProductoController(servicioProducto, servicioMaterial, gestorPantallas); }
         if (tipo == CalificacionController.class) { return new CalificacionController(servicioProducto, servicioCalificacion, gestorPantallas); }
         if (tipo == CalificarController.class) { return new CalificarController(servicioProducto, servicioCalificacion, gestorPantallas); }

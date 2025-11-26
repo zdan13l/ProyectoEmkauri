@@ -26,6 +26,7 @@ public class GestorPantallas {
         this.fabrica = fabrica;
 
         // Registrar todas las rutas de pantallas.
+        pantallas.put("accederCurso", "/puj.fis.pantallas/accederCurso.fxml");
         pantallas.put("adminCurso", "/puj.fis.pantallas/administrarCurso.fxml");
         pantallas.put("adminServicio", "/puj.fis.pantallas/administrarServicio.fxml");
         pantallas.put("calificaciones", "/puj.fis.pantallas/calificaciones.fxml");
@@ -46,6 +47,7 @@ public class GestorPantallas {
         pantallas.put("solicitudes", "/puj.fis.pantallas/solicitudProducto.fxml");
 
         // Títulos de las pantallas.
+        titulos.put("accederCurso", "Acceder a Curso - Emkauri");
         titulos.put("adminCurso", "Administración de Cursos - Emkauri");
         titulos.put("adminServicio", "Administración de Servicios - Emkauri");
         titulos.put("calificaciones", "Listado de Calificaciones - Emkauri");
@@ -67,6 +69,7 @@ public class GestorPantallas {
     }
 
     // Métodos públicos para navegar a pantallas específicas.
+    public void irAccederCurso(Producto seleccionado) { abrirPantallaCurso("accederCurso", seleccionado); }
     public void irAdminCurso(Producto seleccionado) { abrirAdminProducto("adminCurso", seleccionado); }
     public void irAdminServicio(Producto seleccionado) { abrirAdminProducto("adminServicio", seleccionado); }
     public void irCalificaciones() { cambiarPantalla("calificaciones"); }
@@ -214,6 +217,43 @@ public class GestorPantallas {
         }
     }
 
+    // Abrir una pantalla específica de curso pasando el curso seleccionado.
+    public void abrirPantallaCurso(String clavePantalla, Producto curso) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+            Pane root = loader.load();
+
+            // Obtener el controlador asociado al FXML del curso.
+            Object controller = loader.getController();
+
+            // Si el controlador tiene un método setCurso(), lo llamamos
+            try {
+                controller.getClass()
+                        .getMethod("setCurso", Producto.class)
+                        .invoke(controller, curso);
+            } catch (NoSuchMethodException e) {
+                System.err.println("⚠️ El controlador no tiene setCurso(Curso curso).");
+            }
+
+            // Cargar la nueva escena.
+            Scene scene = new Scene(root);
+            String titulo = titulos.getOrDefault(clavePantalla, "Curso - Emkauri");
+            stage.setTitle(titulo);
+            stage.setMaximized(true);
+            aplicarTransicion(root);
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir la pantalla del curso.");
+        }
+    }
+
+
     // Aplicar una transición de desvanecimiento al cambiar de pantalla.
     private void aplicarTransicion(Pane root) {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(600), root);
@@ -228,7 +268,7 @@ public class GestorPantallas {
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
-        return alert.showAndWait().filter(response -> response == javafx.scene.control.ButtonType.OK).isPresent();
+        return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
     }
 
     // Mostrar una alerta de éxito al usuario.

@@ -3,8 +3,8 @@ package controladores;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import modelo.*;
 import servicio.ISSolicitud;
+import modelo.*;
 
 // Clase para crear tarjetas de solicitud en la interfaz gráfica.
 public class SolicitudCard {
