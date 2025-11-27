@@ -22,15 +22,14 @@ public class FabricaController {
     private final ISProgresoMaterial servicioProgreso;
     private final ISSolicitud servicioSolicitud;
     private final ISUsuario servicioUsuario;
-    private final Connection conexion;
 
     // Constructor con inyección de dependencias.
     public FabricaController(Stage stage) throws SQLException {
         // Obtener conexión a la base de datos.
-        this.conexion = ConexionDB.getConnection();
+        Connection conexion = ConexionDB.getConnection();
         // Inyección de dependencias.
         this.servicioCalificacion = new SCalificacion(new RCalificacion(conexion));
-        this.servicioCategoria = new SCategoria(new RCategoria());
+        this.servicioCategoria = new SCategoria(new RCategoria(conexion));
         this.servicioCompra = new SCompra(new RCompra());
         this.servicioMaterial = new SMaterial(new RMaterial());
         this.servicioPago = new SPago(new RPago());

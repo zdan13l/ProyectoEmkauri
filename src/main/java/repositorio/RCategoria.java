@@ -8,6 +8,9 @@ import java.util.List;
 // Repositorio para manejar operaciones CRUD de la entidad Categoria.
 public class RCategoria implements IRCategoria {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RCategoria(Connection connection) {}
+
     // Agregar una nueva categoría a la base de datos.
     public boolean agregar(Categoria categoria) {
         String sql = "INSERT INTO Categorias (nombre, descripcion) VALUES (?, ?)";

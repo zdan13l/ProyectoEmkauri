@@ -7,6 +7,7 @@ import java.util.*;
 // Repositorio para manejar operaciones CRUD de la entidad Calificacion.
 public class RCalificacion implements IRCalificacion{
 
+    // Constructor para inyección de dependencia de la conexión.
     public RCalificacion(Connection connection) {}
 
     /**

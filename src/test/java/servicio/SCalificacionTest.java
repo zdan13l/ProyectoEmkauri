@@ -14,6 +14,7 @@ public class SCalificacionTest {
     private RCalificacion repoReal;
     private SCalificacion servicio;
 
+    // Configuración inicial antes de todos los tests.
     @BeforeAll
     static void iniciarServidorBD() throws Exception {
         // Activar modo pruebas
@@ -29,13 +30,14 @@ public class SCalificacionTest {
         }
     }
 
+    // Preparar la base de datos antes de cada test.
     @BeforeEach
     void prepararCadaTest() throws Exception {
         try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
-            // Desactivar temporalmente la integridad referencial para limpiar sin orden estricto
+            // Desactivar temporalmente la integridad referencial para limpiar sin orden estricto.
             st.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
-            // Limpiar tablas que la suite de tests pueda tocar (añade o quita según tu esquema)
+            // Limpiar todas las tablas relevantes.
             st.execute("DELETE FROM Calificaciones");
             st.execute("DELETE FROM ProgresoMateriales");
             st.execute("DELETE FROM Materiales");
@@ -48,34 +50,22 @@ public class SCalificacionTest {
             st.execute("DELETE FROM DatosPersonales");
             st.execute("DELETE FROM Roles");
 
-            // Re-crear filas mínimas necesarias para las FK (IDs fijos para las pruebas)
-            // Roles
+            // Insertar datos mínimos necesarios.
             st.execute("INSERT INTO Roles(idRol, nombre) VALUES (1, 'Cliente')");
-
-            // DatosPersonales (idDatos = 1)
             st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) VALUES (1, 'Test', 'Usuario', '000')");
-
-            // Usuarios (idUsuario = 1) -> referencia a idDatos=1, idRol=1
             st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) " +
-                    "VALUES (1, 'test@mail.local', 'pass', 1, 1)");
-
-            // Categoria mínima (idCategoria = 1)
+                            "VALUES (1, 'test@mail.local', 'pass', 1, 1)");
             st.execute("INSERT INTO Categorias(idCategoria, nombre, descripcion) VALUES (1, 'General', 'Categoria de prueba')");
-
-            // Producto mínimo (idProducto = 1) -> referencia idEmprendedor = 1 (usuario creado)
             st.execute("INSERT INTO Productos(idProducto, titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto) " +
-                    "VALUES (1, 'Curso de Prueba', 'Descripción', 0.0, 1, 1, 'CURSO')");
+                            "VALUES (1, 'Curso de Prueba', 'Descripción', 0.0, 1, 1, 'CURSO')");
 
-            // Reactivar integridad referencial
+            // Reactivar la integridad referencial.
             st.execute("SET REFERENTIAL_INTEGRITY TRUE");
         }
-
-        // Crear instancia del repo real y del servicio
-        // Pasamos la conexión por constructor porque RCalificacion tiene ese signature
+        // Inicializar repositorio y servicio reales.
         repoReal = new RCalificacion(ConexionDB.getConnection());
         servicio = new SCalificacion(repoReal);
     }
-
 
     // TEST: crearCalificacion()
     @Test
