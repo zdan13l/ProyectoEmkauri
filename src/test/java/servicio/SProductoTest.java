@@ -43,6 +43,7 @@ public class SProductoTest {
             st.execute("DELETE FROM Compras");
             st.execute("DELETE FROM Pagos");
             st.execute("DELETE FROM Calificaciones");
+            st.execute("DELETE FROM Solicitudes");
             st.execute("DELETE FROM Productos");
             st.execute("DELETE FROM Categorias");
             st.execute("DELETE FROM Usuarios");
