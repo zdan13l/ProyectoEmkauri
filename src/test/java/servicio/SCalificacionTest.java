@@ -4,6 +4,7 @@ import modelo.*;
 import java.sql.*;
 import java.util.List;
 import org.junit.jupiter.api.*;
+import repositorio.ConexionDB;
 import repositorio.RCalificacion;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,23 +14,29 @@ public class SCalificacionTest {
     private RCalificacion repoReal;
     private SCalificacion servicio;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        repoReal = new RCalificacion();
-        servicio = new SCalificacion(repoReal);
+    @BeforeAll
+    static void iniciarServidorBD() throws Exception {
+        // Activar modo pruebas
+        ConexionDB.setModoPruebas(true);
 
-        // Limpiar y preparar la base de datos de pruebas.
-        try (Connection con = repositorio.ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("DELETE FROM Calificaciones");
-            st.execute("DELETE FROM Productos");
-            st.execute("DELETE FROM Usuarios");
+        // Iniciar servidor H2 TCP
+        ConexionDB.startTcpAndWebServer();
 
-            // Insertar usuario de prueba.
-            st.execute("INSERT INTO Usuarios(idUsuario, nombre, correo) VALUES (1, 'Test', 'test@test.com')");
-
-            // Insertar producto de prueba.
-            st.execute("INSERT INTO Productos(idProducto, titulo, precio) VALUES (1, 'Prod Test', 10000)");
+        // Crear la BD en memoria con DDL y DATA
+        try (Connection conexion = ConexionDB.getConnection()) {
+            ConexionDB.initSchema(conexion);
+            ConexionDB.loadTestData(conexion);
         }
+    }
+
+    @BeforeEach
+    void prepararCadaTest() throws Exception {
+        // Limpiar SOLO la tabla de calificaciones antes de cada prueba.
+        try (Connection conn = ConexionDB.getConnection(); Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM Calificaciones");
+        }
+        repoReal = new RCalificacion(ConexionDB.getConnection());
+        servicio = new SCalificacion(repoReal);
     }
 
     // TEST: crearCalificacion()
@@ -84,8 +91,7 @@ public class SCalificacionTest {
     @Test
     void testListarPorProducto() throws Exception {
         // Insertar manualmente calificación real.
-        try (Connection con = repositorio.ConexionDB.getConnection();
-             Statement st = con.createStatement()) {
+        try (Connection con = repositorio.ConexionDB.getConnection(); Statement st = con.createStatement()) {
             st.execute("INSERT INTO Calificaciones(idCalificacion, idUsuario, idProducto, puntaje, comentario) " +
                             "VALUES (10, 1, 1, 4, 'Muy bien')");
         }

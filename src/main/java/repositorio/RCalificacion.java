@@ -6,6 +6,9 @@ import java.util.*;
 
 // Repositorio para manejar operaciones CRUD de la entidad Calificacion.
 public class RCalificacion implements IRCalificacion{
+
+    public RCalificacion(Connection connection) {}
+
     /**
      * Guarda una nueva calificación en la base de datos.
      * Impide duplicados: un cliente no puede calificar dos veces el mismo producto.
