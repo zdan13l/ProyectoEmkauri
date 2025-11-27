@@ -121,49 +121,62 @@ public class RUsuario implements IRUsuario {
     }
 
     // Insertar Usuario (Cliente).
+    // Insertar Usuario (Cliente).
     public boolean insertarCliente(Usuario usuario) {
         Connection conn = null;
         try {
             conn = ConexionDB.getConnection();
             conn.setAutoCommit(false);
 
-            String sqlRol = "SELECT idRol FROM Roles WHERE nombre = 'Cliente'";
-            PreparedStatement stmtRol = conn.prepareStatement(sqlRol);
+            // obtener idRol para 'Cliente'
+            int idRol;
+            try (PreparedStatement stmtRol = conn.prepareStatement("SELECT idRol FROM Roles WHERE nombre = 'Cliente'")) {
+                try (ResultSet rsRol = stmtRol.executeQuery()) {
+                    if (rsRol.next()) idRol = rsRol.getInt("idRol");
+                    else throw new SQLException("No existe rol 'Cliente' en la BD");
+                }
+            }
 
-            ResultSet rsRol = stmtRol.executeQuery();
-            int idRol = 2;
-            if (rsRol.next())
-                idRol = rsRol.getInt("idRol");
-
-            // Insertar datos personales.
+            // Insertar datos personales y recuperar idDatos
+            int idDatos;
             String sqlDatos = "INSERT INTO DatosPersonales (nombre, apellido, telefono) VALUES (?,?,?)";
-            PreparedStatement stmDatos = conn.prepareStatement(sqlDatos, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmDatos.setString(1, usuario.getDatosPersonales().getNombre());
-            stmDatos.setString(2, usuario.getDatosPersonales().getApellido());
-            stmDatos.setString(3, usuario.getDatosPersonales().getTelefono());
-            stmDatos.executeUpdate();
+            try (PreparedStatement psDatos = conn.prepareStatement(sqlDatos, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psDatos.setString(1, usuario.getDatosPersonales().getNombre());
+                psDatos.setString(2, usuario.getDatosPersonales().getApellido());
+                psDatos.setString(3, usuario.getDatosPersonales().getTelefono());
+                psDatos.executeUpdate();
+                try (ResultSet rs = psDatos.getGeneratedKeys()) {
+                    if (rs.next()) idDatos = rs.getInt(1);
+                    else throw new SQLException("No se obtuvo idDatos al insertar DatosPersonales");
+                }
+            }
 
-            ResultSet rs = stmDatos.getGeneratedKeys();
-            int idDatos = 0;
-            if (rs.next())
-                idDatos = rs.getInt(1);
-
-            // Insertar Cliente.
+            // Insertar usuario y recuperar idUsuario
             String sqlUsuario = "INSERT INTO Usuarios (correo, contrasena, idDatos, idRol) VALUES (?, ?, ?, ?)";
-            PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario);
-            stmtUsuario.setString(1, usuario.getCorreo());
-            stmtUsuario.setString(2, usuario.getContrasena());
-            stmtUsuario.setInt(3, idDatos);
-            stmtUsuario.setInt(4, idRol);
-            stmtUsuario.executeUpdate();
+            try (PreparedStatement psUsuario = conn.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psUsuario.setString(1, usuario.getCorreo());
+                psUsuario.setString(2, usuario.getContrasena());
+                psUsuario.setInt(3, idDatos);
+                psUsuario.setInt(4, idRol);
+                psUsuario.executeUpdate();
+                try (ResultSet rs = psUsuario.getGeneratedKeys()) {
+                    if (!rs.next()) throw new SQLException("No se obtuvo idUsuario al insertar Usuarios");
+                }
+            }
 
             conn.commit();
-            System.out.println("Cliente insertado correctamente.");
             return true;
 
         } catch (Exception e) {
-            System.err.println("Error insertando cliente: " + e.getMessage());
+            e.printStackTrace(System.err);
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(System.err); }
+            }
             return false;
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
+            }
         }
     }
 
