@@ -67,12 +67,11 @@ public class SProductoTest {
     // TEST : crearProducto()
     @Test
     void testCrearProducto() {
-        Producto producto = new Producto();
+        Curso producto = new Curso();
         producto.setTitulo("Producto Test");
         producto.setDescripcion("Descripción");
         producto.setEstado("ACTIVO");
         producto.setPrecio(50.0);
-
 
         Usuario emprendedor = new Usuario();
         emprendedor.setIdUsuario(1);
@@ -82,19 +81,26 @@ public class SProductoTest {
         categoria.setIdCategoria(1);
         producto.setCategoria(categoria);
 
+        producto.setDuracionCurso(10);
+        producto.setNivelDificultad("Básico");
+        producto.setCertificacion("Sí");
         boolean creado = servicio.crearProducto(producto);
-        assertTrue(creado);
 
-        List<Producto> lista = servicio.listarProductos();
-        assertEquals(1, lista.size());
+        assertTrue(creado);
+        assertTrue(producto.getIdProducto() > 0);
     }
 
     // TEST : obtenerProductoPorId()
     @Test
     void testObtenerProductoPorId() throws Exception {
         try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("INSERT INTO Productos(idProducto, titulo, descripcion, precio, estado, idEmprendedor, idCategoria, tipoProducto)" +
-                            "VALUES (10,'Prod A','Desc',100,'ACTIVO',1,1,'CURSO')");
+
+            st.execute("INSERT INTO Productos(idProducto, titulo, descripcion, precio, estado, " +
+                            "idEmprendedor, idCategoria, tipoProducto, duracionCurso, nivelDificultad, certificacion) " +
+                            "VALUES (10,'Prod A','Desc',100,'ACTIVO',1,1,'CURSO',5,'Bajo','Cert')");
+
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) " +
+                            "VALUES (10,'APROBADO',10)");
         }
 
         Producto producto = servicio.obtenerProductoPorId(10);
@@ -102,43 +108,58 @@ public class SProductoTest {
         assertEquals("Prod A", producto.getTitulo());
     }
 
+
     // TEST : buscarPorNombre()
     @Test
     void testBuscarPorNombre() throws Exception {
         try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto)" +
-                            "VALUES (20,'Curso Java Básico','...',0,'ACTIVO',1,1,'CURSO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado," +
+                            "idEmprendedor,idCategoria,tipoProducto,duracionCurso,nivelDificultad,certificacion) " +
+                            "VALUES (20,'Curso Java Básico','...',0,'ACTIVO',1,1,'CURSO',5,'Bajo','Cert')");
 
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto) " +
-                            "VALUES (21,'Curso Java Avanzado','...',0,'ACTIVO',1,1,'CURSO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado," +
+                            "idEmprendedor,idCategoria,tipoProducto,duracionCurso,nivelDificultad,certificacion) " +
+                            "VALUES (21,'Curso Java Avanzado','...',0,'ACTIVO',1,1,'CURSO',5,'Medio','Cert')");
+
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (20,'APROBADO',20)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (21,'APROBADO',21)");
         }
+
         List<Producto> lista = servicio.buscarPorNombre("Java");
         assertEquals(2, lista.size());
     }
+
 
     // TEST : listarProductos()
     @Test
     void testListarProductos() throws Exception {
         try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto)" +
-                            "VALUES (1,'A','a',0,'ACTIVO',1,1,'CURSO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionCurso) " +
+                            "VALUES (1,'A','a',0,'ACTIVO',1,1,'CURSO',5)");
 
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto)" +
-                            "VALUES (2,'B','b',0,'ACTIVO',1,1,'SERVICIO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionServicio, ubicacion, modalidad) " +
+                            "VALUES (2,'B','b',0,'ACTIVO',1,1,'SERVICIO',10,'Online','Remoto')");
 
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto)" +
-                            "VALUES (3,'C','c',0,'ACTIVO',1,1,'CURSO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionCurso) " +
+                            "VALUES (3,'C','c',0,'ACTIVO',1,1,'CURSO',8)");
+
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (1,'APROBADO',1)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (2,'APROBADO',2)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (3,'APROBADO',3)");
         }
         List<Producto> lista = servicio.listarProductos();
         assertEquals(3, lista.size());
     }
 
+
     // TEST : eliminarProducto()
     @Test
     void testEliminarProducto() throws Exception {
         try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto)" +
-                            "VALUES (5,'Eliminar','x',10,'ACTIVO',1,1,'SERVICIO')");
+            st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionServicio, ubicacion, modalidad) " +
+                            "VALUES (5,'Eliminar','x',10,'ACTIVO',1,1,'SERVICIO',10,'Online','Remoto')");
+
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (5,'APROBADO',5)");
         }
         boolean eliminado = servicio.eliminarProducto(5);
         assertTrue(eliminado);
