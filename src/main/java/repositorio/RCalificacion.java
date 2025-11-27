@@ -15,8 +15,8 @@ public class RCalificacion implements IRCalificacion{
      */
     public boolean guardar(Calificacion calificacion) {
         String sql = """
-                INSERT INTO Calificaciones (puntaje, comentario, fecha, idCliente, idProducto)
-                VALUES (?, ?, CURRENT_DATE, ?, ?)
+                INSERT INTO Calificaciones(puntaje, comentario, idCliente, idProducto)
+                VALUES (?, ?, ?, ?)
                 """;
 
         try (Connection conn = ConexionDB.getConnection()) {

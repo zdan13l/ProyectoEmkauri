@@ -92,7 +92,7 @@ public class SCalificacionTest {
     void testListarPorProducto() throws Exception {
         // Insertar manualmente calificación real.
         try (Connection con = repositorio.ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute("INSERT INTO Calificaciones(idCalificacion, idUsuario, idProducto, puntaje, comentario) " +
+            st.execute("INSERT INTO Calificaciones(idCalificacion, idCliente, idProducto, puntaje, comentario) " +
                             "VALUES (10, 1, 1, 4, 'Muy bien')");
         }
 
@@ -113,9 +113,8 @@ public class SCalificacionTest {
     void testListarPorCliente() throws Exception {
 
         try (Connection con = repositorio.ConexionDB.getConnection(); Statement st = con.createStatement()) {
-            st.execute(
-                    "INSERT INTO Calificaciones(idCalificacion, idUsuario, idProducto, puntaje, comentario) " +
-                        "VALUES (15, 1, 1, 3, 'ok')");
+            st.execute("INSERT INTO Calificaciones(idCalificacion, idCliente, idProducto, puntaje, comentario) " +
+                            "VALUES (15, 1, 1, 3, 'ok')");
         }
 
         List<Calificacion> lista = servicio.listarPorCliente(1);
