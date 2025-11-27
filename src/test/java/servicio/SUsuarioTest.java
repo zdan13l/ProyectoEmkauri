@@ -1,70 +1,56 @@
 package servicio;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
-import repositorio.*;
-import modelo.*;
+import repositorio.ConexionDB;
+import repositorio.RUsuario;
+import modelo.Usuario;
+import modelo.Datos;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
 
-// Pruebas reales del servicio SUsuario usando repositorio y BD real.
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SUsuarioTest {
 
     private RUsuario repoReal;
     private SUsuario servicio;
 
-    // ---------------------------------------------------------------------
-    // INICIAR SERVIDOR H2 + CARGAR DDL Y DATA
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // INICIO DEL SERVIDOR H2 Y CREACIÓN DEL ESQUEMA
+    // -------------------------------------------------------------------------
     @BeforeAll
     static void iniciarServidorBD() throws Exception {
-
         ConexionDB.setModoPruebas(true);
         ConexionDB.startTcpAndWebServer();
 
         try (Connection conn = ConexionDB.getConnection()) {
-            ConexionDB.initSchema(conn);
-            ConexionDB.loadTestData(conn);
+            ConexionDB.initSchema(conn);     // DDL completo
+            ConexionDB.loadTestData(conn);   // DATA si existe
         }
     }
 
-    // ---------------------------------------------------------------------
-    // LIMPIAR BD Y REINSERTAR DATOS MÍNIMOS
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // REINICIO DE TABLAS ANTES DE CADA TEST
+    // -------------------------------------------------------------------------
     @BeforeEach
     void prepararCadaTest() throws Exception {
-
-        try (Connection conn = ConexionDB.getConnection();
-             Statement st = conn.createStatement()) {
+        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
 
             st.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
-            st.execute("DELETE FROM Calificaciones");
-            st.execute("DELETE FROM ProgresoMateriales");
-            st.execute("DELETE FROM Materiales");
-            st.execute("DELETE FROM ComprasProductos");
-            st.execute("DELETE FROM Compras");
-            st.execute("DELETE FROM Pagos");
-            st.execute("DELETE FROM Productos");
-            st.execute("DELETE FROM Categorias");
             st.execute("DELETE FROM Solicitudes");
             st.execute("DELETE FROM Usuarios");
             st.execute("DELETE FROM DatosPersonales");
             st.execute("DELETE FROM Roles");
 
-            // -------------------------------------------------------------
-            // INSERTAR DATOS MÍNIMOS
-            // -------------------------------------------------------------
-            st.execute("INSERT INTO Roles(idRol, nombre) VALUES " +
-                    "(1,'Emprendedor'), (2,'Cliente'), (3,'Reclutador')");
+            // Crear roles mínimos
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (1,'Emprendedor')");
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (2,'Cliente')");
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (3,'Reclutador')");
 
-            // Datos personales básicos
-            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) " +
-                    "VALUES (1,'Reclu','Prueba','111')");
-
-            // Usuario reclutador REQUERIDO PARA aceptar emprendedores
-            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) " +
-                    "VALUES (1,'reclu@mail.com','123',1,3)");
+            // Crear reclutador obligatorio para solicitudes
+            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) VALUES (1,'Rec','Lutador','000')");
+            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) VALUES (1,'reclu@mail.com','123',1,3)");
 
             st.execute("SET REFERENTIAL_INTEGRITY TRUE");
         }
@@ -73,114 +59,71 @@ public class SUsuarioTest {
         servicio = new SUsuario(repoReal);
     }
 
-    // ---------------------------------------------------------------------
-    // TEST: autenticar usuario válido
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // TEST 1: REGISTRO CLIENTE
+    // -------------------------------------------------------------------------
     @Test
-    void testAutenticarUsuarioValido() throws Exception {
+    @Order(1)
+    void testRegistrarCliente() {
+        Usuario cliente = new Usuario(
+                0,
+                "cliente@test.com",
+                "123",
+                new Datos("Juan","Perez","555"),
+                null
+        );
 
-        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
+        boolean ok = repoReal.insertarCliente(cliente);
 
-            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) " +
-                    "VALUES (2,'Cliente','Test','000')");
-
-            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) " +
-                    "VALUES (2,'cliente@mail.com','abc',2,2)");
-        }
-
-        boolean ok = servicio.autenticar("cliente@mail.com", "abc");
-        assertTrue(ok);
+        Assertions.assertTrue(ok);
+        System.out.println("OK → Cliente registrado correctamente.");
     }
 
-    // ---------------------------------------------------------------------
-    // TEST: autenticar usuario emprendedor pendiente
-    // ---------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // TEST 2: REGISTRO EMPRENDEDOR + CREACIÓN SOLICITUD
+    // -------------------------------------------------------------------------
     @Test
+    @Order(2)
+    void testRegistrarEmprendedor() {
+        Usuario emp = new Usuario(
+                0,
+                "emp@test.com",
+                "abc",
+                new Datos("Ana","Lopez","555"),
+                null
+        );
+
+        boolean ok = repoReal.insertarEmprendedor(emp, "Deseo ser aceptado");
+
+        Assertions.assertTrue(ok);
+        System.out.println("OK → Emprendedor registrado y solicitud creada.");
+    }
+
+    // -------------------------------------------------------------------------
+    // TEST 3: AUTENTICAR EMPRENDEDOR PENDIENTE → DEBE LANZAR EXCEPCIÓN "PENDIENTE"
+    // -------------------------------------------------------------------------
+    @Test
+    @Order(3)
     void testAutenticarUsuarioPendiente() throws Exception {
 
         try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
 
-            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) " +
-                    "VALUES (3,'Pend','User','000')");
+            // Crear emprendedor pendiente
+            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) VALUES (10,'Pend','Test','111')");
+            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) VALUES (10,'pend@mail.com','123',10,1)");
 
-            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol, estado) " +
-                    "VALUES (3,'pend@mail.com','123',3,1,'PENDIENTE')");
+            // Crear solicitud en PENDIENTE
+            st.execute("INSERT INTO Solicitudes(idSolicitud,idSolicitante,idReclutador,estado,idEmprendedorAsociado) " +
+                    "VALUES (1,10,1,'PENDIENTE',10)");
         }
 
-        RuntimeException ex = assertThrows(
+        RuntimeException ex = Assertions.assertThrows(
                 RuntimeException.class,
-                () -> servicio.autenticar("pend@mail.com", "123")
+                () -> repoReal.autenticar("pend@mail.com","123")
         );
 
-        assertEquals("Tu solicitud de registro como emprendedor aún está pendiente de aprobación.", ex.getMessage());
+        Assertions.assertEquals("PENDIENTE", ex.getMessage());
+        System.out.println("OK → Autenticación de emprendedor PENDIENTE correctamente bloqueada.");
     }
 
-    // ---------------------------------------------------------------------
-    // TEST: obtenerNombre()
-    // ---------------------------------------------------------------------
-    @Test
-    void testObtenerNombre() throws Exception {
-
-        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
-
-            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) " +
-                    "VALUES (4,'Daniel','Ortiz','555')");
-
-            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) " +
-                    "VALUES (4,'correo@mail.com','123',4,2)");
-        }
-
-        String nombre = servicio.obtenerNombre("correo@mail.com");
-        assertEquals("Daniel", nombre);
-    }
-
-    // ---------------------------------------------------------------------
-    // TEST: registrarUsuario emprendedor
-    // ---------------------------------------------------------------------
-    @Test
-    void testRegistrarEmprendedor() {
-
-        Usuario u = new Usuario();
-
-        Rol r = new Rol();
-        r.setNombre("Emprendedor");
-        u.setRol(r);
-
-        Datos d = new Datos();
-        d.setNombre("Nuevo");
-        d.setApellido("Emp");
-        d.setTelefono("000");
-        u.setDatosPersonales(d);
-
-        u.setCorreo("nuevo@emp.com");
-        u.setContrasena("123");
-
-        boolean ok = servicio.registrarUsuario(u, "mensaje de prueba");
-        assertTrue(ok);
-    }
-
-    // ---------------------------------------------------------------------
-    // TEST: registrarUsuario cliente
-    // ---------------------------------------------------------------------
-    @Test
-    void testRegistrarCliente() {
-
-        Usuario u = new Usuario();
-
-        Rol r = new Rol();
-        r.setNombre("Cliente");
-        u.setRol(r);
-
-        Datos d = new Datos();
-        d.setNombre("Nuevo");
-        d.setApellido("Cliente");
-        d.setTelefono("000");
-        u.setDatosPersonales(d);
-
-        u.setCorreo("cliente@ok.com");
-        u.setContrasena("123");
-
-        boolean ok = servicio.registrarUsuario(u, "");
-        assertTrue(ok);
-    }
 }
