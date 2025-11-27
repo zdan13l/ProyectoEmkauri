@@ -63,7 +63,7 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, dp.telefono AS telefonoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
                             "p.duracionServicio, p.ubicacion, p.modalidad, " +
@@ -91,7 +91,7 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, dp.telefono AS telefonoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
                             "p.duracionServicio, p.ubicacion, p.modalidad, " +
@@ -124,7 +124,7 @@ public class RProducto implements IRProducto {
         List<Producto> productos = new ArrayList<>();
 
         String sql = "SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto, " +
-                "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
+                "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, dp.telefono AS telefonoEmp, " +
                 "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria, " +
                 "p.duracionCurso, p.nivelDificultad, p.certificacion, " +
                 "p.duracionServicio, p.ubicacion, p.modalidad, " +
@@ -157,6 +157,7 @@ public class RProducto implements IRProducto {
             Datos datos = new Datos();
             datos.setNombre(rs.getString("nombreEmp"));
             datos.setApellido(rs.getString("apellidoEmp"));
+            datos.setTelefono(rs.getString("telefonoEmp"));
 
             // Emprendedor.
             Usuario emprendedor = new Usuario();

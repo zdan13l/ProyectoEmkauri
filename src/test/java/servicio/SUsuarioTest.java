@@ -103,7 +103,6 @@ public class SUsuarioTest {
         assertEquals("emp@test.com", desdeBd.getCorreo(), "El correo almacenado no coincide con el esperado.");
     }
 
-
     // TEST : autenticar() usuario emprendedor pendiente.
     @Test
     void testAutenticarUsuarioPendiente() {

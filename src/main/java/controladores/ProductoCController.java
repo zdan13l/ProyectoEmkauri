@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Curso;
 import modelo.Producto;
+import modelo.Servicio;
 import modelo.Usuario;
 import servicio.*;
 import java.util.List;
@@ -107,6 +108,10 @@ public class ProductoCController {
         // Si el producto es un curso -> abrir la pantalla específica del curso
         if (seleccionado instanceof Curso) {
             gestorPantallas.irAccederCurso(seleccionado);
+        } else if (seleccionado instanceof Servicio) {
+            gestorPantallas.irAccederServicio(seleccionado);
+        } else {
+            gestorPantallas.mostrarAlerta("Tipo de producto desconocido", "El tipo de producto seleccionado no es reconocido.");
         }
     }
 

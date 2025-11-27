@@ -1,6 +1,8 @@
 package controladores;
 
 import static javafx.scene.control.Alert.AlertType.*;
+
+import fis.jave.emkauri.SesionActual;
 import javafx.animation.*;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -28,6 +30,7 @@ public class GestorPantallas {
 
         // Registrar todas las rutas de pantallas.
         pantallas.put("accederCurso", "/puj.fis.pantallas/accederCurso.fxml");
+        pantallas.put("accederServicio", "/puj.fis.pantallas/accederServicio.fxml");
         pantallas.put("adminCurso", "/puj.fis.pantallas/administrarCurso.fxml");
         pantallas.put("adminServicio", "/puj.fis.pantallas/administrarServicio.fxml");
         pantallas.put("calificaciones", "/puj.fis.pantallas/calificaciones.fxml");
@@ -49,6 +52,7 @@ public class GestorPantallas {
 
         // Títulos de las pantallas.
         titulos.put("accederCurso", "Acceder a Curso - Emkauri");
+        titulos.put("accederServicio", "Acceder a Servicio - Emkauri");
         titulos.put("adminCurso", "Administración de Cursos - Emkauri");
         titulos.put("adminServicio", "Administración de Servicios - Emkauri");
         titulos.put("calificaciones", "Listado de Calificaciones - Emkauri");
@@ -71,6 +75,7 @@ public class GestorPantallas {
 
     // Métodos públicos para navegar a pantallas específicas.
     public void irAccederCurso(Producto seleccionado) { abrirPantallaCurso("accederCurso", seleccionado); }
+    public void irAccederServicio(Producto seleccionado) { abrirPantallaServicio("accederServicio", seleccionado); }
     public void irAdminCurso(Producto seleccionado) { abrirAdminProducto("adminCurso", seleccionado); }
     public void irAdminServicio(Producto seleccionado) { abrirAdminProducto("adminServicio", seleccionado); }
     public void irCalificaciones() { cambiarPantalla("calificaciones"); }
@@ -241,6 +246,27 @@ public class GestorPantallas {
             aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la pantalla del curso.");
+        }
+    }
+
+    // Abrir una pantalla específica de servicio pasando el servicio seleccionado.
+    public void abrirPantallaServicio(String clavePantalla, Producto servicio) {
+        try {
+            String ruta = pantallas.get(clavePantalla);
+            // Inyectar controladores desde la fábrica.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            loader.setControllerFactory(fabrica::createController);
+            Pane root = loader.load();
+            // Obtener el controlador asociado al FXML del servicio.
+            AccederServicioController controller = loader.getController();
+            controller.setServicio(servicio);
+
+            // Cargar la nueva escena.
+            Scene scene = new Scene(root);
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            aplicarConfiguracion(scene, titulo, root);
+        } catch (Exception e) {
+            mostrarError("Error", "No se pudo abrir la pantalla del servicio.");
         }
     }
 

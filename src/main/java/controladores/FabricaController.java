@@ -50,6 +50,7 @@ public class FabricaController {
     // Permite crear controladores con los servicios inyectados.
     public Object createController(Class<?> tipo) {
         if (tipo == AccederCursoController.class) { return new AccederCursoController(servicioMaterial, servicioProgreso, gestorPantallas); }
+        if (tipo == AccederServicioController.class) { return new AccederServicioController(gestorPantallas); }
         if (tipo == AdminProductoController.class) { return new AdminProductoController(servicioProducto, servicioMaterial, gestorPantallas); }
         if (tipo == CalificacionController.class) { return new CalificacionController(servicioProducto, servicioCalificacion, gestorPantallas); }
         if (tipo == CalificarController.class) { return new CalificarController(servicioProducto, servicioCalificacion, gestorPantallas); }
