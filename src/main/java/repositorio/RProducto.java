@@ -208,7 +208,7 @@ public class RProducto implements IRProducto {
     // Buscar un producto por su ID.
     public Producto buscarPorId(int idProducto) {
         String sql = " SELECT p.idProducto, p.titulo, p.descripcion, p.precio, p.tipoProducto," +
-                            "u.idUsuario, u.correo," +
+                            "u.idUsuario, u.correo, dp.nombre AS nombreEmp, dp.apellido AS apellidoEmp, " +
                             "c.idCategoria, c.nombre AS nombreCategoria, c.descripcion AS descCategoria," +
                             "p.duracionCurso, p.nivelDificultad, p.certificacion," +
                             "p.duracionServicio, p.ubicacion, p.modalidad, " +
