@@ -98,7 +98,7 @@ CREATE TABLE Compras (
     idCliente INT NOT NULL,
     montoFinal NUMERIC(10, 2) NOT NULL,
     fechaCompra DATE NOT NULL DEFAULT CURRENT_DATE,
-    idPago INT UNIQUE,
+    idPago INT,
 
     FOREIGN KEY (idCliente) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idPago) REFERENCES Pagos(idPago)
