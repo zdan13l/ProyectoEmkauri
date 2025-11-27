@@ -24,7 +24,7 @@ public class EmkauriApp extends Application {
     // Inicio de la aplicación.
     public static void main(String[] args) throws Exception {
         // Modo pruebas por defecto.
-        ConexionDB.setModoPruebas(true);
+        ConexionDB.setModoPruebas(false);
 
         // Iniciar el servidor TCP y Web si estamos en modo pruebas.
         if (ConexionDB.modoPruebas) {
