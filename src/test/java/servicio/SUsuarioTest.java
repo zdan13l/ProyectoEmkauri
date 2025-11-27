@@ -12,7 +12,6 @@ import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Sigue la estructura de tu SCalificacionTest: usa la BD H2 real.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SUsuarioTest {
 
@@ -21,12 +20,10 @@ public class SUsuarioTest {
 
     @BeforeAll
     static void iniciarServidorBD() throws Exception {
-        // modo pruebas y levantar H2
         ConexionDB.setModoPruebas(true);
         ConexionDB.startTcpAndWebServer();
 
         try (Connection conn = ConexionDB.getConnection()) {
-            // Crea esquema (DDL) y carga datos base si los tienes
             ConexionDB.initSchema(conn);
             ConexionDB.loadTestData(conn);
         }
@@ -34,42 +31,31 @@ public class SUsuarioTest {
 
     @BeforeEach
     void prepararCadaTest() throws Exception {
-        try (Connection conn = ConexionDB.getConnection();
-             Statement st = conn.createStatement()) {
-
-            // Desactivar integridad para limpiar tablas en cualquier orden
+        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
             st.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
-            // Limpiar tablas que afectan usuario/solicitudes
             st.execute("DELETE FROM Solicitudes");
             st.execute("DELETE FROM Usuarios");
             st.execute("DELETE FROM DatosPersonales");
             st.execute("DELETE FROM Roles");
 
-            // Insertar roles con IDs controlados:
-            // 1 = Emprendedor  (IMPORTANTE: el repo inserta emprendedor con idRol = 1)
-            // 2 = Cliente
-            // 3 = Reclutador
-            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (1, 'Emprendedor')");
-            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (2, 'Cliente')");
-            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (3, 'Reclutador')");
+            // Roles con IDs controlados (coincidir con lo que el repo espera)
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (1,'Emprendedor')");
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (2,'Cliente')");
+            st.execute("INSERT INTO Roles(idRol, nombre) VALUES (3,'Reclutador')");
 
-            // Crear un reclutador (necesario para crear solicitudes de emprendedor)
-            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) VALUES (1, 'Rec', 'Lutador', '000')");
-            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) VALUES (1, 'reclu@mail.com', '123', 1, 3)");
+            // Crear un reclutador (necesario para insertarEmprendedor)
+            st.execute("INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono) VALUES (1,'Rec','Lutador','000')");
+            st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol) VALUES (1,'reclu@mail.com','123',1,3)");
 
-            // Reactivar integridad
             st.execute("SET REFERENTIAL_INTEGRITY TRUE");
         }
 
-        // inicializar repo y servicio reales
         repoReal = new RUsuario(ConexionDB.getConnection());
         servicio = new SUsuario(repoReal);
     }
 
-    // ---------------------------------------------------------------------
-    // TEST 1: registrar cliente por el servicio (usa insertarCliente internamente)
-    // ---------------------------------------------------------------------
+    // TEST 1: registrar cliente (directamente con repo y también usando servicio)
     @Test
     @Order(1)
     void testRegistrarCliente() {
@@ -77,20 +63,31 @@ public class SUsuarioTest {
         cliente.setCorreo("cliente@test.com");
         cliente.setContrasena("123");
         cliente.setDatosPersonales(new Datos("Juan", "Perez", "555"));
-        cliente.setRol(new Rol(2, "Cliente")); // importante: rol presente
+        cliente.setRol(new Rol(2, "Cliente"));
 
-        boolean ok = servicio.registrarUsuario(cliente, "");
-        assertTrue(ok, "El registro de cliente debe retornar true");
+        // Llamada por el servicio (usa repo internamente)
+        boolean okServicio = servicio.registrarUsuario(cliente, "");
+        // Si el servicio devuelve false, aún así verificamos repo directamente para diagnóstico
+        if (!okServicio) {
+            // intentar insertar por repo directamente para ver si falla igual
+            boolean okRepo = repoReal.insertarCliente(cliente);
+            if (!okRepo) {
+                // buscar en BD si quedó algo para diagnosticar
+                Usuario busc = repoReal.buscarPorCorreo("cliente@test.com");
+                fail("Registro de cliente falló (servicio=false, repo=false). Usuario en BD? " + (busc != null));
+            } else {
+                // repo funcionó pero servicio no: problema en SUsuario (p. ej. validación previa)
+                fail("Registro por repo funcionó pero servicio.registrarUsuario devolvió false.");
+            }
+        }
 
-        // adicional: verificar que buscarPorCorreo devuelve no nulo
+        // si pasó por el servicio, verificamos existencia
         Usuario desdeBd = repoReal.buscarPorCorreo("cliente@test.com");
-        assertNotNull(desdeBd);
+        assertNotNull(desdeBd, "Después de registrar (servicio), el usuario debe existir en la BD");
         assertEquals("cliente@test.com", desdeBd.getCorreo());
     }
 
-    // ---------------------------------------------------------------------
     // TEST 2: registrar emprendedor (crea usuario + solicitud pendiente)
-    // ---------------------------------------------------------------------
     @Test
     @Order(2)
     void testRegistrarEmprendedor() {
@@ -98,24 +95,30 @@ public class SUsuarioTest {
         empr.setCorreo("emp@test.com");
         empr.setContrasena("abc");
         empr.setDatosPersonales(new Datos("Ana", "Lopez", "555"));
-        empr.setRol(new Rol(1, "Emprendedor")); // IMPORTANT: nombre coincide con Role en BD
+        empr.setRol(new Rol(1, "Emprendedor"));
 
-        boolean ok = servicio.registrarUsuario(empr, "Quiero publicar cursos");
-        assertTrue(ok, "El registro de emprendedor debe retornar true (y crear solicitud)");
+        boolean okServicio = servicio.registrarUsuario(empr, "Quiero publicar cursos");
+        if (!okServicio) {
+            // intento diagnóstico con el repo directo
+            boolean okRepo = repoReal.insertarEmprendedor(empr, "Quiero publicar cursos");
+            if (!okRepo) {
+                Usuario busc = repoReal.buscarPorCorreo("emp@test.com");
+                fail("Registro emprendedor falló (servicio=false, repo=false). Usuario en BD? " + (busc != null));
+            } else {
+                fail("repo.insertarEmprendedor funcionó pero servicio.registrarUsuario devolvió false.");
+            }
+        }
 
-        // verificar que la solicitud fue creada (podemos buscar al usuario)
         Usuario desdeBd = repoReal.buscarPorCorreo("emp@test.com");
-        assertNotNull(desdeBd);
+        assertNotNull(desdeBd, "Después de registrar emprendedor, el usuario debe existir en BD");
         assertEquals("emp@test.com", desdeBd.getCorreo());
     }
 
-    // ---------------------------------------------------------------------
-    // TEST 3: intentar autenticar emprendedor pendiente -> servicio debe lanzar mensaje amigable
-    // ---------------------------------------------------------------------
+    // TEST 3: autenticar emprendedor pendiente -> servicio debe lanzar mensaje amigable
     @Test
     @Order(3)
-    void testAutenticarUsuarioPendiente() {
-        // registramos emprendedor a través del servicio (esto crea la solicitud PENDIENTE)
+    void testAutenticarUsuarioPendiente() throws Exception {
+        // Registramos emprendedor para crear la solicitud pendiente via servicio
         Usuario empr = new Usuario();
         empr.setCorreo("pendiente@test.com");
         empr.setContrasena("pwd");
@@ -123,13 +126,12 @@ public class SUsuarioTest {
         empr.setRol(new Rol(1, "Emprendedor"));
 
         boolean regOk = servicio.registrarUsuario(empr, "pendiente solicitud");
-        assertTrue(regOk, "registro emprendedor debe ser OK");
+        assertTrue(regOk, "registro emprendedor debe ser OK (crear usuario + solicitud)");
 
-        // ahora intentar autenticación -> debe lanzar RuntimeException con mensaje amigable
+        // Autenticación debe lanzar la excepción traducida por SUsuario
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> servicio.autenticar("pendiente@test.com", "pwd"));
 
-        String esperado = "Tu solicitud de registro como emprendedor aún está pendiente de aprobación.";
-        assertEquals(esperado, ex.getMessage());
+        assertEquals("Tu solicitud de registro como emprendedor aún está pendiente de aprobación.", ex.getMessage());
     }
 }
