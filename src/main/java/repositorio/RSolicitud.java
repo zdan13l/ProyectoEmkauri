@@ -8,6 +8,9 @@ import java.util.List;
 // Repositorio para gestionar las solicitudes en la base de datos.
 public class RSolicitud implements IRSolicitud {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RSolicitud(Connection connection) {}
+
     // Guardar una nueva solicitud en la base de datos.
     public void guardar(Solicitud solicitud) {
         String sql = "INSERT INTO Solicitudes (idSolicitante, idReclutador, estado, mensaje, idProductoAsociado, idEmprendedorAsociado) " +

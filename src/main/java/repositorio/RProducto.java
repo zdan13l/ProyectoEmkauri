@@ -6,6 +6,9 @@ import java.util.*;
 
 public class RProducto implements IRProducto {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RProducto(Connection connection) {}
+
     // Agregar un nuevo producto a la base de datos.
     public boolean agregar(Producto producto) {
         String sql = "INSERT INTO Productos (titulo, descripcion, precio, idEmprendedor, idCategoria, tipoProducto, " +

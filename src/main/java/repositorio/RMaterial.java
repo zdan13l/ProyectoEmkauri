@@ -7,6 +7,9 @@ import java.util.*;
 // Repositorio para gestionar las operaciones CRUD de los materiales en la base de datos.
 public class RMaterial implements IRMaterial {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RMaterial(Connection connection) {}
+
     // Inserta un nuevo material asociado a un curso específico.
     public void insertar(Material material, int idCurso) {
         String sql = "INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES (?, ?, ?, ?)";

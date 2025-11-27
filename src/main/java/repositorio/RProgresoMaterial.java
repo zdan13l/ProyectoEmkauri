@@ -10,6 +10,9 @@ import java.util.List;
 
 public class RProgresoMaterial implements IRProgresoMaterial {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RProgresoMaterial(Connection connection) {}
+
     @Override
     public boolean crear(ProgresoMaterial progreso) {
         String sql = "INSERT INTO ProgresoMateriales (idCliente, idMaterial, visto) VALUES (?, ?, ?)";

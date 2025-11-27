@@ -11,6 +11,9 @@ import java.util.List;
 // Repositorio para gestionar las operaciones CRUD relacionadas con las compras.
 public class RCompra implements IRCompra {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RCompra(Connection connection) {}
+
     // Insertar una nueva compra junto con sus productos asociados.
     public boolean insertar(Compra compra) {
         String sqlCompra = "INSERT INTO Compras (idCliente, montoFinal, idPago) VALUES (?, ?, ?)";

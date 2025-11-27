@@ -12,6 +12,9 @@ import java.sql.SQLException;
 // Repositorio para acceder a la tabla Usuario en la base de datos.
 public class RUsuario implements IRUsuario {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RUsuario(Connection connection) {}
+
     // Auténtica a un usuario verificando nombre y contraseña.
     public Usuario autenticar(String correo, String contrasena) {
         String sql = "SELECT u.idUsuario, u.correo, u.contrasena, " +

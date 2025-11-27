@@ -30,13 +30,13 @@ public class FabricaController {
         // Inyección de dependencias.
         this.servicioCalificacion = new SCalificacion(new RCalificacion(conexion));
         this.servicioCategoria = new SCategoria(new RCategoria(conexion));
-        this.servicioCompra = new SCompra(new RCompra());
-        this.servicioMaterial = new SMaterial(new RMaterial());
-        this.servicioPago = new SPago(new RPago());
-        this.servicioProducto = new SProducto(new RProducto());
-        this.servicioProgreso = new SProgresoMaterial(new RProgresoMaterial());
-        this.servicioSolicitud = new SSolicitud(new RSolicitud());
-        this.servicioUsuario = new SUsuario(new RUsuario());
+        this.servicioCompra = new SCompra(new RCompra(conexion));
+        this.servicioMaterial = new SMaterial(new RMaterial(conexion));
+        this.servicioPago = new SPago(new RPago(conexion));
+        this.servicioProducto = new SProducto(new RProducto(conexion));
+        this.servicioProgreso = new SProgresoMaterial(new RProgresoMaterial(conexion));
+        this.servicioSolicitud = new SSolicitud(new RSolicitud(conexion));
+        this.servicioUsuario = new SUsuario(new RUsuario(conexion));
 
         // Gestor de pantallas con acceso a fábrica.
         this.gestorPantallas = new GestorPantallas(stage, this);

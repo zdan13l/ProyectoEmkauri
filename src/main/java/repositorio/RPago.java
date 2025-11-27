@@ -8,6 +8,9 @@ import java.util.List;
 
 public class RPago implements IRPago {
 
+    // Constructor para inyección de dependencia de la conexión.
+    public RPago(Connection connection) {}
+
     // Crear un pago en la base de datos.
     public boolean crearPago(Pago pago) {
         String sql = "INSERT INTO Pagos (monto, metodo, fecha) VALUES (?, ?, ?)";
