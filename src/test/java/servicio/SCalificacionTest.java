@@ -1,12 +1,11 @@
 package servicio;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
+import repositorio.*;
 import modelo.*;
 import java.sql.*;
 import java.util.List;
-import org.junit.jupiter.api.*;
-import repositorio.ConexionDB;
-import repositorio.RCalificacion;
-import static org.junit.jupiter.api.Assertions.*;
 
 // Clase de prueba para el servicio SCalificacion utilizando la implementación real del repositorio.
 public class SCalificacionTest {
