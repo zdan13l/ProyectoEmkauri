@@ -49,7 +49,7 @@ public class SSolicitudTest {
             st.execute("INSERT INTO Roles(idRol, nombre) VALUES (2,'Reclutador')");
             st.execute("INSERT INTO Roles(idRol, nombre) VALUES (3,'Emprendedor')");
             st.execute(" INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono)" +
-                            "VALUE (1,'Test','User','000')," + "(2,'Reclu','Default','111')," +
+                            "VALUES (1,'Test','User','000')," + "(2,'Reclu','Default','111')," +
                                     "(3,'Empre','Uno','222')");
             st.execute("INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol)" +
                             "VALUES (1,'cliente@test','x',1,1)," + "(2,'reclutador@test','x',2,2)," +
