@@ -99,8 +99,8 @@ public class SProductoTest {
                             "idEmprendedor, idCategoria, tipoProducto, duracionCurso, nivelDificultad, certificacion) " +
                             "VALUES (10,'Prod A','Desc',100,'ACTIVO',1,1,'CURSO',5,'Bajo','Cert')");
 
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) " +
-                            "VALUES (10,'APROBADO',10)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) " +
+                            "VALUES (10,'APROBADO',10, 1)");
         }
 
         Producto producto = servicio.obtenerProductoPorId(10);
@@ -121,8 +121,8 @@ public class SProductoTest {
                             "idEmprendedor,idCategoria,tipoProducto,duracionCurso,nivelDificultad,certificacion) " +
                             "VALUES (21,'Curso Java Avanzado','...',0,'ACTIVO',1,1,'CURSO',5,'Medio','Cert')");
 
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (20,'APROBADO',20)");
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (21,'APROBADO',21)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (20,'APROBADO',20, 1)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (21,'APROBADO',21, 1)");
         }
 
         List<Producto> lista = servicio.buscarPorNombre("Java");
@@ -143,9 +143,9 @@ public class SProductoTest {
             st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionCurso) " +
                             "VALUES (3,'C','c',0,'ACTIVO',1,1,'CURSO',8)");
 
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (1,'APROBADO',1)");
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (2,'APROBADO',2)");
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (3,'APROBADO',3)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (1,'APROBADO',1, 1)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (2,'APROBADO',2, 1)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (3,'APROBADO',3, 1)");
         }
         List<Producto> lista = servicio.listarProductos();
         assertEquals(3, lista.size());
@@ -159,7 +159,7 @@ public class SProductoTest {
             st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionServicio, ubicacion, modalidad) " +
                             "VALUES (5,'Eliminar','x',10,'ACTIVO',1,1,'SERVICIO',10,'Online','Remoto')");
 
-            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado) VALUES (5,'APROBADO',5)");
+            st.execute("INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante) VALUES (5,'APROBADO',5, 1)");
         }
         boolean eliminado = servicio.eliminarProducto(5);
         assertTrue(eliminado);
