@@ -243,6 +243,7 @@ public class RProducto implements IRProducto {
                             "s.estado AS estadoSolicitud " +
                         "FROM Productos p " +
                         "JOIN Usuarios u ON p.idEmprendedor = u.idUsuario " +
+                        "JOIN DatosPersonales dp ON u.idDatos = dp.idDatos " +
                         "JOIN Categorias c ON p.idCategoria = c.idCategoria " +
                         "JOIN Solicitudes s ON p.idProducto = s.idProductoAsociado " +
                         "WHERE LOWER(p.titulo) LIKE ?";
@@ -305,11 +306,30 @@ public class RProducto implements IRProducto {
 
     // Eliminar un producto de la base de datos por su ID.
     public boolean eliminar(int idProducto) {
-        String sql = "DELETE FROM Productos WHERE idProducto = ?";
-        try ( Connection conexion = ConexionDB.getConnection()) {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setInt(1, idProducto);
-            return ps.executeUpdate() > 0;
+        String sqlDeleteSolicitudes = "DELETE FROM Solicitudes WHERE idProductoAsociado = ?";
+        String sqlDeleteProducto = "DELETE FROM Productos WHERE idProducto = ?";
+
+        try (Connection conexion = ConexionDB.getConnection()) {
+            // Desactivar y volver a activar en un único bloque de transacción opcional
+            conexion.setAutoCommit(false);
+            try (PreparedStatement ps1 = conexion.prepareStatement(sqlDeleteSolicitudes);
+                    PreparedStatement ps2 = conexion.prepareStatement(sqlDeleteProducto)) {
+
+                ps1.setInt(1, idProducto);
+                ps1.executeUpdate(); // eliminamos las solicitudes que referencian el producto
+
+                ps2.setInt(1, idProducto);
+                int borradas = ps2.executeUpdate();
+
+                conexion.commit();
+                return borradas > 0;
+            } catch (SQLException ex) {
+                conexion.rollback();
+                System.err.println(" Error al eliminar producto (con rollback): " + ex.getMessage());
+                return false;
+            } finally {
+                conexion.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             System.err.println(" Error al eliminar producto: " + e.getMessage());
             return false;
