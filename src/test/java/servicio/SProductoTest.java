@@ -70,8 +70,9 @@ public class SProductoTest {
         Producto producto = new Producto();
         producto.setTitulo("Producto Test");
         producto.setDescripcion("Descripción");
-        producto.setEstado("ACTIVO");
         producto.setPrecio(50.0);
+        producto.setTipoProducto(TipoProducto.CURSO);
+
 
         Usuario emprendedor = new Usuario();
         emprendedor.setIdUsuario(1);

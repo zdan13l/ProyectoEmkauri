@@ -48,6 +48,9 @@ CREATE TABLE Productos (
     -- Columna discriminadora para la herencia
     tipoProducto VARCHAR(10) NOT NULL CHECK (tipoProducto IN ('CURSO', 'SERVICIO')),
 
+    -- Estado del producto
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO' CHECK (estado IN ('ACTIVO','INACTIVO')),
+
     -- Atributos específicos de Curso.
     duracionCurso INT,
     nivelDificultad VARCHAR(50),
