@@ -4,6 +4,9 @@ import javafx.stage.*;
 import repositorio.*;
 import servicio.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 // Controlador con inyección de dependencias para los controladores de la aplicación.
 public class FabricaController {
     // Gestor de pantallas para la navegación.
@@ -19,11 +22,14 @@ public class FabricaController {
     private final ISProgresoMaterial servicioProgreso;
     private final ISSolicitud servicioSolicitud;
     private final ISUsuario servicioUsuario;
+    private final Connection conexion;
 
     // Constructor con inyección de dependencias.
-    public FabricaController(Stage stage) {
+    public FabricaController(Stage stage) throws SQLException {
+        // Obtener conexión a la base de datos.
+        this.conexion = ConexionDB.getConnection();
         // Inyección de dependencias.
-        this.servicioCalificacion = new SCalificacion(new RCalificacion());
+        this.servicioCalificacion = new SCalificacion(new RCalificacion(conexion));
         this.servicioCategoria = new SCategoria(new RCategoria());
         this.servicioCompra = new SCompra(new RCompra());
         this.servicioMaterial = new SMaterial(new RMaterial());
