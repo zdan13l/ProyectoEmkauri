@@ -16,48 +16,51 @@ public class SUsuarioTest {
     private SUsuario servicio;
 
     // ================================
-    //  INICIO DEL SERVIDOR H2 Y SCHEMA
+    //   INICIO DEL SERVIDOR H2
     // ================================
     @BeforeAll
     static void iniciarServidorBD() throws Exception {
 
+        // Modo prueba = BD en memoria
         ConexionDB.setModoPruebas(true);
 
-        // Iniciar servidor H2 TCP + consola
+        // Encender servidor TCP + consola H2
         ConexionDB.startTcpAndWebServer();
 
-        // Crear BD y cargar schema base
+        // Crear schema y datos base (si aplica)
         try (Connection conexion = ConexionDB.getConnection()) {
             ConexionDB.initSchema(conexion);
-            ConexionDB.loadTestData(conexion); // si tienes datos base, si no igual funciona
+            ConexionDB.loadTestData(conexion); // opcional
         }
     }
 
     // ================================
-    //  LIMPIEZA ANTES DE CADA TEST
+    //   LIMPIEZA + DATOS BASE
     // ================================
     @BeforeEach
     void prepararCadaTest() throws Exception {
+
         try (Connection conn = ConexionDB.getConnection();
              Statement st = conn.createStatement()) {
 
             st.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
-            // Limpiar todas las tablas que afectan usuario
             st.execute("DELETE FROM Solicitudes");
             st.execute("DELETE FROM Usuarios");
             st.execute("DELETE FROM DatosPersonales");
             st.execute("DELETE FROM Roles");
 
-            // Insertar datos mínimos para que las pruebas funcionen
+            // Roles básicos
             st.execute("INSERT INTO Roles(idRol, nombre) VALUES (1, 'Cliente')");
             st.execute("INSERT INTO Roles(idRol, nombre) VALUES (2, 'Emprendedor')");
 
+            // Datos personales base
             st.execute("""
                 INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono)
                 VALUES (1, 'Test', 'User', '000')
             """);
 
+            // Usuario base válido
             st.execute("""
                 INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol)
                 VALUES (1, 'test@mail.com', '123', 1, 1)
@@ -70,36 +73,34 @@ public class SUsuarioTest {
         servicio = new SUsuario(repoReal);
     }
 
-    // ============================================================
-    // TEST 1 - Autenticación correcta
-    // ============================================================
+    // ======================================================
+    // TEST 1 - Autenticación válida
+    // ======================================================
     @Test
     void testAutenticarUsuarioValido() {
         boolean resultado = servicio.autenticar("test@mail.com", "123");
         assertTrue(resultado);
     }
 
-    // ============================================================
-    // TEST 2 - Usuario emprendedor en estado PENDIENTE
-    // ============================================================
+    // ======================================================
+    // TEST 2 - Usuario emprendedor con solicitud PENDIENTE
+    // ======================================================
     @Test
     void testAutenticarUsuarioPendiente() throws Exception {
 
-        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
+        try (Connection conn = ConexionDB.getConnection();
+             Statement st = conn.createStatement()) {
 
-            // Insertar datos personales
             st.execute("""
                 INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono)
                 VALUES (2, 'Luis', 'Rojas', '555')
             """);
 
-            // Usuario emprendedor
             st.execute("""
                 INSERT INTO Usuarios(idUsuario, correo, contrasena, idDatos, idRol)
                 VALUES (2, 'pendiente@mail.com', '123', 2, 2)
             """);
 
-            // Solicitud PENDIENTE
             st.execute("""
                 INSERT INTO Solicitudes(idSolicitud, estado, idProductoAsociado, idSolicitante)
                 VALUES (1, 'PENDIENTE', NULL, 2)
@@ -109,16 +110,20 @@ public class SUsuarioTest {
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> servicio.autenticar("pendiente@mail.com", "123"));
 
-        assertEquals("Tu solicitud de registro como emprendedor aún está pendiente de aprobación.", ex.getMessage());
+        assertEquals(
+                "Tu solicitud de registro como emprendedor aún está pendiente de aprobación.",
+                ex.getMessage()
+        );
     }
 
-    // ============================================================
-    // TEST 3 - Obtener nombre por correo
-    // ============================================================
+    // ======================================================
+    // TEST 3 - Obtener nombre
+    // ======================================================
     @Test
     void testObtenerNombre() throws Exception {
 
-        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
+        try (Connection conn = ConexionDB.getConnection();
+             Statement st = conn.createStatement()) {
 
             st.execute("""
                 INSERT INTO DatosPersonales(idDatos, nombre, apellido, telefono)
@@ -131,13 +136,12 @@ public class SUsuarioTest {
             """);
         }
 
-        String nombre = servicio.obtenerNombre("correo@mail.com");
-        assertEquals("Daniel", nombre);
+        assertEquals("Daniel", servicio.obtenerNombre("correo@mail.com"));
     }
 
-    // ============================================================
+    // ======================================================
     // TEST 4 - Registrar emprendedor
-    // ============================================================
+    // ======================================================
     @Test
     void testRegistrarEmprendedor() {
 
@@ -149,9 +153,9 @@ public class SUsuarioTest {
         assertTrue(ok);
     }
 
-    // ============================================================
+    // ======================================================
     // TEST 5 - Registrar cliente
-    // ============================================================
+    // ======================================================
     @Test
     void testRegistrarCliente() {
 
