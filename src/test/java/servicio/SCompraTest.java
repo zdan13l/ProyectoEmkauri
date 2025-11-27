@@ -57,8 +57,8 @@ public class SCompraTest {
             st.execute("INSERT INTO Productos(idProducto, titulo, descripcion, precio," +
                             " idEmprendedor, idCategoria, tipoProducto) " +
                             "VALUES (1, 'Curso', 'Curso Test', 50.0, 1, 1, 'CURSO')");
-            st.execute("INSERT INTO Pagos(idPago, metodo, estado, detalle) " +
-                            "VALUES (1, 'NEQUI', 'OK', 'prueba')");
+            st.execute("INSERT INTO Pagos(idPago, monto, metodo) " +
+                            "VALUES (1, 50.0, 'NEQUI')");
 
             // Reactivar la integridad referencial.
             st.execute("SET REFERENTIAL_INTEGRITY TRUE");

@@ -1,4 +1,4 @@
--- SQL DDL para insertar datos.
+-- SQL DATA para insertar datos.
 
 -- Autor: PowerRangers
 -- Versión: 2.0
