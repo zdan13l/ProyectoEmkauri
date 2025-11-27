@@ -41,7 +41,7 @@ public class LoginController {
             boolean autenticado = servicioU.autenticar(correo, contrasena);
 
             if (autenticado) {
-                Usuario usuario = servicioU.obternerUsuario(correo);
+                Usuario usuario = servicioU.obtenerUsuario(correo);
                 SesionActual.setUsuarioActual(usuario);
                 String nombre = servicioU.obtenerNombre(correo);
                 String apellido = servicioU.obtenerApellido(correo);

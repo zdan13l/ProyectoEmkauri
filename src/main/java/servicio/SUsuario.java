@@ -13,7 +13,7 @@ public class SUsuario implements ISUsuario {
     }
 
     // Obtiene el usuario por su correo electrónico.
-    public Usuario obternerUsuario(String correo) {
+    public Usuario obtenerUsuario(String correo) {
         return repoU.buscarPorCorreo(correo);
     }
 
