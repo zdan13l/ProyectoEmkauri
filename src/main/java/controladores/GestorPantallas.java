@@ -253,10 +253,12 @@ public class GestorPantallas {
     public void abrirPantallaServicio(String clavePantalla, Producto servicio) {
         try {
             String ruta = pantallas.get(clavePantalla);
+
             // Inyectar controladores desde la fábrica.
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(fabrica::createController);
             Pane root = loader.load();
+
             // Obtener el controlador asociado al FXML del servicio.
             AccederServicioController controller = loader.getController();
             controller.setServicio(servicio);
