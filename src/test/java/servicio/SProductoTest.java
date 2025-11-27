@@ -12,6 +12,7 @@ public class SProductoTest {
     // Servicios y repositorios reales.
     private RProducto repoReal;
     private SProducto servicio;
+    private Connection conexionCompartida;
 
     // Configuración inicial antes de todos los tests.
     @BeforeAll
@@ -32,7 +33,8 @@ public class SProductoTest {
     // Preparar la base de datos antes de cada test.
     @BeforeEach
     void prepararCadaTest() throws Exception {
-        try (Connection conn = ConexionDB.getConnection(); Statement st = conn.createStatement()) {
+        conexionCompartida = ConexionDB.getConnection();
+        try (Statement st = conexionCompartida.createStatement()) {
             // Desactivar temporalmente la integridad referencial para limpiar sin orden estricto.
             st.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
@@ -61,7 +63,7 @@ public class SProductoTest {
             st.execute("SET REFERENTIAL_INTEGRITY TRUE");
         }
         // Inicializar repositorio y servicio reales.
-        repoReal = new RProducto(ConexionDB.getConnection());
+        repoReal = new RProducto(conexionCompartida);
         servicio = new SProducto(repoReal);
     }
 
@@ -94,8 +96,7 @@ public class SProductoTest {
     // TEST : obtenerProductoPorId()
     @Test
     void testObtenerProductoPorId() throws Exception {
-        try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
-
+        try (Statement st = conexionCompartida.createStatement()) {
             st.execute("INSERT INTO Productos(idProducto, titulo, descripcion, precio, estado, " +
                             "idEmprendedor, idCategoria, tipoProducto, duracionCurso, nivelDificultad, certificacion) " +
                             "VALUES (10,'Prod A','Desc',100,'ACTIVO',1,1,'CURSO',5,'Bajo','Cert')");
@@ -113,7 +114,7 @@ public class SProductoTest {
     // TEST : buscarPorNombre()
     @Test
     void testBuscarPorNombre() throws Exception {
-        try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
+        try (Statement st = conexionCompartida.createStatement()) {
             st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado," +
                             "idEmprendedor,idCategoria,tipoProducto,duracionCurso,nivelDificultad,certificacion) " +
                             "VALUES (20,'Curso Java Básico','...',0,'ACTIVO',1,1,'CURSO',5,'Bajo','Cert')");
@@ -134,7 +135,7 @@ public class SProductoTest {
     // TEST : listarProductos()
     @Test
     void testListarProductos() throws Exception {
-        try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
+        try (Statement st = conexionCompartida.createStatement()) {
             st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionCurso) " +
                             "VALUES (1,'A','a',0,'ACTIVO',1,1,'CURSO',5)");
 
@@ -156,7 +157,7 @@ public class SProductoTest {
     // TEST : eliminarProducto()
     @Test
     void testEliminarProducto() throws Exception {
-        try (Connection con = ConexionDB.getConnection(); Statement st = con.createStatement()) {
+        try (Statement st = conexionCompartida.createStatement()) {
             st.execute("INSERT INTO Productos(idProducto,titulo,descripcion,precio,estado,idEmprendedor,idCategoria,tipoProducto, duracionServicio, ubicacion, modalidad) " +
                             "VALUES (5,'Eliminar','x',10,'ACTIVO',1,1,'SERVICIO',10,'Online','Remoto')");
 
