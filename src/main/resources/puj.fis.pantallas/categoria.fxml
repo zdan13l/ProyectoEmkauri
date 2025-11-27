@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <!-- ARCHIVO FXML PARA LA GESTIÓN DE CATEGORÍAS-->
-<AnchorPane styleClass="root-pane" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.CategoriaController">
+<AnchorPane styleClass="root-pane" stylesheets="@../css/interfaz.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controladores.CategoriaController">
     <VBox alignment="TOP_CENTER" spacing="20"
             AnchorPane.bottomAnchor="20"
             AnchorPane.leftAnchor="20"

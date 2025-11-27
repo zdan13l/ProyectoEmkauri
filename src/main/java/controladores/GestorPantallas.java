@@ -1,5 +1,6 @@
 package controladores;
 
+import static javafx.scene.control.Alert.AlertType.*;
 import javafx.animation.*;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -90,6 +91,23 @@ public class GestorPantallas {
     public void irSolicitudProducto(String tipo) { abrirGestionSolicitudes(tipo); }
     public void irSolicitudes(String tipo) { abrirSolicitudes("solicitudes", tipo); }
 
+    // Configurar y mostrar la pantalla correctamente.
+    private void aplicarConfiguracion(Scene scene, String titulo, Pane root) {
+        stage.setScene(scene);
+        stage.setTitle(titulo);
+        stage.setMaximized(true);
+
+        // Centrar en pantalla.
+        stage.centerOnScreen();
+        stage.setX(0);
+        stage.setY(0);
+
+        // Forzar tamaño completo en cualquier pantalla
+        stage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+        stage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
+        aplicarTransicion(root);
+    }
+
     // Cambiar la pantalla actual a la indicada por la clave.
     private void cambiarPantalla(String clavePantalla) {
         try {
@@ -98,14 +116,12 @@ public class GestorPantallas {
             // Inyectar controladores desde la fábrica.
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(fabrica::createController);
+            Pane root = loader.load();
 
             // Cargar la nueva escena.
-            Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(root);
             String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion((Pane) scene.getRoot());
-            stage.setScene(scene);
+            aplicarConfiguracion(scene, titulo, root);
         } catch (IOException e) {
             throw new RuntimeException("Error al cargar pantalla: " + clavePantalla, e);
         }
@@ -128,10 +144,7 @@ public class GestorPantallas {
             // Cargar la nueva escena.
             Scene scene = new Scene(root);
             String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion(root);
-            stage.setScene(scene);
+            aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la solicitud de producto.");
         }
@@ -155,10 +168,7 @@ public class GestorPantallas {
             // Cargar la nueva escena.
             Scene scene = new Scene(root);
             String titulo = titulos.getOrDefault("solicitud", "Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion(root);
-            stage.setScene(scene);
+            aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la solicitud de producto.");
         }
@@ -181,10 +191,7 @@ public class GestorPantallas {
             // Cargar la nueva escena.
             Scene scene = new Scene(root);
             String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion(root);
-            stage.setScene(scene);
+            aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la pantalla de administración.");
         }
@@ -208,10 +215,7 @@ public class GestorPantallas {
             // Cargar la nueva escena.
             Scene scene = new Scene(root);
             String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion(root);
-            stage.setScene(scene);
+            aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
             mostrarError("Error", "No se pudo abrir la pantalla de calificación.");
         }
@@ -228,35 +232,21 @@ public class GestorPantallas {
             Pane root = loader.load();
 
             // Obtener el controlador asociado al FXML del curso.
-            Object controller = loader.getController();
-
-            // Si el controlador tiene un método setCurso(), lo llamamos
-            try {
-                controller.getClass()
-                        .getMethod("setCurso", Producto.class)
-                        .invoke(controller, curso);
-            } catch (NoSuchMethodException e) {
-                System.err.println("⚠️ El controlador no tiene setCurso(Curso curso).");
-            }
+            AccederCursoController controller = loader.getController();
+            controller.setCurso(curso);
 
             // Cargar la nueva escena.
             Scene scene = new Scene(root);
-            String titulo = titulos.getOrDefault(clavePantalla, "Curso - Emkauri");
-            stage.setTitle(titulo);
-            stage.setMaximized(true);
-            aplicarTransicion(root);
-            stage.setScene(scene);
-
+            String titulo = titulos.getOrDefault(clavePantalla, "Emkauri");
+            aplicarConfiguracion(scene, titulo, root);
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarError("Error", "No se pudo abrir la pantalla del curso.");
         }
     }
 
-
     // Aplicar una transición de desvanecimiento al cambiar de pantalla.
     private void aplicarTransicion(Pane root) {
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(600), root);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(800), root);
         root.setOpacity(0);
         fadeIn.setToValue(1);
         fadeIn.play();
@@ -264,7 +254,7 @@ public class GestorPantallas {
 
     // Mostrar una alerta de confirmación al usuario.
     public boolean mostrarConfirmacion(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
@@ -273,7 +263,7 @@ public class GestorPantallas {
 
     // Mostrar una alerta de éxito al usuario.
     public void mostrarExito(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(INFORMATION);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
@@ -282,7 +272,7 @@ public class GestorPantallas {
 
     // Mostrar una alerta de advertencia al usuario.
     public void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+        Alert alert = new Alert(WARNING);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
@@ -291,7 +281,7 @@ public class GestorPantallas {
 
     // Mostrar una alerta de error al usuario.
     public void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(ERROR);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);

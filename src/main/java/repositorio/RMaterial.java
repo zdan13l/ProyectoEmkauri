@@ -8,7 +8,7 @@ import java.util.*;
 public class RMaterial implements IRMaterial {
 
     // Inserta un nuevo material asociado a un curso específico.
-    public void insertar(Material material, int idCurso) throws SQLException {
+    public void insertar(Material material, int idCurso) {
         String sql = "INSERT INTO Materiales (titulo, tipo, url, idCurso) VALUES (?, ?, ?, ?)";
         try (Connection con = ConexionDB.getConnection();
         PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -23,11 +23,13 @@ public class RMaterial implements IRMaterial {
             if (rs.next()) {
                 material.setIdMaterial(rs.getInt(1));
             }
+        } catch (SQLException e){
+            e.printStackTrace();
         }
     }
 
     // Lista todos los materiales asociados a un curso específico.
-    public List<Material> listarPorCurso(int idCurso) throws SQLException {
+    public List<Material> listarPorCurso(int idCurso) {
         List<Material> lista = new ArrayList<>();
         String sql = "SELECT idMaterial, titulo, tipo, url FROM Materiales WHERE idCurso = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -42,12 +44,14 @@ public class RMaterial implements IRMaterial {
                 );
                 lista.add(m);
             }
+        } catch (SQLException e){
+            e.printStackTrace();
         }
         return lista;
     }
 
     // Busca un material por su ID.
-    public Material buscarPorId(int idMaterial) throws SQLException {
+    public Material buscarPorId(int idMaterial) {
         String sql = "SELECT idMaterial, titulo, tipo, url FROM Materiales WHERE idMaterial = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idMaterial);
@@ -60,12 +64,14 @@ public class RMaterial implements IRMaterial {
                         rs.getString("url")
                 );
             }
+        } catch (SQLException e){
+            e.printStackTrace();
         }
         return null;
     }
 
     // Actualiza la información de un material existente.
-    public void actualizar(Material material) throws SQLException {
+    public void actualizar(Material material) {
         String sql = "UPDATE Materiales SET titulo = ?, tipo = ?, url = ? WHERE idMaterial = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, material.getTitulo());
@@ -73,15 +79,19 @@ public class RMaterial implements IRMaterial {
             ps.setString(3, material.getUrl());
             ps.setInt(4, material.getIdMaterial());
             ps.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
         }
     }
 
     // Elimina un material por su ID.
-    public void eliminar(int idMaterial) throws SQLException {
+    public void eliminar(int idMaterial) {
         String sql = "DELETE FROM Materiales WHERE idMaterial = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idMaterial);
             ps.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
         }
     }
 }

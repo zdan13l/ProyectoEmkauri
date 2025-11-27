@@ -49,7 +49,7 @@ public class AdminProductoController {
     }
 
     // Carga el producto en la interfaz para su edición.
-    public void setProducto(Producto producto) throws Exception {
+    public void setProducto(Producto producto) {
         this.productoSeleccionado = producto;
         if (producto == null) {
             gestorPantallas.mostrarError("Error", "No se pudo cargar el producto.");

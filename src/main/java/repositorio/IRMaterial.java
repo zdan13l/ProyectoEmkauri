@@ -1,13 +1,13 @@
 package repositorio;
 
 import modelo.Material;
-
 import java.util.List;
 
+// Interfaz para operaciones CRUD en la entidad Material.
 public interface IRMaterial {
-    void insertar(Material material, int idCurso) throws java.sql.SQLException;
-    List<Material> listarPorCurso(int idCurso) throws java.sql.SQLException;
-    Material buscarPorId(int idMaterial) throws java.sql.SQLException;
-    void actualizar (Material material) throws java.sql.SQLException;
-    void eliminar (int idMaterial) throws java.sql.SQLException;
+    void insertar(Material material, int idCurso);
+    List<Material> listarPorCurso(int idCurso);
+    Material buscarPorId(int idMaterial);
+    void actualizar (Material material);
+    void eliminar (int idMaterial);
 }

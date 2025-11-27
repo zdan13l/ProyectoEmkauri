@@ -4,7 +4,6 @@ import controladores.FabricaController;
 import javafx.application.Application;
 import repositorio.ConexionDB;
 import javafx.stage.Stage;
-
 import java.sql.Connection;
 
 // Clase principal de la aplicación JavaFX.

@@ -280,3 +280,21 @@
 .bottom-buttons {
     -fx-padding: 15 0 0 0;
 }
+
+.card-box {
+    -fx-background-color: #ffffff;
+    -fx-padding: 16;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #dedede;
+    -fx-border-width: 1;
+}
+
+.btn-warning {
+    -fx-background-color: #E8A200;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 22;
+    -fx-background-radius: 12;
+}
